@@ -1,0 +1,22 @@
+#!/bin/bash
+
+exit_code=0
+
+for fname in $(find lib src test -regex '.*\.\(ml\|mli\)'); do
+	if [[ "$(echo $fname | grep cppo)" == '' ]]; then
+		hash0=$(md5sum "$fname" | awk '{print $1}')
+		hash1=$(ocp-indent "$fname" | md5sum | awk '{print $1}')
+
+		if [[ "$hash0" == "$hash1" ]]; then
+			echo -e "\033[32m[Passed]\033[0m $fname is already formatted."
+		else
+			echo -e "\033[31m[Failed]\033[0m $fname is NOT formatted."
+			ocp-indent -i "$fname"
+			exit_code=1
+		fi
+	else
+		echo -e "\033[33m[Skipped]\033[0m $fname is skipped."
+	fi
+done
+
+exit $exit_code
