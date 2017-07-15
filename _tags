@@ -1,0 +1,38 @@
+# OASIS_START
+# DO NOT EDIT (digest: f6d43fe998fe74ece924cb5555ff13c1)
+# Ignore VCS directories, you can use the same kind of rule outside
+# OASIS_START/STOP if you want to exclude directories that contains
+# useless stuff for the build process
+true: annot, bin_annot
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library jupyter-repl
+"lib/repl/jupyter-repl.cmxs": use_jupyter-repl
+<lib/repl/*.ml{,i,y}>: package(compiler-libs.common)
+<lib/repl/*.ml{,i,y}>: package(compiler-libs.toplevel)
+# Executable test_lib
+"test/TestJupyter.byte": package(compiler-libs.common)
+"test/TestJupyter.byte": package(compiler-libs.toplevel)
+"test/TestJupyter.byte": package(oUnit)
+"test/TestJupyter.byte": package(ppx_deriving.show)
+"test/TestJupyter.byte": package(str)
+"test/TestJupyter.byte": use_jupyter-repl
+<test/*.ml{,i,y}>: package(compiler-libs.common)
+<test/*.ml{,i,y}>: package(compiler-libs.toplevel)
+<test/*.ml{,i,y}>: package(oUnit)
+<test/*.ml{,i,y}>: package(ppx_deriving.show)
+<test/*.ml{,i,y}>: package(str)
+<test/*.ml{,i,y}>: use_jupyter-repl
+# OASIS_STOP
+
+true: -traverse
+<**/*>: traverse
+<**/*>: warn(A-4-31-33-34-39-41-42-43-44-45-48-49-50-58), safe_string, strict_sequence, strict_formats, no_alias_deps, cppo_V_OCAML

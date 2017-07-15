@@ -1,0 +1,10 @@
+# OASIS_START
+# DO NOT EDIT (digest: f68f95b85852feeca8edaae28f5e36b2)
+version = "5.0.0"
+description = "An OCaml kernel for Jupyter notebooks"
+requires = "compiler-libs.common compiler-libs.toplevel"
+archive(byte) = "jupyter-repl.cma"
+archive(byte, plugin) = "jupyter-repl.cma"
+exists_if = "jupyter-repl.cma"
+# OASIS_STOP
+

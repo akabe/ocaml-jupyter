@@ -26,14 +26,14 @@ matrix:
 
 before_script:
   - |
-    sed -i "s/__OCAML_VERSION__/$OCAML_VERSION/" travis/Dockerfile
+    sed -i "s/__OCAML_VERSION__/$OCAML_VERSION/" docker/Dockerfile
     if md5sum --check ~/.docker/docker.md5 && [[ -f ~/.docker/image.tar ]] ; then
         docker load < ~/.docker/image.tar || exit 1
     else
-        docker build -t ocaml-jupyter travis/ || exit 1
+        docker build -t ocaml-jupyter docker/ || exit 1
         docker save ocaml-jupyter > ~/.docker/image.tar || exit 2
-        md5sum travis/* > ~/.docker/docker.md5
+        md5sum docker/* > ~/.docker/docker.md5
     fi
 
 script:
-  - docker run --rm -v $PWD:$PWD -w $PWD ocaml-jupyter ./travis/travis.sh
+  - docker run --rm -v $PWD:$PWD -w $PWD ocaml-jupyter ./travis.sh
