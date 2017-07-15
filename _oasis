@@ -1,0 +1,41 @@
+OASISFormat:            0.4
+Name:                   ocaml-jupyter
+Version:                5.0.0
+Synopsis:               A OCaml kernel for Jupyter notebooks
+Authors:                Akinori ABE
+License:                MIT
+Plugins:                META (0.4), DevFiles (0.4)
+OCamlVersion:           >= 4.01
+BuildTools:             ocamlbuild,cppo
+AlphaFeatures:          ocamlbuild_more_args
+XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
+
+PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --git-dir)/hooks/pre-commit
+
+Library "jupyter-repl"
+  Path:                 lib/repl
+  FindlibName:          jupyter
+  BuildDepends:         compiler-libs.common, compiler-libs.toplevel
+  XMETARequires:        compiler-libs.common, compiler-libs.toplevel
+  Modules:              JupyterRepl,
+                        JupyterReplToploop,
+                        JupyterReplMessage,
+                        JupyterReplError
+  CompiledObject:       byte
+
+##
+## Tests
+##
+
+Executable test_lib
+  Path:                 test
+  MainIs:               TestJupyter.ml
+  Build$:               flag(tests)
+  Install:              false
+  BuildDepends:         jupyter, str, ppx_deriving.show, oUnit
+  CompiledObject:       byte
+
+Test test_lib
+  Run$:                 flag(tests)
+  Command:              $test_lib -runner sequential
+  WorkingDirectory:     test
