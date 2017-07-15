@@ -1,7 +1,7 @@
 OASISFormat:            0.4
 Name:                   ocaml-jupyter
 Version:                5.0.0
-Synopsis:               A OCaml kernel for Jupyter notebooks
+Synopsis:               An OCaml kernel for Jupyter notebooks
 Authors:                Akinori ABE
 License:                MIT
 Plugins:                META (0.4), DevFiles (0.4)

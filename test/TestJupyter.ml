@@ -1,4 +1,4 @@
-(* ocaml-jupyter --- A OCaml kernel for Jupyter
+(* ocaml-jupyter --- An OCaml kernel for Jupyter
 
    Copyright (c) 2017 Akinori ABE
 
