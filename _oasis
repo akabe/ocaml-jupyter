@@ -15,14 +15,15 @@ PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --
 Library jupyter
   Path:                 lib/kernel
   FindlibName:          jupyter
-  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq,
+  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
                         lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq,
+  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
                         JupyterZmqChannel,
                         JupyterChannelIntf
-  InternalModules:      JupyterLog
+  InternalModules:      JupyterHmac,
+                        JupyterLog
 
 Library "jupyter-repl"
   Path:                 lib/repl
