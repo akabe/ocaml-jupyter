@@ -20,17 +20,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** Version information *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    TestJupyterMessageChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
-
-let () = run_test_tt_main suite
+(** The current version of OCaml kernel *)
+let version = "5.0.0"

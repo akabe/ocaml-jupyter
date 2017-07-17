@@ -1,6 +1,12 @@
 # OASIS_START
-# DO NOT EDIT (digest: 557103939b2db523597cee0b4abeff93)
+# DO NOT EDIT (digest: eec6589d47a0c300096511702d1b4c87)
 Jupyter
+JupyterMessageChannel
+JupyterShellMessage
+JupyterIopubMessage
+JupyterStdinMessage
+JupyterMessage
+JupyterJson
 JupyterZmqChannel
 JupyterChannelIntf
 JupyterHmac

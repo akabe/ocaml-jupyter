@@ -1,9 +1,9 @@
 # OASIS_START
-# DO NOT EDIT (digest: 4ac7b80d294eca101eda459296839f05)
+# DO NOT EDIT (digest: 28c68970cff78028ae742b616ce7198a)
 version = "5.0.0"
 description = "An OCaml kernel for Jupyter notebooks"
 requires =
-"lwt lwt.unix yojson lwt-zmq nocrypto lwt.ppx ppx_deriving_yojson.runtime"
+"lwt lwt.unix yojson lwt-zmq nocrypto uuidm lwt.ppx ppx_deriving_yojson.runtime"
 archive(byte) = "jupyter.cma"
 archive(byte, plugin) = "jupyter.cma"
 archive(native) = "jupyter.cmxa"

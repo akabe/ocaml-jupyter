@@ -9,17 +9,24 @@ OCamlVersion:           >= 4.01
 BuildTools:             ocamlbuild,cppo
 AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
+FilesAB:                lib/kernel/JupyterVersion.ml.ab
 
 PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --git-dir)/hooks/pre-commit
 
 Library jupyter
   Path:                 lib/kernel
   FindlibName:          jupyter
-  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
+  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
+  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
+                        JupyterMessageChannel,
+                        JupyterShellMessage,
+                        JupyterIopubMessage,
+                        JupyterStdinMessage,
+                        JupyterMessage,
+                        JupyterJson,
                         JupyterZmqChannel,
                         JupyterChannelIntf
   InternalModules:      JupyterHmac,

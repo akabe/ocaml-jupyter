@@ -20,6 +20,10 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
+open Jupyter.Message
+
+let ctx = ZMQ.Context.create ()
+
 module KernelInfoRequest =
 struct
   let key = "ecb9a979-64796cba22fc6fe34e179b52"
@@ -33,6 +37,97 @@ struct
   let parent_header = "{}"
   let metadata = "{}"
   let content = "{}"
+
+  let zmq_ids = []
+  let buffers = []
+
+  let message =
+    {
+      zmq_ids; metadata; buffers;
+      header = {
+        msg_type = "kernel_info_request";
+        date = Some "2017-07-09T16:15:21.326867Z";
+        session = "70603B44BDCD46A2A687C03A44CE6972";
+        version = "5.2";
+        username = "aabe";
+        msg_id = "4144a9a0-084206effad5bfc29c998d69";
+      };
+      parent_header = None;
+      content = `Kernel_info_request;
+    }
+end
+
+module KernelInfoReply =
+struct
+  let key = "167ff8c8-fe494afc147b4fa62758ed82"
+  let hmac = "7cd42e8ad6577c8dcd56eebac4f5d516311160df81f0a06d6ea22ec898dd0b94"
+  let header = "{\"msg_id\":\"3a21737c-0287-30f3-bfa9-12e193dfd00a\",\
+                \"msg_type\":\"kernel_info_reply\",\
+                \"session\":\"A32B9A2038D043F2A0718550AAAFC9DA\",\
+                \"date\":\"2017-07-11T07:56:15Z\",\
+                \"username\":\"aabe\",\
+                \"version\":\"5.2\"}"
+  let parent_header = "{\"msg_id\":\"b83bf59a-6b1faad93bffba84767d2cf1\",\
+                       \"msg_type\":\"kernel_info_request\",\
+                       \"session\":\"A32B9A2038D043F2A0718550AAAFC9DA\",\
+                       \"date\":\"2017-07-11T07:56:15.369163Z\",\
+                       \"username\":\"aabe\",\
+                       \"version\":\"5.2\"}"
+  let content = "{\"protocol_version\":\"5.2\",\
+                 \"implemenation\":\"ocaml-jupyter\",\
+                 \"implementation_version\":\"5.0.0\",\
+                 \"banner\":null,\
+                 \"help_links\":{},\
+                 \"language_info\":{\
+                 \"name\":\"OCaml\",\
+                 \"version\":\"4.04.1\",\
+                 \"mimetype\":\"text/ocaml\",\
+                 \"file_extension\":\".ml\",\
+                 \"pygments_lexer\":null,\
+                 \"codemirror_mode\":\"OCaml\",\
+                 \"nbconverter_exporter\":null},\
+                 \"language\":\"OCaml\"}"
+  let metadata = "{}"
+  let buffers = []
+
+  let message =
+    {
+      zmq_ids = []; metadata; buffers;
+      header = {
+        msg_id = "3a21737c-0287-30f3-bfa9-12e193dfd00a";
+        msg_type = "kernel_info_reply";
+        session = "A32B9A2038D043F2A0718550AAAFC9DA";
+        date = Some "2017-07-11T07:56:15Z";
+        username = "aabe";
+        version = "5.2";
+      };
+      parent_header = Some {
+          msg_id = "b83bf59a-6b1faad93bffba84767d2cf1";
+          msg_type = "kernel_info_request";
+          session = "A32B9A2038D043F2A0718550AAAFC9DA";
+          date = Some "2017-07-11T07:56:15.369163Z";
+          username = "aabe";
+          version = "5.2";
+        };
+      content = `Kernel_info_reply Jupyter.ShellMessage.{
+          protocol_version = "5.2";
+          implemenation = "ocaml-jupyter";
+          implementation_version = "5.0.0";
+          banner = None;
+          help_links = `Assoc [];
+          language = "OCaml";
+          language_info =
+            {
+              name = "OCaml";
+              version = "4.04.1";
+              mimetype = "text/ocaml";
+              file_extension = ".ml";
+              pygments_lexer = None;
+              codemirror_mode = `String "OCaml";
+              nbconverter_exporter = None;
+            };
+        };
+    }
 end
 
 module ExecuteRequest =

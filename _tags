@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 665f27d1726a615be04a44d1a82a3c69)
+# DO NOT EDIT (digest: 2aec78327e0ae804135b8e0d08541aa2)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -22,6 +22,7 @@ true: annot, bin_annot
 <lib/kernel/*.ml{,i,y}>: package(lwt.unix)
 <lib/kernel/*.ml{,i,y}>: package(nocrypto)
 <lib/kernel/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/kernel/*.ml{,i,y}>: package(uuidm)
 <lib/kernel/*.ml{,i,y}>: package(yojson)
 # Library jupyter-repl
 "lib/repl/jupyter-repl.cmxs": use_jupyter-repl
@@ -33,6 +34,7 @@ true: annot, bin_annot
 <lib/repl/*.ml{,i,y}>: package(lwt.unix)
 <lib/repl/*.ml{,i,y}>: package(nocrypto)
 <lib/repl/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/repl/*.ml{,i,y}>: package(uuidm)
 <lib/repl/*.ml{,i,y}>: package(yojson)
 <lib/repl/*.ml{,i,y}>: use_jupyter
 # Executable test_lib
@@ -47,6 +49,7 @@ true: annot, bin_annot
 "test/TestJupyter.byte": package(ppx_deriving.show)
 "test/TestJupyter.byte": package(ppx_deriving_yojson)
 "test/TestJupyter.byte": package(str)
+"test/TestJupyter.byte": package(uuidm)
 "test/TestJupyter.byte": package(yojson)
 "test/TestJupyter.byte": use_jupyter
 "test/TestJupyter.byte": use_jupyter-repl
@@ -61,6 +64,7 @@ true: annot, bin_annot
 <test/*.ml{,i,y}>: package(ppx_deriving.show)
 <test/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <test/*.ml{,i,y}>: package(str)
+<test/*.ml{,i,y}>: package(uuidm)
 <test/*.ml{,i,y}>: package(yojson)
 <test/*.ml{,i,y}>: use_jupyter
 <test/*.ml{,i,y}>: use_jupyter-repl
