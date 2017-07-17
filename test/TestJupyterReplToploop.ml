@@ -135,16 +135,6 @@ let test__camlp4 ctxt =
   let expected = [Ok "- : int Stream.t = <abstr>\n"] in
   assert_equal ~ctxt ~cmp ~printer expected actual
 
-let test__cohttp_lwt ctxt =
-  let actual = exec (read_file "fixtures/cohttp_lwt.ml") in
-  let expected = [Ok "- : Cohttp.Code.status_code option = Some `OK\n"] in
-  assert_equal ~ctxt ~cmp ~printer expected actual
-
-let test__cohttp_async ctxt =
-  let actual = exec (read_file "fixtures/cohttp_async.ml") in
-  let expected = [Ok "- : Cohttp.Code.status_code option = Some `OK\n"] in
-  assert_equal ~ctxt ~cmp ~printer expected actual
-
 let () = Toploop.init ~initfile:"fixtures/.ocamlinit" ()
 
 let suite =
@@ -160,6 +150,4 @@ let suite =
     "unknown_directive" >:: test__unknown_directive;
     "ppx" >:: test__ppx;
     "camlp4" >:: test__camlp4;
-    "cohttp_lwt" >:: test__cohttp_lwt;
-    "cohttp_async" >:: test__cohttp_async;
   ]
