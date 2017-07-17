@@ -22,15 +22,15 @@
 
 (** OCaml REPL process *)
 
-type input =
+type output =
   {
     filename : string;
     code : string;
   }
 
 include Jupyter.ChannelIntf.S
-  with type input := input
-   and type output = JupyterReplMessage.t list
+  with type output := output
+   and type input = JupyterReplMessage.t list
 
 val create : ?preload:string list -> ?initfile:string -> unit -> t
 

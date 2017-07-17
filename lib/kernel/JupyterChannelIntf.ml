@@ -28,9 +28,9 @@ sig
   type input
   type output
 
-  val recv : t -> output Lwt.t
+  val recv : t -> input Lwt.t
 
-  val send : t -> input -> unit Lwt.t
+  val send : t -> output -> unit Lwt.t
 
   val close : t -> unit Lwt.t
 end

@@ -20,17 +20,29 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** Messaging channel for Jupyter *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    TestJupyterMessageChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+module type ContentType =
+sig
+  type request [@@deriving yojson]
+  type reply [@@deriving yojson]
+end
 
-let () = run_test_tt_main suite
+module Make (Content : ContentType) (Socket : JupyterChannelIntf.ZMQ) :
+sig
+
+  include JupyterChannelIntf.S
+    with type input = Content.request JupyterMessage.t
+     and type output = Content.reply JupyterMessage.t
+
+  val create :
+    ?key:string ->
+    ctx:ZMQ.Context.t ->
+    kind:'a ZMQ.Socket.kind ->
+    string -> t
+
+  val next : ?time:float -> _ JupyterMessage.t -> Content.reply -> output
+
+  val send_next : t -> parent:_ JupyterMessage.t -> Content.reply -> unit Lwt.t
+
+end

@@ -20,17 +20,10 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** JSON utility *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    TestJupyterMessageChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+val or_none : ('a, string) Result.result -> 'a option
 
-let () = run_test_tt_main suite
+val or_die : ('a, string) Result.result -> 'a
+
+type 'a enum = 'a [@@deriving yojson]

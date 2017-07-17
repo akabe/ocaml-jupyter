@@ -22,6 +22,18 @@
 
 (** An OCaml kernel for Jupyter *)
 
+(** {2 Protocol schema} *)
+
+module Message = JupyterMessage
+
+module ShellMessage = JupyterShellMessage
+
+module IopubMessage = JupyterIopubMessage
+
+module StdinMessage = JupyterStdinMessage
+
+(** {2 Communication} *)
+
 module ZmqChannel = JupyterZmqChannel
 
 module ChannelIntf = JupyterChannelIntf

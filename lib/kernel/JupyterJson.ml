@@ -20,17 +20,20 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** JSON utility *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    TestJupyterMessageChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+let or_none = function
+  | Result.Error _ -> None
+  | Result.Ok x -> Some x
 
-let () = run_test_tt_main suite
+let or_die = function
+  | Result.Error msg -> Yojson.json_error msg
+  | Result.Ok x -> x
+
+type 'a enum = 'a
+
+let enum_of_yojson of_yojson json = of_yojson (`List [json])
+
+let enum_to_yojson to_yojson x = match to_yojson x with
+  | `List [json] -> json
+  | _ -> assert false

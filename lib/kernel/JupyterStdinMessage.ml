@@ -20,17 +20,31 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** Messages on STDIN channel *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    TestJupyterMessageChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+(** {2 Inputs} *)
 
-let () = run_test_tt_main suite
+type input_request =
+  {
+    prompt : string;
+    password : bool;
+  } [@@deriving yojson { strict = false }]
+
+type input_reply =
+  {
+    value : string;
+  } [@@deriving yojson { strict = false }]
+
+(** {2 Request} *)
+
+type request =
+  [
+    | `Input_request of input_request [@name "input_request"]
+  ] [@@deriving yojson]
+
+(** {2 Reply} *)
+
+type reply =
+  [
+    | `Input_reply of input_reply [@name "input_reply"]
+  ] [@@deriving yojson]

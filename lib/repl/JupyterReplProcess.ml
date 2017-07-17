@@ -40,13 +40,13 @@ type t =
     recv_stderr : unit Lwt.t;
   }
 
-type input =
+type output =
   {
     filename : string;
     code : string;
   }
 
-type output = JupyterReplMessage.t list
+type input = JupyterReplMessage.t list
 
 let flags = [] (** marshal flags *)
 
@@ -119,7 +119,7 @@ let create ?preload ?initfile () =
 
 let stream repl = repl.stream
 
-let send_raw repl (req : input option) =
+let send_raw repl (req : output option) =
   Lwt_io.write_value repl.ctrlin req ~flags >>= fun () ->
   Lwt_io.flush repl.ctrlin
 
