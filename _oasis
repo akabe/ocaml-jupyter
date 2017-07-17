@@ -20,7 +20,9 @@ Library jupyter
   XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
+                        JupyterZmqChannel,
                         JupyterChannelIntf
+  InternalModules:      JupyterLog
 
 Library "jupyter-repl"
   Path:                 lib/repl

@@ -1,4 +1,4 @@
-(* ocaml-jupyter --- An OCaml kernel for Jupyter
+(* ocaml-jupyter --- A OCaml kernel for Jupyter
 
    Copyright (c) 2017 Akinori ABE
 
@@ -20,15 +20,17 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+val name : string
+(** The name of logger *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+val set_level : Lwt_log.level -> unit
 
-let () = run_test_tt_main suite
+val debug : ('a, Format.formatter, unit) format -> 'a
+
+val info : ('a, Format.formatter, unit) format -> 'a
+
+val warning : ('a, Format.formatter, unit) format -> 'a
+
+val error : ('a, Format.formatter, unit) format -> 'a
+
+val fatal : ('a, Format.formatter, unit) format -> 'a

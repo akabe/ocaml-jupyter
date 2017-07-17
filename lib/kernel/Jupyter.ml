@@ -22,4 +22,6 @@
 
 (** An OCaml kernel for Jupyter *)
 
+module ZmqChannel = JupyterZmqChannel
+
 module ChannelIntf = JupyterChannelIntf
