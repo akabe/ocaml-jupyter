@@ -78,11 +78,11 @@ let preprocess_phrase ~filename = function
     Parsetree.Ptop_def str'
   | phrase -> phrase
 
-let run_from_lexbuf ~callback ~filename lexbuf =
+let run_from_lexbuf ~filename ~f ~init lexbuf =
   try
     !Toploop.parse_use_file lexbuf (* parsing *)
-    |> List.iter
-      (fun phrase ->
+    |> List.fold_left
+      (fun acc phrase ->
          E.reset_fatal_warnings () ;
          try
            let phrase' = preprocess_phrase ~filename phrase in
@@ -91,19 +91,20 @@ let run_from_lexbuf ~callback ~filename lexbuf =
            let message = Buffer.contents buffer in
            Buffer.clear buffer ;
            match is_ok with
-           | true when message = "" -> ()
-           | true -> callback (Ok message)
-           | false -> callback (Runtime_error message)
+           | true when message = "" -> acc
+           | true -> f acc (Ok message)
+           | false -> f acc (Runtime_error message)
          with
-         | Sys.Break -> callback Interrupted
-         | exn -> callback (Compile_error (E.extract exn)))
+         | Sys.Break -> f acc Interrupted
+         | exn -> f acc (Compile_error (E.extract exn)))
+      init
   with
-  | Sys.Break -> callback Interrupted
-  | exn -> callback (Compile_error (E.extract exn))
+  | Sys.Break -> f init Interrupted
+  | exn -> f init (Compile_error (E.extract exn))
 
-let run ~filename ~callback code =
+let run ~filename ~f ~init code =
   let lexbuf = Lexing.from_string (code ^ "\n") in
   Location.init lexbuf filename ;
   Location.input_name := filename ;
   Location.input_lexbuf := Some lexbuf ;
-  run_from_lexbuf ~callback ~filename lexbuf
+  run_from_lexbuf ~filename ~f ~init lexbuf

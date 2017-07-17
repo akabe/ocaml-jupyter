@@ -59,9 +59,8 @@ let rec cmp xs ys =
   | _ -> false
 
 let exec code =
-  let rs = ref [] in
-  Toploop.run ~filename:"//toplevel//" ~callback:(fun r -> rs := r :: !rs) code ;
-  List.rev !rs
+  Toploop.run ~filename:"//toplevel//" ~f:(fun rs r -> r :: rs) ~init:[] code
+  |> List.rev
 
 (** {2 Test suite} *)
 

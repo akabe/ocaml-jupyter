@@ -26,5 +26,6 @@ val init : ?preload:string list -> ?initfile:string -> unit -> unit
 
 val run :
   filename:string ->
-  callback:(JupyterReplMessage.response -> unit) ->
-  string -> unit
+  f:('accum -> JupyterReplMessage.response -> 'accum) ->
+  init:'accum ->
+  string -> 'accum
