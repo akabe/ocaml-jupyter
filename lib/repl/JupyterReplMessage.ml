@@ -22,13 +22,7 @@
 
 (** Messaging from OCaml REPL *)
 
-type request =
-  {
-    filename : string;
-    code : string;
-  }
-
-type response =
+type t =
   | Ok of string
   | Runtime_error of string
   | Compile_error of string

@@ -20,12 +20,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml REPL *)
+(** An OCaml kernel for Jupyter *)
 
-module Message = JupyterReplMessage
-
-module Error = JupyterReplError
-
-module Toploop = JupyterReplToploop
-
-module Process = JupyterReplProcess
+module ChannelIntf = JupyterChannelIntf

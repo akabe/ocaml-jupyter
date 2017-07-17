@@ -20,12 +20,39 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml REPL *)
+open Format
+open OUnit2
+open JupyterRepl
+open JupyterRepl.Message
+open TestUtil
 
-module Message = JupyterReplMessage
+let printer = TestJupyterReplToploop.printer
+let cmp = TestJupyterReplToploop.cmp
 
-module Error = JupyterReplError
+let exec code =
+  Lwt_main.run begin
+    let repl = Process.create () in
+    let%lwt () = Process.(send repl { filename = "//toplevel//"; code; }) in
+    let%lwt resp1 = Process.recv repl in
+    let%lwt () = Process.close repl in
+    let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
+    Lwt.return (resp1 @ resp2)
+  end
 
-module Toploop = JupyterReplToploop
+(** {2 Test suite} *)
 
-module Process = JupyterReplProcess
+let test__capture_stdout ctxt =
+  let actual = exec "print_endline \"Hello World\"" in
+  let expected = [Stdout "Hello World"; Ok "- : unit = ()\n"; Prompt] in
+  assert_equal ~ctxt ~cmp ~printer expected actual
+
+let test__capture_stderr ctxt =
+  let actual = exec "prerr_endline \"Hello World\"" in
+  let expected = [Stderr "Hello World"; Ok "- : unit = ()\n"; Prompt] in
+  assert_equal ~ctxt ~cmp ~printer expected actual
+
+let suite =
+  "Process" >::: [
+    "capture_stdout" >:: test__capture_stdout;
+    "capture_stderr" >:: test__capture_stderr;
+  ]

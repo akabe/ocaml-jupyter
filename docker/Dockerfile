@@ -6,5 +6,5 @@ RUN sudo apk update && \
 RUN opam update && \
     opam upgrade && \
     opam install -y \
-      cppo lwt yojson 'ZMQ>=4.0-8' lwt-zmq nocrypto ppx_deriving_yojson \
-      ocp-indent ppx_sexp_conv camlp4 async cohttp 'ounit>=2.0.0'
+      cppo lwt yojson 'ZMQ>=4.0-8' lwt-zmq nocrypto uuidm ppx_deriving_yojson \
+      ocp-indent ppx_sexp_conv camlp4 'ounit>=2.0.0'

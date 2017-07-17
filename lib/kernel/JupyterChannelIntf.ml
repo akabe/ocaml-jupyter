@@ -20,12 +20,26 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml REPL *)
+(** Interface for communication modules *)
 
-module Message = JupyterReplMessage
+module type S =
+sig
+  type t
+  type input
+  type output
 
-module Error = JupyterReplError
+  val recv : t -> output Lwt.t
 
-module Toploop = JupyterReplToploop
+  val send : t -> input -> unit Lwt.t
 
-module Process = JupyterReplProcess
+  val close : t -> unit Lwt.t
+end
+
+module type ZMQ =
+sig
+  include S
+    with type input = string list
+     and type output = string list
+
+  val create : ctx:ZMQ.Context.t -> kind:'a ZMQ.Socket.kind -> string -> t
+end
