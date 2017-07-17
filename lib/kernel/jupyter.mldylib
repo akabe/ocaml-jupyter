@@ -1,7 +1,8 @@
 # OASIS_START
-# DO NOT EDIT (digest: 1df4a9bba287dcf18e3750c9c6b9551f)
+# DO NOT EDIT (digest: 557103939b2db523597cee0b4abeff93)
 Jupyter
 JupyterZmqChannel
 JupyterChannelIntf
+JupyterHmac
 JupyterLog
 # OASIS_STOP

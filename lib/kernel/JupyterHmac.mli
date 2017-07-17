@@ -20,16 +20,24 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** HMAC verification *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    TestJupyterHmac.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+(** Returns the HMAC of message contents from a given key,
+    or an empty string if [key] is [None]. *)
+val create :
+  ?key:Cstruct.t ->
+  header:string ->
+  parent_header:string ->
+  metadata:string ->
+  content:string -> unit -> string
 
-let () = run_test_tt_main suite
+(** Validates the HMAC of message contents from a given key.
+    @param key default = ignore validation
+    @raise Failure if validation fails. *)
+val validate :
+  ?key:Cstruct.t ->
+  hmac:string ->
+  header:string ->
+  parent_header:string ->
+  metadata:string ->
+  content:string -> unit -> unit

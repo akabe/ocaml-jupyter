@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 869dc3b5b1f8dcc3b893992cf4a65b80)
+# DO NOT EDIT (digest: 665f27d1726a615be04a44d1a82a3c69)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -20,6 +20,7 @@ true: annot, bin_annot
 <lib/kernel/*.ml{,i,y}>: package(lwt-zmq)
 <lib/kernel/*.ml{,i,y}>: package(lwt.ppx)
 <lib/kernel/*.ml{,i,y}>: package(lwt.unix)
+<lib/kernel/*.ml{,i,y}>: package(nocrypto)
 <lib/kernel/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <lib/kernel/*.ml{,i,y}>: package(yojson)
 # Library jupyter-repl
@@ -30,6 +31,7 @@ true: annot, bin_annot
 <lib/repl/*.ml{,i,y}>: package(lwt-zmq)
 <lib/repl/*.ml{,i,y}>: package(lwt.ppx)
 <lib/repl/*.ml{,i,y}>: package(lwt.unix)
+<lib/repl/*.ml{,i,y}>: package(nocrypto)
 <lib/repl/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <lib/repl/*.ml{,i,y}>: package(yojson)
 <lib/repl/*.ml{,i,y}>: use_jupyter
@@ -40,6 +42,7 @@ true: annot, bin_annot
 "test/TestJupyter.byte": package(lwt-zmq)
 "test/TestJupyter.byte": package(lwt.ppx)
 "test/TestJupyter.byte": package(lwt.unix)
+"test/TestJupyter.byte": package(nocrypto)
 "test/TestJupyter.byte": package(oUnit)
 "test/TestJupyter.byte": package(ppx_deriving.show)
 "test/TestJupyter.byte": package(ppx_deriving_yojson)
@@ -53,6 +56,7 @@ true: annot, bin_annot
 <test/*.ml{,i,y}>: package(lwt-zmq)
 <test/*.ml{,i,y}>: package(lwt.ppx)
 <test/*.ml{,i,y}>: package(lwt.unix)
+<test/*.ml{,i,y}>: package(nocrypto)
 <test/*.ml{,i,y}>: package(oUnit)
 <test/*.ml{,i,y}>: package(ppx_deriving.show)
 <test/*.ml{,i,y}>: package(ppx_deriving_yojson)
