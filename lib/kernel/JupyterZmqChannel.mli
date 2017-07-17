@@ -20,15 +20,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+(** ZeroMQ sockets *)
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
-
-let () = run_test_tt_main suite
+include JupyterChannelIntf.ZMQ

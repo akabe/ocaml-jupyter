@@ -1,4 +1,4 @@
-(* ocaml-jupyter --- An OCaml kernel for Jupyter
+(* ocaml-jupyter --- A OCaml kernel for Jupyter
 
    Copyright (c) 2017 Akinori ABE
 
@@ -20,15 +20,38 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open OUnit2
+open Format
 
-let suite =
-  "Jupyter" >::: [
-    TestJupyterZmqChannel.suite;
-    "Repl" >::: [
-      TestJupyterReplProcess.suite;
-      TestJupyterReplToploop.suite;
-    ];
-  ]
+let name = "ocaml-jupyer"
 
-let () = run_test_tt_main suite
+let logger =
+  Lwt_log.channel
+    ~template:"$(date).$(milliseconds) $(level) [$(section)]: $(message)"
+    ~close_mode:`Keep
+    ~channel:Lwt_io.stdout ()
+
+let section = Lwt_log.Section.make name (* log section *)
+
+let set_level level = Lwt_log.add_rule name level
+
+let kasprintf k fmt = (* defined for compatibility with OCaml 4.02 *)
+  let b = Buffer.create 16 in
+  kfprintf
+    (fun ppf ->
+       pp_print_flush ppf () ;
+       k (Buffer.contents b))
+    (formatter_of_buffer b)
+    fmt
+
+let printf ~level fmt =
+  kasprintf (fun s -> Lwt_log.ign_log ~logger ~section ~level s) fmt
+
+let debug fmt = printf ~level:Lwt_log.Debug fmt
+
+let info fmt = printf ~level:Lwt_log.Info fmt
+
+let warning fmt = printf ~level:Lwt_log.Warning fmt
+
+let error fmt = printf ~level:Lwt_log.Error fmt
+
+let fatal fmt = printf ~level:Lwt_log.Fatal fmt
