@@ -12,12 +12,24 @@ XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
 
 PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --git-dir)/hooks/pre-commit
 
+Library jupyter
+  Path:                 lib/kernel
+  FindlibName:          jupyter
+  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq,
+                        lwt.ppx, ppx_deriving_yojson
+  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq,
+                        lwt.ppx, ppx_deriving_yojson.runtime
+  Modules:              Jupyter,
+                        JupyterChannelIntf
+
 Library "jupyter-repl"
   Path:                 lib/repl
-  FindlibName:          jupyter
-  BuildDepends:         compiler-libs.common, compiler-libs.toplevel
-  XMETARequires:        compiler-libs.common, compiler-libs.toplevel
+  FindlibName:          repl
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix, lwt.ppx
+  XMETARequires:        jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix
   Modules:              JupyterRepl,
+                        JupyterReplProcess,
                         JupyterReplToploop,
                         JupyterReplMessage,
                         JupyterReplError
@@ -32,7 +44,7 @@ Executable test_lib
   MainIs:               TestJupyter.ml
   Build$:               flag(tests)
   Install:              false
-  BuildDepends:         jupyter, str, ppx_deriving.show, oUnit
+  BuildDepends:         jupyter, jupyter.repl, str, ppx_deriving.show, oUnit
   CompiledObject:       byte
 
 Test test_lib

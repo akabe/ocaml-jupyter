@@ -1,6 +1,7 @@
 # OASIS_START
-# DO NOT EDIT (digest: e06eba097cea18b0fb159fc5eca6bbee)
+# DO NOT EDIT (digest: df2bc1a340753eaba7b57024cada5e1c)
 JupyterRepl
+JupyterReplProcess
 JupyterReplToploop
 JupyterReplMessage
 JupyterReplError

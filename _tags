@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: f6d43fe998fe74ece924cb5555ff13c1)
+# DO NOT EDIT (digest: 869dc3b5b1f8dcc3b893992cf4a65b80)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -14,22 +14,51 @@ true: annot, bin_annot
 ".git": not_hygienic
 "_darcs": -traverse
 "_darcs": not_hygienic
+# Library jupyter
+"lib/kernel/jupyter.cmxs": use_jupyter
+<lib/kernel/*.ml{,i,y}>: package(lwt)
+<lib/kernel/*.ml{,i,y}>: package(lwt-zmq)
+<lib/kernel/*.ml{,i,y}>: package(lwt.ppx)
+<lib/kernel/*.ml{,i,y}>: package(lwt.unix)
+<lib/kernel/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/kernel/*.ml{,i,y}>: package(yojson)
 # Library jupyter-repl
 "lib/repl/jupyter-repl.cmxs": use_jupyter-repl
 <lib/repl/*.ml{,i,y}>: package(compiler-libs.common)
 <lib/repl/*.ml{,i,y}>: package(compiler-libs.toplevel)
+<lib/repl/*.ml{,i,y}>: package(lwt)
+<lib/repl/*.ml{,i,y}>: package(lwt-zmq)
+<lib/repl/*.ml{,i,y}>: package(lwt.ppx)
+<lib/repl/*.ml{,i,y}>: package(lwt.unix)
+<lib/repl/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/repl/*.ml{,i,y}>: package(yojson)
+<lib/repl/*.ml{,i,y}>: use_jupyter
 # Executable test_lib
 "test/TestJupyter.byte": package(compiler-libs.common)
 "test/TestJupyter.byte": package(compiler-libs.toplevel)
+"test/TestJupyter.byte": package(lwt)
+"test/TestJupyter.byte": package(lwt-zmq)
+"test/TestJupyter.byte": package(lwt.ppx)
+"test/TestJupyter.byte": package(lwt.unix)
 "test/TestJupyter.byte": package(oUnit)
 "test/TestJupyter.byte": package(ppx_deriving.show)
+"test/TestJupyter.byte": package(ppx_deriving_yojson)
 "test/TestJupyter.byte": package(str)
+"test/TestJupyter.byte": package(yojson)
+"test/TestJupyter.byte": use_jupyter
 "test/TestJupyter.byte": use_jupyter-repl
 <test/*.ml{,i,y}>: package(compiler-libs.common)
 <test/*.ml{,i,y}>: package(compiler-libs.toplevel)
+<test/*.ml{,i,y}>: package(lwt)
+<test/*.ml{,i,y}>: package(lwt-zmq)
+<test/*.ml{,i,y}>: package(lwt.ppx)
+<test/*.ml{,i,y}>: package(lwt.unix)
 <test/*.ml{,i,y}>: package(oUnit)
 <test/*.ml{,i,y}>: package(ppx_deriving.show)
+<test/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <test/*.ml{,i,y}>: package(str)
+<test/*.ml{,i,y}>: package(yojson)
+<test/*.ml{,i,y}>: use_jupyter
 <test/*.ml{,i,y}>: use_jupyter-repl
 # OASIS_STOP
 

@@ -25,6 +25,7 @@ open OUnit2
 let suite =
   "Jupyter" >::: [
     "Repl" >::: [
+      TestJupyterReplProcess.suite;
       TestJupyterReplToploop.suite;
     ];
   ]

@@ -20,12 +20,18 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml REPL *)
+(** OCaml REPL process *)
 
-module Message = JupyterReplMessage
+type input =
+  {
+    filename : string;
+    code : string;
+  }
 
-module Error = JupyterReplError
+include Jupyter.ChannelIntf.S
+  with type input := input
+   and type output = JupyterReplMessage.t list
 
-module Toploop = JupyterReplToploop
+val create : ?preload:string list -> ?initfile:string -> unit -> t
 
-module Process = JupyterReplProcess
+val stream : t -> JupyterReplMessage.t Lwt_stream.t
