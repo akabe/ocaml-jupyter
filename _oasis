@@ -21,6 +21,7 @@ Library jupyter
   XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
+                        JupyterConnectionInfo,
                         JupyterMessageChannel,
                         JupyterShellContent,
                         JupyterIopubContent,

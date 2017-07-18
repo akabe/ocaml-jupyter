@@ -20,24 +20,35 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml kernel for Jupyter *)
+(** Connection information *)
 
-module ReplMessage = JupyterReplMessage
+(** The type of connection information.
 
-(** {2 Protocol schema} *)
+    See https://ipython.org/ipython-doc/3/development/kernels.html *)
+type t =
+  {
+    control_port : int;
+    shell_port : int;
+    stdin_port : int;
+    iopub_port : int;
+    hb_port : int;
+    ip : string;
+    key : string option [@default None];
+    kernel_name : string;
+    signature_scheme : string;
+    transport : string;
+  } [@@deriving yojson]
 
-module Message = JupyterMessage
+let from_file fname =
+  if not (Sys.file_exists fname)
+  then failwith ("No such file or director: " ^ fname) ;
+  let json = Yojson.Safe.from_file ~fname fname in
+  JupyterLog.info "Load connection info: %s" (Yojson.Safe.to_string json) ;
+  match [%of_yojson: t] json with
+  | Result.Error msg -> Yojson.json_error msg
+  | Result.Ok info when info.key = Some "" -> { info with key = None }
+  | Result.Ok info -> info
 
-module ShellContent = JupyterShellContent
-
-module IopubContent = JupyterIopubContent
-
-module StdinContent = JupyterStdinContent
-
-(** {2 Communication} *)
-
-module ConnectionInfo = JupyterConnectionInfo
-
-module ZmqChannel = JupyterZmqChannel
-
-module ChannelIntf = JupyterChannelIntf
+(** [make_address info port] returns an address for ZeroMQ communication. *)
+let make_address info port =
+  Format.sprintf "%s://%s:%d" info.transport info.ip port
