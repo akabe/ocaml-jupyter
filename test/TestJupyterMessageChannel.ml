@@ -32,7 +32,7 @@ sig
 end
 
 module MakeMockChannel(Mock : S) =
-  JupyterMessageChannel.Make(ShellMessage)(struct
+  JupyterMessageChannel.Make(ShellContent)(struct
     type t = unit and input = string list and output = string list
 
     let create ~ctx:_ ~kind:_ _ = ()
@@ -52,7 +52,7 @@ let test_recv ctxt =
   let channel = Channel.create ~key ~ctx ~kind:ZMQ.Socket.rep "" in
   let actual = Lwt_main.run @@ Channel.recv channel in
   assert_equal ~ctxt ~printer:(fun msg ->
-      [%to_yojson: ShellMessage.request Message.t] msg
+      [%to_yojson: ShellContent.request Message.t] msg
       |> Yojson.Safe.to_string)
     message actual
 

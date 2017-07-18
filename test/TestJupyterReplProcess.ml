@@ -21,35 +21,38 @@
    SOFTWARE. *)
 
 open Format
+open Lwt.Infix
 open OUnit2
 open JupyterRepl
-open JupyterRepl.Message
+open Jupyter.ReplMessage
 open TestUtil
 
-let printer = TestJupyterReplToploop.printer
-let cmp = TestJupyterReplToploop.cmp
-
 let exec code =
+  let repl = Process.create () in
+  let rec recv_all acc =
+    Process.recv repl >>= function
+    | Prompt -> Lwt.return (List.rev acc)
+    | reply -> recv_all (reply :: acc)
+  in
   Lwt_main.run begin
-    let repl = Process.create () in
-    let%lwt () = Process.(send repl { filename = "//toplevel//"; code; }) in
-    let%lwt resp1 = Process.recv repl in
+    let%lwt () = Process.(send repl (Exec ("//toplevel//", code))) in
+    let%lwt resp1 = recv_all [] in
     let%lwt () = Process.close repl in
     let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
-    Lwt.return (resp1 @ resp2)
+    Lwt.return (resp1, resp2)
   end
 
 (** {2 Test suite} *)
 
 let test__capture_stdout ctxt =
-  let actual = exec "print_endline \"Hello World\"" in
-  let expected = [Stdout "Hello World"; Ok "- : unit = ()\n"; Prompt] in
-  assert_equal ~ctxt ~cmp ~printer expected actual
+  let actual_ctrl, actual_out = exec "print_endline \"Hello World\"" in
+  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
+  assert_equal ~ctxt [Stdout "Hello World"] actual_out
 
 let test__capture_stderr ctxt =
-  let actual = exec "prerr_endline \"Hello World\"" in
-  let expected = [Stderr "Hello World"; Ok "- : unit = ()\n"; Prompt] in
-  assert_equal ~ctxt ~cmp ~printer expected actual
+  let actual_ctrl, actual_out = exec "prerr_endline \"Hello World\"" in
+  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
+  assert_equal ~ctxt [Stderr "Hello World"] actual_out
 
 let suite =
   "Process" >::: [

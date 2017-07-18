@@ -22,15 +22,17 @@
 
 (** An OCaml kernel for Jupyter *)
 
+module ReplMessage = JupyterReplMessage
+
 (** {2 Protocol schema} *)
 
 module Message = JupyterMessage
 
-module ShellMessage = JupyterShellMessage
+module ShellContent = JupyterShellContent
 
-module IopubMessage = JupyterIopubMessage
+module IopubContent = JupyterIopubContent
 
-module StdinMessage = JupyterStdinMessage
+module StdinContent = JupyterStdinContent
 
 (** {2 Communication} *)
 

@@ -22,10 +22,10 @@
 
 (** Top-level loop of OCaml code evaluation *)
 
-val init : ?preload:string list -> ?initfile:string -> unit -> unit
+val init : ?preload:string list -> ?init_file:string -> unit -> unit
 
 val run :
   filename:string ->
-  f:('accum -> JupyterReplMessage.t -> 'accum) ->
+  f:('accum -> JupyterReplMessage.reply -> 'accum) ->
   init:'accum ->
   string -> 'accum
