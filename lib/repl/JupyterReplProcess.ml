@@ -29,34 +29,28 @@ open JupyterReplMessage
 type t =
   {
     pid : int;
-    stream : JupyterReplMessage.t Lwt_stream.t;
-    push : JupyterReplMessage.t option -> unit;
-    ctrlin : Lwt_io.output Lwt_io.channel;
+    stream : JupyterReplMessage.output Lwt_stream.t;
+    push : JupyterReplMessage.output option -> unit;
     ctrlout : Lwt_io.input Lwt_io.channel;
+    ctrlin : Lwt_io.output Lwt_io.channel;
     stdout : Lwt_io.input Lwt_io.channel;
     stderr : Lwt_io.input Lwt_io.channel;
-    recv_ctrlout : unit Lwt.t;
     recv_stdout : unit Lwt.t;
     recv_stderr : unit Lwt.t;
   }
 
-type output =
-  {
-    filename : string;
-    code : string;
-  }
-
-type input = JupyterReplMessage.t list
+type input = JupyterReplMessage.reply
+type output = JupyterReplMessage.request
 
 let flags = [] (** marshal flags *)
 
-let create_child_process ?preload ?initfile ctrlin ctrlout =
-  JupyterReplToploop.init ?preload ?initfile () ;
+let create_child_process ?preload ?init_file ctrlin ctrlout =
+  JupyterReplToploop.init ?preload ?init_file () ;
   let rec aux () =
     match Marshal.from_channel ctrlin with
     | exception End_of_file -> exit 0
-    | None -> exit 0 (* Shutdown request *)
-    | Some { filename; code; } ->
+    | Quit -> exit 0 (* Shutdown request *)
+    | Exec (filename, code) ->
       JupyterReplToploop.run ~filename code
         ~f:(fun () resp -> Marshal.to_channel ctrlout resp flags)
         ~init:() ;
@@ -66,23 +60,15 @@ let create_child_process ?preload ?initfile ctrlin ctrlout =
   in
   aux ()
 
-let forever f =
-  let rec aux () = f () >>= aux in
-  aux ()
-
-let recv_ctrlout_thread ~push ic =
-  forever
-    (fun () ->
-       Lwt_io.read_value ic >|= fun resp ->
-       push (Some resp))
-
 let recv_output_thread ~push ~f ic =
-  forever
-    (fun () ->
-       Lwt_io.read_line ic >|= fun line ->
-       push (Some (f line)))
+  let rec loop () =
+    Lwt_io.read_line ic >>= fun line ->
+    push (Some (f line)) ;
+    loop ()
+  in
+  loop ()
 
-let create ?preload ?initfile () =
+let create ?preload ?init_file () =
   let c_ctrlin, p_ctrlin = Unix.pipe () in
   let p_ctrlout, c_ctrlout = Unix.pipe () in
   let p_stdout, c_stdout = Unix.pipe () in
@@ -97,7 +83,7 @@ let create ?preload ?initfile () =
     Unix.dup2 c_stderr Unix.stderr ;
     Unix.close c_stdout ;
     Unix.close c_stderr ;
-    create_child_process ?preload ?initfile
+    create_child_process ?preload ?init_file
       (Unix.in_channel_of_descr c_ctrlin)
       (Unix.out_channel_of_descr c_ctrlout)
   | pid ->
@@ -112,38 +98,29 @@ let create ?preload ?initfile () =
     {
       pid; stream; push; ctrlout; stdout; stderr;
       ctrlin = Lwt_io.(of_unix_fd ~mode:output p_ctrlin);
-      recv_ctrlout = recv_ctrlout_thread ~push ctrlout;
       recv_stdout = recv_output_thread ~push ~f:(fun s -> Stdout s) stdout;
       recv_stderr = recv_output_thread ~push ~f:(fun s -> Stderr s) stderr;
     }
 
 let stream repl = repl.stream
 
-let send_raw repl (req : output option) =
+let send repl (req : output) =
   Lwt_io.write_value repl.ctrlin req ~flags >>= fun () ->
   Lwt_io.flush repl.ctrlin
 
-let send repl req = send_raw repl (Some req)
-
-let recv repl =
-  let rec aux acc =
-    Lwt_stream.get repl.stream >>= function
-    | None -> Lwt.return acc
-    | Some Prompt -> Lwt.return (Prompt :: acc)
-    | Some resp -> aux (resp :: acc)
-  in
-  aux [] >|= List.rev
+let recv repl : JupyterReplMessage.reply Lwt.t = Lwt_io.read_value repl.ctrlout
 
 let close repl =
-  let%lwt () = send_raw repl None in (* Send shutdown request *)
+  let%lwt () = send repl Quit in (* Send shutdown request *)
   let%lwt (_, proc_status) = Lwt_unix.(waitpid [WUNTRACED] repl.pid) in
-  Lwt.cancel repl.recv_ctrlout ;
   Lwt.cancel repl.recv_stdout ;
   Lwt.cancel repl.recv_stderr ;
-  let%lwt () = Lwt_io.close repl.ctrlin in
-  let%lwt () = Lwt_io.close repl.ctrlout in
-  let%lwt () = Lwt_io.close repl.stdout in
-  let%lwt () = Lwt_io.close repl.stderr in
+  let%lwt () = Lwt.join [
+      Lwt_io.close repl.ctrlin;
+      Lwt_io.close repl.ctrlout;
+      Lwt_io.close repl.stdout;
+      Lwt_io.close repl.stderr;
+    ] in
   repl.push None ; (* close a stream *)
   match proc_status with
   | Unix.WEXITED 0 -> Lwt.return_unit (* success *)

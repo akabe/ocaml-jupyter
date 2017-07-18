@@ -22,6 +22,8 @@
 
 (** An OCaml kernel for Jupyter *)
 
+module ReplMessage = JupyterReplMessage
+
 (** {2 Protocol schema} *)
 
 module Message = JupyterMessage

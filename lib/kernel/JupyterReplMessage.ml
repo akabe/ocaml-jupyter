@@ -22,11 +22,17 @@
 
 (** Messaging from OCaml REPL *)
 
-type t =
+type request =
+  | Quit
+  | Exec of string * string
+
+type reply =
   | Ok of string
   | Runtime_error of string
   | Compile_error of string
+  | Aborted
+  | Prompt
+
+type output =
   | Stdout of string
   | Stderr of string
-  | Interrupted
-  | Prompt

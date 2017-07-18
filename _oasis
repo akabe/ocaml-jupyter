@@ -26,6 +26,7 @@ Library jupyter
                         JupyterIopubMessage,
                         JupyterStdinMessage,
                         JupyterMessage,
+                        JupyterReplMessage,
                         JupyterJson,
                         JupyterZmqChannel,
                         JupyterChannelIntf
@@ -41,7 +42,6 @@ Library "jupyter-repl"
   Modules:              JupyterRepl,
                         JupyterReplProcess,
                         JupyterReplToploop,
-                        JupyterReplMessage,
                         JupyterReplError
   CompiledObject:       byte
 

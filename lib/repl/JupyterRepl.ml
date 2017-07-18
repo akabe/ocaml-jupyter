@@ -22,8 +22,6 @@
 
 (** An OCaml REPL *)
 
-module Message = JupyterReplMessage
-
 module Error = JupyterReplError
 
 module Toploop = JupyterReplToploop

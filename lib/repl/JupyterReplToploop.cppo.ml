@@ -54,7 +54,7 @@ let load_ocamlinit = function
     then ignore (Toploop.use_silently std_formatter path)
     else eprintf "Init file not found: \"%s\".@." path
 
-let init ?(preload = ["stdlib.cma"]) ?initfile () =
+let init ?(preload = ["stdlib.cma"]) ?init_file () =
   let ppf = Format.err_formatter in
   Clflags.debug := true ;
   Location.formatter_for_warnings := ppf ;
@@ -63,7 +63,7 @@ let init ?(preload = ["stdlib.cma"]) ?initfile () =
   prepare () ;
   init_toploop () ;
   List.iter (Topdirs.dir_load ppf) preload ;
-  load_ocamlinit initfile
+  load_ocamlinit init_file
 
 let preprocess_phrase ~filename = function
   | Parsetree.Ptop_def str ->
@@ -95,11 +95,11 @@ let run_from_lexbuf ~filename ~f ~init lexbuf =
            | true -> f acc (Ok message)
            | false -> f acc (Runtime_error message)
          with
-         | Sys.Break -> f acc Interrupted
+         | Sys.Break -> f acc Aborted
          | exn -> f acc (Compile_error (E.extract exn)))
       init
   with
-  | Sys.Break -> f init Interrupted
+  | Sys.Break -> f init Aborted
   | exn -> f init (Compile_error (E.extract exn))
 
 let run ~filename ~f ~init code =

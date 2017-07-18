@@ -22,16 +22,10 @@
 
 (** OCaml REPL process *)
 
-type output =
-  {
-    filename : string;
-    code : string;
-  }
-
 include Jupyter.ChannelIntf.S
-  with type output := output
-   and type input = JupyterReplMessage.t list
+  with type input = Jupyter.ReplMessage.reply
+   and type output = Jupyter.ReplMessage.request
 
-val create : ?preload:string list -> ?initfile:string -> unit -> t
+val create : ?preload:string list -> ?init_file:string -> unit -> t
 
-val stream : t -> JupyterReplMessage.t Lwt_stream.t
+val stream : t -> JupyterReplMessage.output Lwt_stream.t
