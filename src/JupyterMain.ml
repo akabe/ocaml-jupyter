@@ -32,17 +32,44 @@ module Server =
     (Jupyter.StdinChannel)
     (JupyterRepl.Process)
 
+let start_heartbeat ~ctx info =
+  let hb =
+    Jupyter.ConnectionInfo.(make_address info info.hb_port)
+    |> Jupyter.ZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep
+  in
+  let rec loop () =
+    Jupyter.ZmqChannel.recv hb >>= fun data ->
+    JupyterLog.debug "Heartbeat" ;
+    Jupyter.ZmqChannel.send hb data >>= loop
+  in
+  loop ()
+
 let () =
   let () = JupyterArgs.parse () in
+  (* Fork OCaml REPL before starting a server!
+     A few Lwt_unix functions (such as Lwt_unix.getservbyname, getaddrinfo)
+     sometimes never returns on a REPL due to use of Lwt at the caller side of
+     Toploop (compiler-libs). *)
   let repl =
     JupyterRepl.Process.create
       ~preload:!JupyterArgs.preload_objs
       ~init_file:!JupyterArgs.init_file () in
+  (* Start a kernel server. *)
   let conn_info = Jupyter.ConnectionInfo.from_file !JupyterArgs.connection_file in
   let ctx = ZMQ.Context.create () in
+  let heartbeat = start_heartbeat ~ctx conn_info in
   let server = Server.create ~repl ~ctx conn_info in
-  Lwt_main.run begin
-    Server.start server >>= fun () ->
-    Server.close server >|= fun () ->
-    ZMQ.Context.terminate ctx
-  end
+  Sys.catch_break true ; (* Catch `Interrupt' signal *)
+  let rec main () =
+    try
+      Lwt_main.run begin
+        let%lwt () = Server.start server <?> heartbeat in
+        Server.close server
+      end
+    with Sys.Break ->
+      JupyterRepl.Process.interrupt repl ;
+      main ()
+  in
+  main () ;
+  Lwt.cancel heartbeat ;
+  ZMQ.Context.terminate ctx

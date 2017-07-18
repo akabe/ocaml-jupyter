@@ -63,7 +63,7 @@ let create_child_process ?preload ?init_file ctrlin ctrlout =
 let recv_output_thread ~push ~f ic =
   let rec loop () =
     Lwt_io.read_line ic >>= fun line ->
-    push (Some (f line)) ;
+    push (Some (f (line ^ "\n"))) ;
     loop ()
   in
   loop ()
@@ -127,3 +127,6 @@ let close repl =
   | Unix.WEXITED i -> failwith (sprintf "REPL process exited status %d" i)
   | Unix.WSIGNALED i -> failwith (sprintf "REPL process killed by signal %d" i)
   | Unix.WSTOPPED i -> failwith (sprintf "REPL process stopped by signal %d" i)
+
+let interrupt repl =
+  Unix.kill repl.pid Sys.sigint

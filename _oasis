@@ -31,7 +31,8 @@ Library jupyter
                         JupyterReplMessage,
                         JupyterJson,
                         JupyterZmqChannel,
-                        JupyterChannelIntf
+                        JupyterChannelIntf,
+                        JupyterHtml
   InternalModules:      JupyterHmac,
                         JupyterLog
 
@@ -50,7 +51,7 @@ Library "jupyter-repl"
 Executable "jupyter-run"
   Path:                 src
   MainIs:               JupyterMain.ml
-  BuildDepends:         jupyter, jupyter.repl, str, ppx_deriving.show, oUnit
+  BuildDepends:         jupyter, jupyter.repl
   CompiledObject:       byte
 
 ##

@@ -20,14 +20,15 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Routing messages from/to ZeroMQ channels *)
+(** Kernel server *)
 
+open Format
 open Lwt.Infix
 
 module M = JupyterMessage
-module ShellBody = JupyterShellContent
-module IopubBody = JupyterIopubContent
-module StdinBody = JupyterStdinContent
+module RM = JupyterReplMessage
+module ShC = JupyterShellContent
+module IoC = JupyterIopubContent
 
 module Make
     (ShellChannel : JupyterChannelIntf.Shell)
@@ -42,6 +43,9 @@ struct
       control : ShellChannel.t;
       iopub : IopubChannel.t;
       stdin : StdinChannel.t;
+
+      mutable execution_count : int;
+      mutable current_parent : ShellChannel.input option;
     }
 
   let create ~repl ~ctx info =
@@ -62,7 +66,11 @@ struct
       JupyterConnectionInfo.(make_address info info.stdin_port)
       |> StdinChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
     in
-    { repl; shell; control; iopub; stdin; }
+    {
+      repl; shell; control; iopub; stdin;
+      execution_count = 0;
+      current_parent = None;
+    }
 
   let close server =
     Lwt.join [
@@ -73,23 +81,100 @@ struct
       StdinChannel.close server.stdin;
     ]
 
-  (** {2 Main routine} *)
+  (** {2 IOPUB utility} *)
+
+  let send_iopub server content =
+    match server.current_parent with
+    | Some parent -> IopubChannel.reply server.iopub ~parent content
+    | None -> Lwt.return ()
+
+  let send_iopub_stream server ~name text =
+    send_iopub server IoC.(`Stream { name; text; })
+
+  let send_iopub_status server execution_state =
+    send_iopub server IoC.(`Status { execution_state; })
+
+  let send_iopub_exec_input server code =
+    let execution_count = server.execution_count in
+    send_iopub server IoC.(`Execute_input { code; execution_count; })
+
+  let send_iopub_exec_result ~klass server msg =
+    let html =
+      sprintf "<pre><span class=\"%s\">%s</span></pre>"
+        klass (JupyterHtml.escape msg)
+    in
+    send_iopub server IoC.(`Execute_result {
+        execution_count = server.execution_count;
+        data = `Assoc ["text/html", `String html];
+        metadata = `Assoc [];
+      })
+
+  (** {2 Execute request} *)
+
+  let run_code server code =
+    let filename = sprintf "[%d]" server.execution_count in
+    let%lwt () = Repl.send server.repl (RM.Exec (filename, code)) in
+    let rec aux status_t =
+      match%lwt Repl.recv server.repl with
+      | RM.Ok s ->
+        let%lwt () = send_iopub_exec_result ~klass:"ansi-black-fg" server s in
+        aux status_t
+      | RM.Runtime_error s | RM.Compile_error s ->
+        let%lwt () = send_iopub_exec_result ~klass:"ansi-red-fg" server s in
+        aux (Lwt.return `Error)
+      | RM.Aborted -> aux (Lwt.return `Abort)
+      | RM.Prompt -> status_t
+    in
+    aux (Lwt.return `Ok)
+
+  let execute_request ~parent server (body : ShC.execute_request) =
+    server.execution_count <- succ server.execution_count ;
+    server.current_parent <- Some parent ;
+    let execution_count = server.execution_count in
+    let code = body.ShC.code in
+    let%lwt () = send_iopub_status server `Busy in
+    let%lwt () = send_iopub_exec_input server code in
+    let%lwt status = run_code server code in
+    let%lwt () = send_iopub_status server `Idle in
+    ShC.(`Execute_reply { execution_count; status; })
+    |> ShellChannel.reply server.shell ~parent
+
+  (** {2 Kernel info request} *)
 
   let kernel_info_request ~parent shell =
-    ShellBody.(`Kernel_info_reply kernel_info_reply)
+    ShC.(`Kernel_info_reply kernel_info_reply)
     |> ShellChannel.reply shell ~parent
 
+  (** {2 Shutdown request} *)
+
   let shutdown_request ~parent shell body =
-    ShellBody.(`Shutdown_reply body)
+    ShC.(`Shutdown_reply body)
     |> ShellChannel.reply shell ~parent
+
+  (** {2 Main routine} *)
+
+  (** a thread capturing stdout and stderr from a REPL. *)
+  let start_capture_repl_output server =
+    let strm = Repl.stream server.repl in
+    let rec loop () =
+      match%lwt Lwt_stream.get strm with
+      | None -> Lwt.return_unit (* done *)
+      | Some (RM.Stdout s) -> send_iopub_stream server ~name:`Stdout s >>= loop
+      | Some (RM.Stderr s) -> send_iopub_stream server ~name:`Stderr s >>= loop
+    in
+    loop ()
 
   let start_kernel server shell =
     let rec reply parent = function
-      | `Kernel_info_request -> kernel_info_request ~parent shell >>= loop
       | `Shutdown_request body -> shutdown_request ~parent shell body
-      | _ ->
+      | `Kernel_info_request -> kernel_info_request ~parent shell >>= loop
+      | `Execute_request body -> execute_request ~parent server body >>= loop
+      | `Inspect_request _
+      | `Complete_request _
+      | `Connect_request
+      | `Comm_info_request _ ->
         JupyterLog.error "Unsupported request" ;
-        assert false
+        loop ()
     and loop () =
       ShellChannel.recv shell >>= fun req -> reply req req.M.content
     in
@@ -97,6 +182,7 @@ struct
 
   let start server =
     Lwt.choose [
+      start_capture_repl_output server;
       start_kernel server server.shell;
       start_kernel server server.control;
     ]

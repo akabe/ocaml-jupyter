@@ -20,42 +20,33 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Format
-open Lwt.Infix
-open OUnit2
-open JupyterRepl
-open Jupyter.ReplMessage
-open TestUtil
+(** Kernel server *)
 
-let exec code =
-  let repl = Process.create () in
-  let rec recv_all acc =
-    Process.recv repl >>= function
-    | Prompt -> Lwt.return (List.rev acc)
-    | reply -> recv_all (reply :: acc)
-  in
-  Lwt_main.run begin
-    let%lwt () = Process.(send repl (Exec ("//toplevel//", code))) in
-    let%lwt resp1 = recv_all [] in
-    let%lwt () = Process.close repl in
-    let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
-    Lwt.return (resp1, resp2)
-  end
+module Make
+    (ShellChannel : JupyterChannelIntf.Shell)
+    (IopubChannel : JupyterChannelIntf.Iopub)
+    (StdinChannel : JupyterChannelIntf.Stdin)
+    (Repl : JupyterChannelIntf.Repl) :
+sig
+  (** The type of servers. *)
+  type t =
+    {
+      repl : Repl.t;
+      shell : ShellChannel.t;
+      control : ShellChannel.t;
+      iopub : IopubChannel.t;
+      stdin : StdinChannel.t;
 
-(** {2 Test suite} *)
+      mutable execution_count : int;
+      mutable current_parent : ShellChannel.input option;
+    }
 
-let test__capture_stdout ctxt =
-  let actual_ctrl, actual_out = exec "print_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stdout "Hello World\n"] actual_out
+  (** Connect to Jupyter. *)
+  val create : repl:Repl.t -> ctx:ZMQ.Context.t -> JupyterConnectionInfo.t -> t
 
-let test__capture_stderr ctxt =
-  let actual_ctrl, actual_out = exec "prerr_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stderr "Hello World\n"] actual_out
+  (** Close connection to Jupyter. *)
+  val close : t -> unit Lwt.t
 
-let suite =
-  "Process" >::: [
-    "capture_stdout" >:: test__capture_stdout;
-    "capture_stderr" >:: test__capture_stderr;
-  ]
+  (** Start a server thread accepting requests from Jupyter. *)
+  val start : t -> unit Lwt.t
+end
