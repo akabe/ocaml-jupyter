@@ -36,6 +36,8 @@ module StdinContent = JupyterStdinContent
 
 (** {2 Communication} *)
 
+module ConnectionInfo = JupyterConnectionInfo
+
 module ZmqChannel = JupyterZmqChannel
 
 module ChannelIntf = JupyterChannelIntf
