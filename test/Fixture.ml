@@ -109,7 +109,7 @@ struct
           username = "aabe";
           version = "5.2";
         };
-      content = `Kernel_info_reply Jupyter.ShellMessage.{
+      content = `Kernel_info_reply Jupyter.ShellContent.{
           protocol_version = "5.2";
           implemenation = "ocaml-jupyter";
           implementation_version = "5.0.0";

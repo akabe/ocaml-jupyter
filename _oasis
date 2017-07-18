@@ -22,9 +22,9 @@ Library jupyter
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
                         JupyterMessageChannel,
-                        JupyterShellMessage,
-                        JupyterIopubMessage,
-                        JupyterStdinMessage,
+                        JupyterShellContent,
+                        JupyterIopubContent,
+                        JupyterStdinContent,
                         JupyterMessage,
                         JupyterReplMessage,
                         JupyterJson,
