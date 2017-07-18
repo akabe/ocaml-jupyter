@@ -20,30 +20,12 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml kernel for Jupyter *)
+(** Command-line arguments *)
 
-module ReplMessage = JupyterReplMessage
+val connection_file : string ref
 
-(** {2 Protocol schema} *)
+val init_file : string ref
 
-module Message = JupyterMessage
+val preload_objs : string list ref
 
-module ShellContent = JupyterShellContent
-
-module IopubContent = JupyterIopubContent
-
-module StdinContent = JupyterStdinContent
-
-(** {2 Communication} *)
-
-module ChannelIntf = JupyterChannelIntf
-
-module ZmqChannel = JupyterZmqChannel
-
-module ShellChannel = JupyterMessageChannel.Make(ShellContent)(ZmqChannel)
-
-module IopubChannel = JupyterMessageChannel.Make(IopubContent)(ZmqChannel)
-
-module StdinChannel = JupyterMessageChannel.Make(StdinContent)(ZmqChannel)
-
-module ConnectionInfo = JupyterConnectionInfo
+val parse : unit -> unit

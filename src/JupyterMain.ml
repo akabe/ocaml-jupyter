@@ -20,30 +20,29 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml kernel for Jupyter *)
+(** The main module for an OCaml kernel *)
 
-module ReplMessage = JupyterReplMessage
+open Format
+open Lwt.Infix
 
-(** {2 Protocol schema} *)
+module Server =
+  JupyterServer.Make
+    (Jupyter.ShellChannel)
+    (Jupyter.IopubChannel)
+    (Jupyter.StdinChannel)
+    (JupyterRepl.Process)
 
-module Message = JupyterMessage
-
-module ShellContent = JupyterShellContent
-
-module IopubContent = JupyterIopubContent
-
-module StdinContent = JupyterStdinContent
-
-(** {2 Communication} *)
-
-module ChannelIntf = JupyterChannelIntf
-
-module ZmqChannel = JupyterZmqChannel
-
-module ShellChannel = JupyterMessageChannel.Make(ShellContent)(ZmqChannel)
-
-module IopubChannel = JupyterMessageChannel.Make(IopubContent)(ZmqChannel)
-
-module StdinChannel = JupyterMessageChannel.Make(StdinContent)(ZmqChannel)
-
-module ConnectionInfo = JupyterConnectionInfo
+let () =
+  let () = JupyterArgs.parse () in
+  let repl =
+    JupyterRepl.Process.create
+      ~preload:!JupyterArgs.preload_objs
+      ~init_file:!JupyterArgs.init_file () in
+  let conn_info = Jupyter.ConnectionInfo.from_file !JupyterArgs.connection_file in
+  let ctx = ZMQ.Context.create () in
+  let server = Server.create ~repl ~ctx conn_info in
+  Lwt_main.run begin
+    Server.start server >>= fun () ->
+    Server.close server >|= fun () ->
+    ZMQ.Context.terminate ctx
+  end

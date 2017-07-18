@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 2aec78327e0ae804135b8e0d08541aa2)
+# DO NOT EDIT (digest: fd8ccbdc765ab4398cca376f21c67034)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -37,6 +37,37 @@ true: annot, bin_annot
 <lib/repl/*.ml{,i,y}>: package(uuidm)
 <lib/repl/*.ml{,i,y}>: package(yojson)
 <lib/repl/*.ml{,i,y}>: use_jupyter
+# Executable jupyter-run
+"src/JupyterMain.byte": package(compiler-libs.common)
+"src/JupyterMain.byte": package(compiler-libs.toplevel)
+"src/JupyterMain.byte": package(lwt)
+"src/JupyterMain.byte": package(lwt-zmq)
+"src/JupyterMain.byte": package(lwt.ppx)
+"src/JupyterMain.byte": package(lwt.unix)
+"src/JupyterMain.byte": package(nocrypto)
+"src/JupyterMain.byte": package(oUnit)
+"src/JupyterMain.byte": package(ppx_deriving.show)
+"src/JupyterMain.byte": package(ppx_deriving_yojson)
+"src/JupyterMain.byte": package(str)
+"src/JupyterMain.byte": package(uuidm)
+"src/JupyterMain.byte": package(yojson)
+"src/JupyterMain.byte": use_jupyter
+"src/JupyterMain.byte": use_jupyter-repl
+<src/*.ml{,i,y}>: package(compiler-libs.common)
+<src/*.ml{,i,y}>: package(compiler-libs.toplevel)
+<src/*.ml{,i,y}>: package(lwt)
+<src/*.ml{,i,y}>: package(lwt-zmq)
+<src/*.ml{,i,y}>: package(lwt.ppx)
+<src/*.ml{,i,y}>: package(lwt.unix)
+<src/*.ml{,i,y}>: package(nocrypto)
+<src/*.ml{,i,y}>: package(oUnit)
+<src/*.ml{,i,y}>: package(ppx_deriving.show)
+<src/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<src/*.ml{,i,y}>: package(str)
+<src/*.ml{,i,y}>: package(uuidm)
+<src/*.ml{,i,y}>: package(yojson)
+<src/*.ml{,i,y}>: use_jupyter
+<src/*.ml{,i,y}>: use_jupyter-repl
 # Executable test_lib
 "test/TestJupyter.byte": package(compiler-libs.common)
 "test/TestJupyter.byte": package(compiler-libs.toplevel)

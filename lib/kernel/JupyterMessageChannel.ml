@@ -124,32 +124,10 @@ struct
 
   (** {2 Reply} *)
 
-  let time_to_iso8601_string epoch =
-    let open Unix in
-    let tm = gmtime epoch in
-    sprintf "%04d-%02d-%02dT%02d:%02d:%07.4fZ"
-      (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday
-      tm.tm_hour tm.tm_min (mod_float epoch 60.0)
-
-  let create_next_message ?(time = Unix.gettimeofday ()) msg content =
-    let date = Some (time_to_iso8601_string time) in
-    let msg_id = Uuidm.(to_string (create `V4)) in
-    let msg_type =
-      match [%to_yojson: Content.reply] content with
-      | `List (`String msg_type :: _) -> msg_type
-      | _ -> assert false
-    in
-    JupyterMessage.({
-        zmq_ids = msg.zmq_ids;
-        parent_header = Some msg.header;
-        header = { msg.header with date; msg_type; msg_id; };
-        content;
-        metadata = msg.metadata;
-        buffers = msg.buffers;
-      })
-
   let reply ?time ~parent ch content =
-    create_next_message ?time parent content
+    JupyterMessage.create_next
+      ~content_to_yojson:[%to_yojson: Content.reply]
+      ?time parent content
     |> send ch
 
 end

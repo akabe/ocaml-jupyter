@@ -20,30 +20,33 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml kernel for Jupyter *)
+(** Command-line arguments *)
 
-module ReplMessage = JupyterReplMessage
+let connection_file = ref ""
 
-(** {2 Protocol schema} *)
+let init_file = ref "~/.ocamlinit"
 
-module Message = JupyterMessage
+let preload_objs = ref ["stdlib.cma"]
 
-module ShellContent = JupyterShellContent
+let set_verbosity level_str =
+  match Lwt_log.level_of_string level_str with
+  | Some level -> JupyterLog.set_level level
+  | None -> failwith ("Unrecognized log level: " ^ level_str)
 
-module IopubContent = JupyterIopubContent
-
-module StdinContent = JupyterStdinContent
-
-(** {2 Communication} *)
-
-module ChannelIntf = JupyterChannelIntf
-
-module ZmqChannel = JupyterZmqChannel
-
-module ShellChannel = JupyterMessageChannel.Make(ShellContent)(ZmqChannel)
-
-module IopubChannel = JupyterMessageChannel.Make(IopubContent)(ZmqChannel)
-
-module StdinChannel = JupyterMessageChannel.Make(StdinContent)(ZmqChannel)
-
-module ConnectionInfo = JupyterConnectionInfo
+let parse () =
+  let open Arg in
+  let specs =
+    align [
+      "--connection-file",
+      Set_string connection_file,
+      "<file> connection information to Jupyter";
+      "--init",
+      Set_string init_file,
+      "<file> load a file instead of ~/.ocamlinit";
+      "--verbosity",
+      Symbol (["debug"; "info"; "warning"; "error"; "fatal"], set_verbosity),
+      "set log level";
+    ]
+  in
+  let doc = "An OCaml kernel for Jupyter (IPython) notebook" in
+  parse specs (fun obj -> preload_objs := obj :: !preload_objs) doc

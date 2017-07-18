@@ -85,3 +85,27 @@ type 'a t =
     (** optional: buffers is a list of binary data buffers for implementations
         that support binary extensions to the protocol. *)
   } [@@deriving yojson { strict = false }]
+
+let epoch_to_iso8601_string epoch =
+  let open Unix in
+  let tm = gmtime epoch in
+  Format.sprintf "%04d-%02d-%02dT%02d:%02d:%07.4fZ"
+    (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday
+    tm.tm_hour tm.tm_min (mod_float epoch 60.0)
+
+let create_next ?(time = Unix.gettimeofday ()) ~content_to_yojson parent content =
+  let date = Some (epoch_to_iso8601_string time) in
+  let msg_id = Uuidm.(to_string (create `V4)) in
+  let msg_type =
+    match content_to_yojson content with
+    | `List (`String msg_type :: _) -> msg_type
+    | _ -> failwith "Invalid JSON schema definition in message content"
+  in
+  {
+    zmq_ids = parent.zmq_ids;
+    parent_header = Some parent.header;
+    header = { parent.header with date; msg_type; msg_id; };
+    content;
+    metadata = parent.metadata;
+    buffers = parent.buffers;
+  }
