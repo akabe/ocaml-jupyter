@@ -81,3 +81,14 @@ module type Iopub =
 module type Stdin =
   Message with type request = JupyterStdinContent.request
            and type reply = JupyterStdinContent.reply
+
+module type Repl =
+sig
+  include S
+    with type input = JupyterReplMessage.reply
+     and type output = JupyterReplMessage.request
+
+  val create : ?preload:string list -> ?init_file:string -> unit -> t
+
+  val stream : t -> JupyterReplMessage.output Lwt_stream.t
+end
