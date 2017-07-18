@@ -28,21 +28,7 @@ sig
   type reply [@@deriving yojson]
 end
 
-module Make (Content : ContentType) (Socket : JupyterChannelIntf.ZMQ) :
-sig
-
-  include JupyterChannelIntf.S
-    with type input = Content.request JupyterMessage.t
-     and type output = Content.reply JupyterMessage.t
-
-  val create :
-    ?key:string ->
-    ctx:ZMQ.Context.t ->
-    kind:'a ZMQ.Socket.kind ->
-    string -> t
-
-  val next : ?time:float -> _ JupyterMessage.t -> Content.reply -> output
-
-  val send_next : t -> parent:_ JupyterMessage.t -> Content.reply -> unit Lwt.t
-
-end
+module Make (Content : ContentType) (Socket : JupyterChannelIntf.Zmq)
+  : JupyterChannelIntf.Message
+    with type request = Content.request
+     and type reply = Content.reply

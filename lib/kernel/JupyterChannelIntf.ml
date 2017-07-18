@@ -35,7 +35,7 @@ sig
   val close : t -> unit Lwt.t
 end
 
-module type ZMQ =
+module type Zmq =
 sig
   include S
     with type input = string list
@@ -43,3 +43,41 @@ sig
 
   val create : ctx:ZMQ.Context.t -> kind:'a ZMQ.Socket.kind -> string -> t
 end
+
+module type Message =
+sig
+  type request
+  type reply
+
+  include S
+    with type input = request JupyterMessage.t
+     and type output = reply JupyterMessage.t
+
+  (** [create ?key ~ctx ~kind address] opens connection to [address].
+      @param key   a HMAC key. If [None], HMAC verification is disabled.
+      @param ctx   ZeroMQ context.
+      @param kind  ZeroMQ socket type. *)
+  val create :
+    ?key:string ->
+    ctx:ZMQ.Context.t ->
+    kind:'a ZMQ.Socket.kind ->
+    string -> t
+
+  (** [reply ?time ~parent channel content] sends a message including [content]
+      as a reply of [parent]. *)
+  val reply :
+    ?time:float ->
+    parent:_ JupyterMessage.t ->
+    t -> reply -> unit Lwt.t
+end
+
+module type Shell =
+  Message with type request = JupyterShellContent.request
+           and type reply = JupyterShellContent.reply
+
+module type Iopub =
+  Message with type reply = JupyterIopubContent.reply
+
+module type Stdin =
+  Message with type request = JupyterStdinContent.request
+           and type reply = JupyterStdinContent.reply

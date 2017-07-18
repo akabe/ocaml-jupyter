@@ -22,4 +22,4 @@
 
 (** ZeroMQ sockets *)
 
-include JupyterChannelIntf.ZMQ
+include JupyterChannelIntf.Zmq

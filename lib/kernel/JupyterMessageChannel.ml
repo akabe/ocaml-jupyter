@@ -35,7 +35,7 @@ sig
   type reply [@@deriving yojson]
 end
 
-module Make (Content : ContentType) (Socket : JupyterChannelIntf.ZMQ) =
+module Make (Content : ContentType) (Socket : JupyterChannelIntf.Zmq) =
 struct
   type t =
     {
@@ -43,8 +43,10 @@ struct
       key : Cstruct.t option;
     }
 
-  type input = Content.request JupyterMessage.t
-  type output = Content.reply JupyterMessage.t
+  type request = Content.request
+  type reply = Content.reply
+  type input = request JupyterMessage.t
+  type output = reply JupyterMessage.t
 
   let create ?key ~ctx ~kind uri =
     let key = match key with
@@ -65,7 +67,7 @@ struct
     in
     match aux [] str_lst with
     | ids, hmac :: header :: parent_header :: metadata :: content :: buffers ->
-      JupyterLog.info
+      JupyterLog.debug
         "RECV: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
         hmac header parent_header content metadata ;
       JupyterHmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
@@ -90,30 +92,6 @@ struct
 
   (** {2 Write response} *)
 
-  let time_to_iso8601_string epoch =
-    let open Unix in
-    let tm = gmtime epoch in
-    sprintf "%04d-%02d-%02dT%02d:%02d:%07.4fZ"
-      (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday
-      tm.tm_hour tm.tm_min (mod_float epoch 60.0)
-
-  let next ?(time = Unix.gettimeofday ()) msg content =
-    let date = Some (time_to_iso8601_string time) in
-    let msg_id = Uuidm.(to_string (create `V4)) in
-    let msg_type =
-      match [%to_yojson: Content.reply] content with
-      | `List (`String msg_type :: _) -> msg_type
-      | _ -> assert false
-    in
-    JupyterMessage.({
-        zmq_ids = msg.zmq_ids;
-        parent_header = Some msg.header;
-        header = { msg.header with date; msg_type; msg_id; };
-        content;
-        metadata = msg.metadata;
-        buffers = msg.buffers;
-      })
-
   let send ch resp =
     let open JupyterMessage in
     let header = string_of_header resp.header in
@@ -126,7 +104,7 @@ struct
       JupyterHmac.create ?key:ch.key
         ~header ~parent_header ~metadata:resp.metadata ~content ()
     in
-    JupyterLog.info
+    JupyterLog.debug
       "SEND: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
       hmac header parent_header content resp.metadata ;
     [
@@ -144,6 +122,34 @@ struct
     |> List.concat
     |> Socket.send ch.socket
 
-  let send_next ch ~parent content = send ch (next parent content)
+  (** {2 Reply} *)
+
+  let time_to_iso8601_string epoch =
+    let open Unix in
+    let tm = gmtime epoch in
+    sprintf "%04d-%02d-%02dT%02d:%02d:%07.4fZ"
+      (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday
+      tm.tm_hour tm.tm_min (mod_float epoch 60.0)
+
+  let create_next_message ?(time = Unix.gettimeofday ()) msg content =
+    let date = Some (time_to_iso8601_string time) in
+    let msg_id = Uuidm.(to_string (create `V4)) in
+    let msg_type =
+      match [%to_yojson: Content.reply] content with
+      | `List (`String msg_type :: _) -> msg_type
+      | _ -> assert false
+    in
+    JupyterMessage.({
+        zmq_ids = msg.zmq_ids;
+        parent_header = Some msg.header;
+        header = { msg.header with date; msg_type; msg_id; };
+        content;
+        metadata = msg.metadata;
+        buffers = msg.buffers;
+      })
+
+  let reply ?time ~parent ch content =
+    create_next_message ?time parent content
+    |> send ch
 
 end
