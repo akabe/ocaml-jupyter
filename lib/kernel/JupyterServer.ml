@@ -27,8 +27,8 @@ open Lwt.Infix
 
 module M = JupyterMessage
 module RM = JupyterReplMessage
-module ShC = JupyterShellContent
-module IoC = JupyterIopubContent
+module ShC = Jupyter.Content.Shell
+module IoC = Jupyter.Content.Iopub
 
 module Make
     (ShellChannel : JupyterChannelIntf.Shell)
