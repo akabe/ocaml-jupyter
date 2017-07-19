@@ -11,7 +11,7 @@ AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
 FilesAB:                lib/core/JupyterVersion.ml.ab
 
-PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --git-dir)/hooks/pre-commit
+PreConfCommand:         ./git/init.sh
 
 Library jupyter
   Path:                 lib/core
