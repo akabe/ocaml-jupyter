@@ -20,7 +20,26 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Version information *)
+(** The core library *)
 
-(** The current version of OCaml kernel *)
-let version = "$(pkg_version)"
+(** Version information *)
+module Version = JupyterVersion
+
+(** Messages between REPL process and kernel process *)
+module ReplMessage = JupyterReplMessage
+
+(** Jupyter message contents *)
+module Content =
+struct
+  module Shell = JupyterContentShell
+
+  module Iopub = JupyterContentIopub
+
+  module Stdin = JupyterContentStdin
+end
+
+(** HTML utilities *)
+module Html = JupyterHtml
+
+(** JSON utilities *)
+module Json = JupyterJson

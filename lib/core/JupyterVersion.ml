@@ -22,5 +22,11 @@
 
 (** Version information *)
 
-(** The current version of OCaml kernel *)
-let version = "5.0.0"
+(** The version of OCaml kernel *)
+let kernel_version = "5.0.0"
+
+(** The version of OCaml *)
+let ocaml_version = Sys.ocaml_version
+
+(** The version of Jupyter protocol *)
+let protocol_version = "5.2"

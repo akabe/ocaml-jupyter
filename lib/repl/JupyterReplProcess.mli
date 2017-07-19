@@ -22,4 +22,4 @@
 
 (** OCaml REPL process *)
 
-include Jupyter.ChannelIntf.Repl
+include JupyterChannelIntf.Repl

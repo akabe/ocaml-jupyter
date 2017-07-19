@@ -133,16 +133,16 @@ type kernel_info_reply =
 (** The information of this kernel *)
 let kernel_info_reply =
   {
-    protocol_version = JupyterMessage.protocol_version;
+    protocol_version = JupyterVersion.protocol_version;
     implemenation = "ocaml-jupyter";
-    implementation_version = JupyterVersion.version;
+    implementation_version = JupyterVersion.kernel_version;
     banner = None;
     help_links = `Assoc [];
     language = "OCaml";
     language_info =
       {
         name = "OCaml";
-        version = Sys.ocaml_version;
+        version = JupyterVersion.ocaml_version;
         mimetype = "text/x-ocaml";
         file_extension = ".ml";
         pygments_lexer = Some "OCaml";

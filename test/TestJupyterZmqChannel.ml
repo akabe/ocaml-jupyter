@@ -46,11 +46,12 @@ let test_recv_send ctxt =
   let expected = ["This"; "is"; "ZeroMQ"] in
   create_zmq_client expected ;
   Lwt_main.run begin
-    let socket = ZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep "tcp://0.0.0.0:5555" in
-    ZmqChannel.recv socket >>= fun actual ->
-    ZmqChannel.send socket ["shutdown"] >>= fun () ->
+    let socket = JupyterZmqChannel.create
+        ~ctx ~kind:ZMQ.Socket.rep "tcp://0.0.0.0:5555" in
+    JupyterZmqChannel.recv socket >>= fun actual ->
+    JupyterZmqChannel.send socket ["shutdown"] >>= fun () ->
     assert_equal ~ctxt ~printer:[%show: string list] actual expected ;
-    ZmqChannel.close socket
+    JupyterZmqChannel.close socket
   end
 
 let suite =

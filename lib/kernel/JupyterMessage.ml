@@ -22,9 +22,6 @@
 
 (** Messaging in Jupyter *)
 
-(** The Jupyter protocol version currently supported. *)
-let protocol_version = "5.2"
-
 (** {2 Headers} *)
 
 type header =

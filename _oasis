@@ -9,49 +9,59 @@ OCamlVersion:           >= 4.01
 BuildTools:             ocamlbuild,cppo
 AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
-FilesAB:                lib/kernel/JupyterVersion.ml.ab
+FilesAB:                lib/core/JupyterVersion.ml.ab
 
-PreConfCommand:         ln -f \$(pwd)/git/pre-commit \$(pwd)/\$(git rev-parse --git-dir)/hooks/pre-commit
+PreConfCommand:         ./git/init.sh
 
 Library jupyter
-  Path:                 lib/kernel
+  Path:                 lib/core
   FindlibName:          jupyter
-  BuildDepends:         lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
-                        lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
-                        lwt.ppx, ppx_deriving_yojson.runtime
+  BuildDepends:         ppx_deriving_yojson
+  XMETARequires:        ppx_deriving_yojson.runtime
   Modules:              Jupyter,
-                        JupyterServer,
-                        JupyterConnectionInfo,
-                        JupyterMessageChannel,
-                        JupyterShellContent,
-                        JupyterIopubContent,
-                        JupyterStdinContent,
-                        JupyterMessage,
+                        JupyterContentShell,
+                        JupyterContentIopub,
+                        JupyterContentStdin,
                         JupyterReplMessage,
                         JupyterJson,
+                        JupyterHtml,
+                        JupyterVersion
+
+Library "jupyter-kernel"
+  Path:                 lib/kernel
+  FindlibName:          kernel
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+                        lwt.ppx, ppx_deriving_yojson
+  XMETARequires:        jupyter, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+                        lwt.ppx, ppx_deriving_yojson.runtime
+  Modules:              JupyterServer,
+                        JupyterConnectionInfo,
+                        JupyterMessageChannel,
+                        JupyterMessage,
                         JupyterZmqChannel,
                         JupyterChannelIntf,
-                        JupyterHtml
-  InternalModules:      JupyterHmac,
+                        JupyterHmac,
                         JupyterLog
+  Install:              false
 
 Library "jupyter-repl"
   Path:                 lib/repl
   FindlibName:          repl
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix, lwt.ppx
-  XMETARequires:        jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix
+  BuildDepends:         jupyter.kernel, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix, lwt.ppx
+  XMETARequires:        jupyter.kernel, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix
   Modules:              JupyterRepl,
                         JupyterReplProcess,
                         JupyterReplToploop,
                         JupyterReplError
+  Install:              false
   CompiledObject:       byte
 
-Executable "jupyter-run"
+Executable "ocaml-jupyter"
   Path:                 src
   MainIs:               JupyterMain.ml
-  BuildDepends:         jupyter, jupyter.repl
+  BuildDepends:         jupyter, jupyter.kernel, jupyter.repl
   CompiledObject:       byte
 
 ##
@@ -63,7 +73,7 @@ Executable test_lib
   MainIs:               TestJupyter.ml
   Build$:               flag(tests)
   Install:              false
-  BuildDepends:         jupyter, jupyter.repl, str, ppx_deriving.show, oUnit
+  BuildDepends:         jupyter.kernel, jupyter.repl, str, ppx_deriving.show, oUnit
   CompiledObject:       byte
 
 Test test_lib

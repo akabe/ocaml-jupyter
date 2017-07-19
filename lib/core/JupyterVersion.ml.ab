@@ -20,36 +20,13 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** An OCaml kernel for Jupyter *)
+(** Version information *)
 
-module ReplMessage = JupyterReplMessage
+(** The version of OCaml kernel *)
+let kernel_version = "$(pkg_version)"
 
-(** {2 Protocol schema} *)
+(** The version of OCaml *)
+let ocaml_version = Sys.ocaml_version
 
-module Message = JupyterMessage
-
-module ShellContent = JupyterShellContent
-
-module IopubContent = JupyterIopubContent
-
-module StdinContent = JupyterStdinContent
-
-(** {2 Communication} *)
-
-module ChannelIntf = JupyterChannelIntf
-
-module ZmqChannel = JupyterZmqChannel
-
-module ShellChannel = JupyterMessageChannel.Make(ShellContent)(ZmqChannel)
-
-module IopubChannel = JupyterMessageChannel.Make(IopubContent)(ZmqChannel)
-
-module StdinChannel = JupyterMessageChannel.Make(StdinContent)(ZmqChannel)
-
-module ConnectionInfo = JupyterConnectionInfo
-
-(** {2 Utility} *)
-
-module Html = JupyterHtml
-
-module Json = JupyterJson
+(** The version of Jupyter protocol *)
+let protocol_version = "5.2"

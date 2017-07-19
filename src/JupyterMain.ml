@@ -25,22 +25,23 @@
 open Format
 open Lwt.Infix
 
+module ShellChannel = JupyterMessageChannel.Make(Jupyter.Content.Shell)(JupyterZmqChannel)
+module IopubChannel = JupyterMessageChannel.Make(Jupyter.Content.Iopub)(JupyterZmqChannel)
+module StdinChannel = JupyterMessageChannel.Make(Jupyter.Content.Stdin)(JupyterZmqChannel)
+
 module Server =
   JupyterServer.Make
-    (Jupyter.ShellChannel)
-    (Jupyter.IopubChannel)
-    (Jupyter.StdinChannel)
-    (JupyterRepl.Process)
+    (ShellChannel)(IopubChannel)(StdinChannel)(JupyterReplProcess)
 
 let start_heartbeat ~ctx info =
   let hb =
-    Jupyter.ConnectionInfo.(make_address info info.hb_port)
-    |> Jupyter.ZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep
+    JupyterConnectionInfo.(make_address info info.hb_port)
+    |> JupyterZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep
   in
   let rec loop () =
-    Jupyter.ZmqChannel.recv hb >>= fun data ->
+    JupyterZmqChannel.recv hb >>= fun data ->
     JupyterLog.debug "Heartbeat" ;
-    Jupyter.ZmqChannel.send hb data >>= loop
+    JupyterZmqChannel.send hb data >>= loop
   in
   loop ()
 
@@ -55,7 +56,7 @@ let () =
       ~preload:!JupyterArgs.preload_objs
       ~init_file:!JupyterArgs.init_file () in
   (* Start a kernel server. *)
-  let conn_info = Jupyter.ConnectionInfo.from_file !JupyterArgs.connection_file in
+  let conn_info = JupyterConnectionInfo.from_file !JupyterArgs.connection_file in
   let ctx = ZMQ.Context.create () in
   let heartbeat = start_heartbeat ~ctx conn_info in
   let server = Server.create ~repl ~ctx conn_info in

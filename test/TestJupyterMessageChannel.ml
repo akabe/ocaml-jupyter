@@ -32,7 +32,7 @@ sig
 end
 
 module MakeMockChannel(Mock : S) =
-  JupyterMessageChannel.Make(ShellContent)(struct
+  JupyterMessageChannel.Make(JupyterContentShell)(struct
     type t = unit and input = string list and output = string list
 
     let create ~ctx:_ ~kind:_ _ = ()
@@ -52,7 +52,7 @@ let test_recv ctxt =
   let channel = Channel.create ~key ~ctx ~kind:ZMQ.Socket.rep "" in
   let actual = Lwt_main.run @@ Channel.recv channel in
   assert_equal ~ctxt ~printer:(fun msg ->
-      [%to_yojson: ShellContent.request Message.t] msg
+      [%to_yojson: JupyterContentShell.request JupyterMessage.t] msg
       |> Yojson.Safe.to_string)
     message actual
 
@@ -71,7 +71,6 @@ let test_send ctxt =
           assert_failure "Unmatched response"
     end) in
   let channel = Channel.create ~key ~ctx ~kind:ZMQ.Socket.rep "" in
-  let open Message in
   Lwt_main.run @@ Channel.send channel message
 
 let suite =

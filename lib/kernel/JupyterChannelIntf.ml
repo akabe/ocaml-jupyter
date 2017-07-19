@@ -72,25 +72,25 @@ sig
 end
 
 module type Shell =
-  Message with type request = JupyterShellContent.request
-           and type reply = JupyterShellContent.reply
+  Message with type request = Jupyter.Content.Shell.request
+           and type reply = Jupyter.Content.Shell.reply
 
 module type Iopub =
-  Message with type reply = JupyterIopubContent.reply
+  Message with type reply = Jupyter.Content.Iopub.reply
 
 module type Stdin =
-  Message with type request = JupyterStdinContent.request
-           and type reply = JupyterStdinContent.reply
+  Message with type request = Jupyter.Content.Stdin.request
+           and type reply = Jupyter.Content.Stdin.reply
 
 module type Repl =
 sig
   include S
-    with type input = JupyterReplMessage.reply
-     and type output = JupyterReplMessage.request
+    with type input = Jupyter.ReplMessage.reply
+     and type output = Jupyter.ReplMessage.request
 
   val create : ?preload:string list -> ?init_file:string -> unit -> t
 
-  val stream : t -> JupyterReplMessage.output Lwt_stream.t
+  val stream : t -> Jupyter.ReplMessage.output Lwt_stream.t
 
   val interrupt : t -> unit
 end
