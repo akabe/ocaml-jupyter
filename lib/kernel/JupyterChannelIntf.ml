@@ -91,4 +91,6 @@ sig
   val create : ?preload:string list -> ?init_file:string -> unit -> t
 
   val stream : t -> JupyterReplMessage.output Lwt_stream.t
+
+  val interrupt : t -> unit
 end

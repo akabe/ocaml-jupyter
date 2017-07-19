@@ -36,8 +36,20 @@ module StdinContent = JupyterStdinContent
 
 (** {2 Communication} *)
 
-module ConnectionInfo = JupyterConnectionInfo
+module ChannelIntf = JupyterChannelIntf
 
 module ZmqChannel = JupyterZmqChannel
 
-module ChannelIntf = JupyterChannelIntf
+module ShellChannel = JupyterMessageChannel.Make(ShellContent)(ZmqChannel)
+
+module IopubChannel = JupyterMessageChannel.Make(IopubContent)(ZmqChannel)
+
+module StdinChannel = JupyterMessageChannel.Make(StdinContent)(ZmqChannel)
+
+module ConnectionInfo = JupyterConnectionInfo
+
+(** {2 Utility} *)
+
+module Html = JupyterHtml
+
+module Json = JupyterJson

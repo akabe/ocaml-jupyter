@@ -20,42 +20,12 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Format
-open Lwt.Infix
-open OUnit2
-open JupyterRepl
-open Jupyter.ReplMessage
-open TestUtil
+(** Command-line arguments *)
 
-let exec code =
-  let repl = Process.create () in
-  let rec recv_all acc =
-    Process.recv repl >>= function
-    | Prompt -> Lwt.return (List.rev acc)
-    | reply -> recv_all (reply :: acc)
-  in
-  Lwt_main.run begin
-    let%lwt () = Process.(send repl (Exec ("//toplevel//", code))) in
-    let%lwt resp1 = recv_all [] in
-    let%lwt () = Process.close repl in
-    let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
-    Lwt.return (resp1, resp2)
-  end
+val connection_file : string ref
 
-(** {2 Test suite} *)
+val init_file : string ref
 
-let test__capture_stdout ctxt =
-  let actual_ctrl, actual_out = exec "print_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stdout "Hello World\n"] actual_out
+val preload_objs : string list ref
 
-let test__capture_stderr ctxt =
-  let actual_ctrl, actual_out = exec "prerr_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stderr "Hello World\n"] actual_out
-
-let suite =
-  "Process" >::: [
-    "capture_stdout" >:: test__capture_stdout;
-    "capture_stderr" >:: test__capture_stderr;
-  ]
+val parse : unit -> unit

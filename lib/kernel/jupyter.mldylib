@@ -1,6 +1,7 @@
 # OASIS_START
-# DO NOT EDIT (digest: c26658fea134c83f6e1c2a63cfabdc65)
+# DO NOT EDIT (digest: df0b4d16d81492216ca334deee9baeef)
 Jupyter
+JupyterServer
 JupyterConnectionInfo
 JupyterMessageChannel
 JupyterShellContent
@@ -11,6 +12,7 @@ JupyterReplMessage
 JupyterJson
 JupyterZmqChannel
 JupyterChannelIntf
+JupyterHtml
 JupyterHmac
 JupyterLog
 # OASIS_STOP

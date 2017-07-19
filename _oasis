@@ -21,6 +21,7 @@ Library jupyter
   XMETARequires:        lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
+                        JupyterServer,
                         JupyterConnectionInfo,
                         JupyterMessageChannel,
                         JupyterShellContent,
@@ -30,7 +31,8 @@ Library jupyter
                         JupyterReplMessage,
                         JupyterJson,
                         JupyterZmqChannel,
-                        JupyterChannelIntf
+                        JupyterChannelIntf,
+                        JupyterHtml
   InternalModules:      JupyterHmac,
                         JupyterLog
 
@@ -44,6 +46,12 @@ Library "jupyter-repl"
                         JupyterReplProcess,
                         JupyterReplToploop,
                         JupyterReplError
+  CompiledObject:       byte
+
+Executable "jupyter-run"
+  Path:                 src
+  MainIs:               JupyterMain.ml
+  BuildDepends:         jupyter, jupyter.repl
   CompiledObject:       byte
 
 ##

@@ -20,42 +20,33 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open Format
-open Lwt.Infix
-open OUnit2
-open JupyterRepl
-open Jupyter.ReplMessage
-open TestUtil
+(** Command-line arguments *)
 
-let exec code =
-  let repl = Process.create () in
-  let rec recv_all acc =
-    Process.recv repl >>= function
-    | Prompt -> Lwt.return (List.rev acc)
-    | reply -> recv_all (reply :: acc)
+let connection_file = ref ""
+
+let init_file = ref "~/.ocamlinit"
+
+let preload_objs = ref ["stdlib.cma"]
+
+let set_verbosity level_str =
+  match Lwt_log.level_of_string level_str with
+  | Some level -> JupyterLog.set_level level
+  | None -> failwith ("Unrecognized log level: " ^ level_str)
+
+let parse () =
+  let open Arg in
+  let specs =
+    align [
+      "--connection-file",
+      Set_string connection_file,
+      "<file> connection information to Jupyter";
+      "--init",
+      Set_string init_file,
+      "<file> load a file instead of ~/.ocamlinit";
+      "--verbosity",
+      Symbol (["debug"; "info"; "warning"; "error"; "fatal"], set_verbosity),
+      "set log level";
+    ]
   in
-  Lwt_main.run begin
-    let%lwt () = Process.(send repl (Exec ("//toplevel//", code))) in
-    let%lwt resp1 = recv_all [] in
-    let%lwt () = Process.close repl in
-    let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
-    Lwt.return (resp1, resp2)
-  end
-
-(** {2 Test suite} *)
-
-let test__capture_stdout ctxt =
-  let actual_ctrl, actual_out = exec "print_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stdout "Hello World\n"] actual_out
-
-let test__capture_stderr ctxt =
-  let actual_ctrl, actual_out = exec "prerr_endline \"Hello World\"" in
-  assert_equal ~ctxt [Ok "- : unit = ()\n"] actual_ctrl ;
-  assert_equal ~ctxt [Stderr "Hello World\n"] actual_out
-
-let suite =
-  "Process" >::: [
-    "capture_stdout" >:: test__capture_stdout;
-    "capture_stderr" >:: test__capture_stderr;
-  ]
+  let doc = "An OCaml kernel for Jupyter (IPython) notebook" in
+  parse specs (fun obj -> preload_objs := obj :: !preload_objs) doc
