@@ -32,8 +32,8 @@ let printer lst =
 
 let cmp = TestJupyterReplToploop.cmp
 
-let exec ?(hook = fun _ -> Lwt.return_unit) code =
-  let repl = Process.create () in
+let exec ?(hook = fun _ -> Lwt.return_unit) ?ctx ?init_file code =
+  let repl = Process.create ?init_file () in
   let strm = Process.stream repl in
   let rec recv_all acc =
     Lwt_stream.get strm >>= function
@@ -41,7 +41,7 @@ let exec ?(hook = fun _ -> Lwt.return_unit) code =
     | Some reply -> recv_all (reply :: acc)
   in
   Lwt_main.run begin
-    let%lwt () = Process.run repl ~filename:"//toplevel//" code in
+    let%lwt () = Process.run ?ctx ~filename:"//toplevel//" repl code in
     let%lwt () = hook repl in
     let%lwt resp1 = recv_all [] in
     let%lwt () = Process.close repl in
@@ -65,36 +65,8 @@ let test__capture_stderr ctxt =
   let expected = [`Ok "- : unit = ()\n"; `Stderr "Hello World\n"] in
   assert_equal ~ctxt ~printer ~cmp expected actual
 
-let test__jupyterout ctxt =
-  let actual =
-    exec "Marshal.to_channel jupyterout (`Stdout \"Hello\") []"
-    |> List.sort compare in (* the order of elements is NOT important *)
-  let expected = [`Ok "- : unit = ()\n"; `Stdout "Hello"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
-
-let test__jupyterin ctxt =
-  skip_if
-    (not (Sys.file_exists "../_build/lib/core/jupyter.cma"))
-    "Not found artifacts" ;
-  let hook repl =
-    Process.send repl (`Shell Jupyter.CommMessage.(`Comm_open {
-        target_name = None;
-        comm_id = "abcd";
-        data = `Null;
-      }))
-  in
-  let actual =
-    exec ~hook
-      "#directory \"../_build/lib/core\";;\
-       #load \"jupyter.cma\";;\
-       (Marshal.from_channel jupyterin : JupyterMessage.request)" in
-  let expected = [`Ok "- : JupyterMessage.request =.*"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
-
 let suite =
   "Process" >::: [
     "capture_stdout" >:: test__capture_stdout;
     "capture_stderr" >:: test__capture_stderr;
-    "jupyterout" >:: test__jupyterout;
-    "jupyterin" >:: test__jupyterin;
   ]

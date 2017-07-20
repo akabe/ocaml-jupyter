@@ -62,7 +62,7 @@ let load_ocamlinit = function
     then ignore (Toploop.use_silently std_formatter path)
     else eprintf "Init file not found: \"%s\".@." path
 
-let init ?(preload = ["stdlib.cma"]) ?init_file () =
+let init ?(preload = ["stdlib.cma"]) ?(preinit = ignore) ?init_file () =
   let ppf = Format.err_formatter in
   Clflags.debug := true ;
   Location.formatter_for_warnings := ppf ;
@@ -71,6 +71,7 @@ let init ?(preload = ["stdlib.cma"]) ?init_file () =
   prepare () ;
   init_toploop () ;
   List.iter (Topdirs.dir_load ppf) preload ;
+  preinit () ;
   load_ocamlinit init_file
 
 let preprocess_phrase ~filename = function

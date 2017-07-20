@@ -118,7 +118,7 @@ struct
     let%lwt () = send_iopub_status server `Busy in
     let%lwt () = send_iopub_exec_input server code in
     let filename = sprintf "[%d]" server.execution_count in
-    Repl.run server.repl ~filename code
+    Repl.run ~ctx:parent ~filename server.repl code
 
   (** {2 Kernel info request} *)
 
@@ -140,8 +140,8 @@ struct
     let rec loop status =
       match%lwt Lwt_stream.get strm with
       | None -> Lwt.return_unit (* done *)
-      | Some (`Iopub iopub) ->
-        let%lwt () = send_iopub server iopub in
+      | Some (`Iopub msg) -> (* propagate an IOPUB message to Jupyter *)
+        let%lwt () = IopubChannel.send server.iopub msg in
         loop status
       | Some (`Stdout s) ->
         let%lwt () = send_iopub_stream server ~name:`Stdout s in

@@ -30,6 +30,8 @@ module Message =  JupyterMessage
 
 (** {2 Jupyter protocol schema} *)
 
+module KernelMessage = JupyterKernelMessage
+
 module ShellMessage = JupyterShellMessage
 
 module IopubMessage = JupyterIopubMessage

@@ -20,25 +20,19 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** Unsafe low-level functions for Jupyter notebooks *)
 
-type reply =
-  [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
-  ]
-[@@deriving yojson]
+let jupyterout : out_channel =
+  Obj.obj (Toploop.getvalue "$jupyterout")
 
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
+let jupyterin : in_channel =
+  Obj.obj (Toploop.getvalue "$jupyterin")
 
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+let context : JupyterMessage.ctx option ref =
+  Obj.obj (Toploop.getvalue "$jupyterctx")
+
+let send (data : Jupyter.Message.reply) =
+  Marshal.to_channel jupyterout data [] ;
+  flush jupyterout
+
+let recv () : Jupyter.Message.request = Marshal.from_channel jupyterin

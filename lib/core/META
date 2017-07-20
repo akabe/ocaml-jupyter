@@ -1,8 +1,8 @@
 # OASIS_START
-# DO NOT EDIT (digest: 9834c7286133cb75d98a6f603aabc963)
+# DO NOT EDIT (digest: 15491ad9ec1c84744ebe9c5e95b50188)
 version = "5.0.0"
 description = "An OCaml kernel for Jupyter notebooks"
-requires = "ppx_deriving_yojson.runtime"
+requires = "uuidm ppx_deriving_yojson.runtime"
 archive(byte) = "jupyter.cma"
 archive(byte, plugin) = "jupyter.cma"
 archive(native) = "jupyter.cmxa"
@@ -18,11 +18,22 @@ package "repl" (
  exists_if = "jupyter-repl.cma"
 )
 
+package "notebook" (
+ version = "5.0.0"
+ description = "An OCaml kernel for Jupyter notebooks"
+ requires = "jupyter base64 compiler-libs"
+ archive(byte) = "jupyter-notebook.cma"
+ archive(byte, plugin) = "jupyter-notebook.cma"
+ archive(native) = "jupyter-notebook.cmxa"
+ archive(native, plugin) = "jupyter-notebook.cmxs"
+ exists_if = "jupyter-notebook.cma"
+)
+
 package "kernel" (
  version = "5.0.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires =
- "jupyter jupyter.repl lwt lwt.unix yojson lwt-zmq nocrypto uuidm lwt.ppx ppx_deriving_yojson.runtime"
+ "jupyter jupyter.repl lwt lwt.unix yojson lwt-zmq nocrypto lwt.ppx ppx_deriving_yojson.runtime"
  archive(byte) = "jupyter-kernel.cma"
  archive(byte, plugin) = "jupyter-kernel.cma"
  archive(native) = "jupyter-kernel.cmxa"

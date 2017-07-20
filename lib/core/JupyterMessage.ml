@@ -22,14 +22,19 @@
 
 (** Messages *)
 
+(** The type of messages sent from Jupyter to OCaml REPL. *)
 type request =
   [
-    | `Shell of JupyterCommMessage.t
+    | `Shell of JupyterCommMessage.t JupyterKernelMessage.t
   ]
 [@@deriving yojson]
 
+(** The type of messages sent from OCaml REPL to Jupyter. *)
 type reply =
   [
-    | `Iopub of JupyterIopubMessage.reply
+    | `Iopub of JupyterIopubMessage.reply JupyterKernelMessage.t
   ]
 [@@deriving yojson]
+
+(** The type of execution context (i.e., reference to a code cell). *)
+type ctx = JupyterShellMessage.request JupyterKernelMessage.t

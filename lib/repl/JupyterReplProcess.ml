@@ -27,7 +27,7 @@ open Lwt.Infix
 
 type command =
   | Quit
-  | Exec of string * string
+  | Exec of JupyterMessage.ctx option * string * string
 
 type reply =
   [
@@ -54,26 +54,26 @@ type t =
 
 let flags = [] (** marshal flags *)
 
-let define_connection ~jupyterin ~jupyterout =
-  sprintf
-    "let jupyterin = Unix.in_channel_of_descr (Marshal.from_string %S 0) \
-     and jupyterout = Unix.out_channel_of_descr (Marshal.from_string %S 0) ;;"
-    (Marshal.to_string jupyterin flags)
-    (Marshal.to_string jupyterout flags)
-  |> JupyterReplToploop.run
-    ~filename:"//jupyter//"
-    ~init:() ~f:(fun () _ -> ())
+let define_connection jupyterin jupyterout context =
+  (* Unsafe definition of channels in REPL *)
+  Toploop.setvalue "$jupyterin" (Obj.repr (Unix.in_channel_of_descr jupyterin)) ;
+  Toploop.setvalue "$jupyterout" (Obj.repr (Unix.out_channel_of_descr jupyterout)) ;
+  Toploop.setvalue "$jupyterctx" (Obj.repr context)
 
 let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
-  JupyterReplToploop.init ?preload ?init_file () ;
-  define_connection ~jupyterin ~jupyterout:ctrlout ;
+  let context = ref None in
+  let preinit () =
+    define_connection jupyterin ctrlout context
+  in
+  JupyterReplToploop.init ?preload ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in
   let ctrlout = Unix.out_channel_of_descr ctrlout in
   let rec aux () =
     match Marshal.from_channel ctrlin with
     | exception End_of_file -> exit 0
     | Quit -> exit 0 (* Shutdown request *)
-    | Exec (filename, code) ->
+    | Exec (ctx, filename, code) ->
+      context := ctx ;
       JupyterReplToploop.run ~filename code
         ~f:(fun () resp -> Marshal.to_channel ctrlout resp flags)
         ~init:() ;
@@ -145,7 +145,8 @@ let run_command repl (cmd : command) =
   Lwt_io.write_value repl.ctrlin cmd ~flags >>= fun () ->
   Lwt_io.flush repl.ctrlin
 
-let run ~filename repl code = run_command repl (Exec (filename, code))
+let run ?ctx ~filename repl code =
+  run_command repl (Exec (ctx, filename, code))
 
 let close repl =
   let%lwt () = run_command repl Quit in (* Send shutdown request *)

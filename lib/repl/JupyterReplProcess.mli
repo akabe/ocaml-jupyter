@@ -38,8 +38,12 @@ val create : ?preload:string list -> ?init_file:string -> unit -> t
 
 val close : t -> unit Lwt.t
 
-(** [run ~filename repl code] executes [code] in a REPL process asynchronously. *)
-val run : filename:string -> t -> string -> unit Lwt.t
+(** [run ?ctx ~filename repl code] executes [code] in a REPL process
+    asynchronously. *)
+val run :
+  ?ctx:JupyterMessage.ctx ->
+  filename:string ->
+  t -> string -> unit Lwt.t
 
 (** Returns a stream of outputs of a REPL process. *)
 val stream : t -> reply Lwt_stream.t

@@ -16,10 +16,11 @@ PreConfCommand:         ./git/init.sh
 Library jupyter
   Path:                 lib/core
   FindlibName:          jupyter
-  BuildDepends:         ppx_deriving_yojson
-  XMETARequires:        ppx_deriving_yojson.runtime
+  BuildDepends:         uuidm, ppx_deriving_yojson
+  XMETARequires:        uuidm, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
                         JupyterMessage,
+                        JupyterKernelMessage,
                         JupyterShellMessage,
                         JupyterIopubMessage,
                         JupyterStdinMessage,
@@ -27,6 +28,15 @@ Library jupyter
                         JupyterJson,
                         JupyterHtml,
                         JupyterVersion
+
+Library "jupyter-notebook"
+  Path:                 lib/notebook
+  FindlibName:          notebook
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter, base64, compiler-libs
+  XMETARequires:        jupyter, base64, compiler-libs
+  Modules:              JupyterNotebook
+  InternalModules:      JupyterNotebookUnsafe
 
 Library "jupyter-repl"
   Path:                 lib/repl
@@ -45,14 +55,13 @@ Library "jupyter-kernel"
   Path:                 lib/kernel
   FindlibName:          kernel
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
                         lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              JupyterKernelServer,
                         JupyterKernelConnectionInfo,
                         JupyterKernelMessageChannel,
-                        JupyterKernelMessage,
                         JupyterKernelZmqChannel,
                         JupyterKernelChannelIntf,
                         JupyterKernelHmac,
@@ -74,7 +83,7 @@ Executable test_lib
   MainIs:               TestJupyter.ml
   Build$:               flag(tests)
   Install:              false
-  BuildDepends:         jupyter.kernel, str, ppx_deriving.show, oUnit
+  BuildDepends:         jupyter.kernel, jupyter.notebook, str, ppx_deriving.show, oUnit
   CompiledObject:       byte
 
 Test test_lib

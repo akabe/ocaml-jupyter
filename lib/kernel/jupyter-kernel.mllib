@@ -1,9 +1,8 @@
 # OASIS_START
-# DO NOT EDIT (digest: 14eff726dd47d0b3cefc235c25a7185f)
+# DO NOT EDIT (digest: 3cd9848beefa7a83b63efb6ed8b1cc7e)
 JupyterKernelServer
 JupyterKernelConnectionInfo
 JupyterKernelMessageChannel
-JupyterKernelMessage
 JupyterKernelZmqChannel
 JupyterKernelChannelIntf
 JupyterKernelHmac

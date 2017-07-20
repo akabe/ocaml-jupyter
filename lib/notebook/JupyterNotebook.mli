@@ -20,25 +20,28 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** A library for Jupyter notebooks *)
 
-type reply =
-  [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
-  ]
-[@@deriving yojson]
+type ctx
 
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
+(** The output channel to send displayed data. *)
+val cellout : out_channel
 
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+(** Returns the current cell context. *)
+val cell_context : unit -> ctx
+
+(** [display ?ctx ?base64 mime data] shows [data] at [ctx]. [mime] is the mime
+    type of [data].
+    @param ctx     default = the current cell.
+    @param base64  default = [false]. *)
+val display : ?ctx:ctx -> ?base64:bool -> string -> string -> unit
+
+(** [display_cell ?ctx ?base64 mime] shows data written into [cellout] at [ctx].
+    [mime] is the mime type of the data.
+    @param ctx     default = the current cell.
+    @param base64  default = [false]. *)
+val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
+
+(** {2 Low-level function} *)
+
+val send_iopub : ?ctx:ctx -> Jupyter.IopubMessage.reply -> unit
