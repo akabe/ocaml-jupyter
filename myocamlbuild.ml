@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: 7dae9f6fa5700674cb053865388e30ec) *)
+(* DO NOT EDIT (digest: 27725b352272fde8cc80c4607ecd0a03) *)
 module OASISGettext = struct
 (* # 22 "src/oasis/OASISGettext.ml" *)
 
@@ -105,7 +105,10 @@ module OASISString = struct
         ok := false;
       incr str_idx
     done;
-    !what_idx = String.length what
+    if !what_idx = String.length what then
+      true
+    else
+      false
 
 
   let strip_starts_with ~what str =
@@ -128,7 +131,10 @@ module OASISString = struct
         ok := false;
       decr str_idx
     done;
-    !what_idx = -1
+    if !what_idx = -1 then
+      true
+    else
+      false
 
 
   let strip_ends_with ~what str =
@@ -434,7 +440,7 @@ module OASISExpr = struct
 end
 
 
-# 437 "myocamlbuild.ml"
+# 443 "myocamlbuild.ml"
 module BaseEnvLight = struct
 (* # 22 "src/base/BaseEnvLight.ml" *)
 
@@ -514,7 +520,7 @@ module BaseEnvLight = struct
 end
 
 
-# 517 "myocamlbuild.ml"
+# 523 "myocamlbuild.ml"
 module MyOCamlbuildFindlib = struct
 (* # 22 "src/plugins/ocamlbuild/MyOCamlbuildFindlib.ml" *)
 
@@ -875,15 +881,15 @@ module MyOCamlbuildBase = struct
 end
 
 
-# 878 "myocamlbuild.ml"
+# 884 "myocamlbuild.ml"
 open Ocamlbuild_plugin;;
 let package_default =
   {
      MyOCamlbuildBase.lib_ocaml =
        [
           ("jupyter", ["lib/core"], []);
-          ("jupyter-kernel", ["lib/kernel"], []);
-          ("jupyter-repl", ["lib/repl"], [])
+          ("jupyter-repl", ["lib/repl"], []);
+          ("jupyter-kernel", ["lib/kernel"], [])
        ];
      lib_c = [];
      flags = [];
@@ -891,8 +897,8 @@ let package_default =
        [
           ("test", ["lib/kernel"; "lib/repl"]);
           ("src", ["lib/core"; "lib/kernel"; "lib/repl"]);
-          ("lib/repl", ["lib/kernel"]);
-          ("lib/kernel", ["lib/core"])
+          ("lib/repl", ["lib/core"]);
+          ("lib/kernel", ["lib/core"; "lib/repl"])
        ]
   }
   ;;
@@ -901,7 +907,7 @@ let conf = {MyOCamlbuildFindlib.no_automatic_syntax = false}
 
 let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
-# 905 "myocamlbuild.ml"
+# 911 "myocamlbuild.ml"
 (* OASIS_STOP *)
 
 let () =

@@ -76,21 +76,9 @@ module type Shell =
            and type reply = Jupyter.Content.Shell.reply
 
 module type Iopub =
-  Message with type reply = Jupyter.Content.Iopub.reply
+  Message with type request = Jupyter.Content.Iopub.request
+           and type reply = Jupyter.Content.Iopub.reply
 
 module type Stdin =
   Message with type request = Jupyter.Content.Stdin.request
            and type reply = Jupyter.Content.Stdin.reply
-
-module type Repl =
-sig
-  include S
-    with type input = Jupyter.ReplMessage.reply
-     and type output = Jupyter.ReplMessage.request
-
-  val create : ?preload:string list -> ?init_file:string -> unit -> t
-
-  val stream : t -> Jupyter.ReplMessage.output Lwt_stream.t
-
-  val interrupt : t -> unit
-end

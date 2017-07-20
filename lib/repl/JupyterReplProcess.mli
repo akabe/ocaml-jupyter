@@ -22,4 +22,30 @@
 
 (** OCaml REPL process *)
 
-include JupyterChannelIntf.Repl
+type reply =
+  [
+    | JupyterReplToploop.reply
+    | JupyterReplMessage.reply
+    | `Stdout of string
+    | `Stderr of string
+    | `Prompt
+  ]
+[@@deriving yojson]
+
+type t
+
+val create : ?preload:string list -> ?init_file:string -> unit -> t
+
+val close : t -> unit Lwt.t
+
+(** [run ~filename repl code] executes [code] in a REPL process asynchronously. *)
+val run : filename:string -> t -> string -> unit Lwt.t
+
+(** Returns a stream of outputs of a REPL process. *)
+val stream : t -> reply Lwt_stream.t
+
+(** [send repl req] sends [req] to [jupyterin] channel in a REPL process. *)
+val send : t -> Jupyter.Content.Iopub.request -> unit Lwt.t
+
+(** [interrupt repl] sends [SIGINT] signal (i.e., Ctrl-C) to a REPL process. *)
+val interrupt : t -> unit

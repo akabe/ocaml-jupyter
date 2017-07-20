@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 004f7e56c97a500feee42de05072d597)
+# DO NOT EDIT (digest: 9834c7286133cb75d98a6f603aabc963)
 version = "5.0.0"
 description = "An OCaml kernel for Jupyter notebooks"
 requires = "ppx_deriving_yojson.runtime"
@@ -12,7 +12,7 @@ package "repl" (
  version = "5.0.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires =
- "jupyter.kernel compiler-libs.common compiler-libs.toplevel lwt lwt.unix"
+ "jupyter compiler-libs.common compiler-libs.toplevel lwt lwt.unix"
  archive(byte) = "jupyter-repl.cma"
  archive(byte, plugin) = "jupyter-repl.cma"
  exists_if = "jupyter-repl.cma"
@@ -22,7 +22,7 @@ package "kernel" (
  version = "5.0.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires =
- "jupyter lwt lwt.unix yojson lwt-zmq nocrypto uuidm lwt.ppx ppx_deriving_yojson.runtime"
+ "jupyter jupyter.repl lwt lwt.unix yojson lwt-zmq nocrypto uuidm lwt.ppx ppx_deriving_yojson.runtime"
  archive(byte) = "jupyter-kernel.cma"
  archive(byte, plugin) = "jupyter-kernel.cma"
  archive(native) = "jupyter-kernel.cmxa"

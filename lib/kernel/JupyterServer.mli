@@ -26,7 +26,7 @@ module Make
     (ShellChannel : JupyterChannelIntf.Shell)
     (IopubChannel : JupyterChannelIntf.Iopub)
     (StdinChannel : JupyterChannelIntf.Stdin)
-    (Repl : JupyterChannelIntf.Repl) :
+    (Repl : module type of JupyterRepl.Process) :
 sig
   (** The type of servers. *)
   type t =

@@ -23,7 +23,15 @@
 (** Top-level loop of OCaml code evaluation *)
 
 open Format
-open JupyterReplMessage
+
+type reply =
+  [
+    | `Ok of string
+    | `Runtime_error of string
+    | `Compile_error of string
+    | `Aborted
+  ]
+[@@deriving yojson]
 
 module E = JupyterReplError
 
@@ -92,15 +100,15 @@ let run_from_lexbuf ~filename ~f ~init lexbuf =
            Buffer.clear buffer ;
            match is_ok with
            | true when message = "" -> acc
-           | true -> f acc (Ok message)
-           | false -> f acc (Runtime_error message)
+           | true -> f acc (`Ok message)
+           | false -> f acc (`Runtime_error message)
          with
-         | Sys.Break -> f acc Aborted
-         | exn -> f acc (Compile_error (E.extract exn)))
+         | Sys.Break -> f acc `Aborted
+         | exn -> f acc (`Compile_error (E.extract exn)))
       init
   with
-  | Sys.Break -> f init Aborted
-  | exn -> f init (Compile_error (E.extract exn))
+  | Sys.Break -> f init `Aborted
+  | exn -> f init (`Compile_error (E.extract exn))
 
 let run ~filename ~f ~init code =
   let lexbuf = Lexing.from_string (code ^ "\n") in
