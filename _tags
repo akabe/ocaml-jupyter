@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: fa8e389565976442fd9eb6511274ab3c)
+# DO NOT EDIT (digest: 7fc1686d71a5ca9ccd1fd98380c3aff4)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -17,8 +17,19 @@ true: annot, bin_annot
 # Library jupyter
 "lib/core/jupyter.cmxs": use_jupyter
 <lib/core/*.ml{,i,y}>: package(ppx_deriving_yojson)
+# Library jupyter-repl
+"lib/repl/jupyter-repl.cmxs": use_jupyter-repl
+<lib/repl/*.ml{,i,y}>: package(compiler-libs.common)
+<lib/repl/*.ml{,i,y}>: package(compiler-libs.toplevel)
+<lib/repl/*.ml{,i,y}>: package(lwt)
+<lib/repl/*.ml{,i,y}>: package(lwt.ppx)
+<lib/repl/*.ml{,i,y}>: package(lwt.unix)
+<lib/repl/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/repl/*.ml{,i,y}>: use_jupyter
 # Library jupyter-kernel
 "lib/kernel/jupyter-kernel.cmxs": use_jupyter-kernel
+<lib/kernel/*.ml{,i,y}>: package(compiler-libs.common)
+<lib/kernel/*.ml{,i,y}>: package(compiler-libs.toplevel)
 <lib/kernel/*.ml{,i,y}>: package(lwt)
 <lib/kernel/*.ml{,i,y}>: package(lwt-zmq)
 <lib/kernel/*.ml{,i,y}>: package(lwt.ppx)
@@ -28,20 +39,7 @@ true: annot, bin_annot
 <lib/kernel/*.ml{,i,y}>: package(uuidm)
 <lib/kernel/*.ml{,i,y}>: package(yojson)
 <lib/kernel/*.ml{,i,y}>: use_jupyter
-# Library jupyter-repl
-"lib/repl/jupyter-repl.cmxs": use_jupyter-repl
-<lib/repl/*.ml{,i,y}>: package(compiler-libs.common)
-<lib/repl/*.ml{,i,y}>: package(compiler-libs.toplevel)
-<lib/repl/*.ml{,i,y}>: package(lwt)
-<lib/repl/*.ml{,i,y}>: package(lwt-zmq)
-<lib/repl/*.ml{,i,y}>: package(lwt.ppx)
-<lib/repl/*.ml{,i,y}>: package(lwt.unix)
-<lib/repl/*.ml{,i,y}>: package(nocrypto)
-<lib/repl/*.ml{,i,y}>: package(ppx_deriving_yojson)
-<lib/repl/*.ml{,i,y}>: package(uuidm)
-<lib/repl/*.ml{,i,y}>: package(yojson)
-<lib/repl/*.ml{,i,y}>: use_jupyter
-<lib/repl/*.ml{,i,y}>: use_jupyter-kernel
+<lib/kernel/*.ml{,i,y}>: use_jupyter-repl
 # Executable ocaml-jupyter
 "src/JupyterMain.byte": package(compiler-libs.common)
 "src/JupyterMain.byte": package(compiler-libs.toplevel)

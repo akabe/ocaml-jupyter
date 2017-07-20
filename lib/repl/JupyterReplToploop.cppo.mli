@@ -22,10 +22,19 @@
 
 (** Top-level loop of OCaml code evaluation *)
 
+type reply =
+  [
+    | `Ok of string
+    | `Runtime_error of string
+    | `Compile_error of string
+    | `Aborted
+  ]
+[@@deriving yojson]
+
 val init : ?preload:string list -> ?init_file:string -> unit -> unit
 
 val run :
   filename:string ->
-  f:('accum -> JupyterReplMessage.reply -> 'accum) ->
+  f:('accum -> reply -> 'accum) ->
   init:'accum ->
   string -> 'accum

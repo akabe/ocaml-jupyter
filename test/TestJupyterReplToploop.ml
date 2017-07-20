@@ -32,8 +32,8 @@ let rec cmp xs ys =
   | x :: xs, y :: ys when x = y -> cmp xs ys
   (* Check a pattern of an error message
      (concrete error messages depend in OCaml versions) *)
-  | Runtime_error pattern :: xs, Runtime_error msg :: ys
-  | Compile_error pattern :: xs, Compile_error msg :: ys ->
+  | `Runtime_error pattern :: xs, `Runtime_error msg :: ys
+  | `Compile_error pattern :: xs, `Compile_error msg :: ys ->
     begin
       try
         ignore (Str.search_forward (Str.regexp pattern) msg 0) ;
@@ -50,7 +50,7 @@ let exec code =
 
 let test__simple_phrase ctxt =
   let actual = exec "let x = (4 + 1) * 3" in
-  let expected = [Ok "val x : int = 15\n"] in
+  let expected = [`Ok "val x : int = 15\n"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__multiple_phrases ctxt =
@@ -59,64 +59,64 @@ let test__multiple_phrases ctxt =
        let y = \"Hello \" ^ \"World\"\n\
        let z = List.map (fun x -> x * 2) [1; 2; 3]\n" in
   let expected = [
-    Ok "val x : int = 15\n";
-    Ok "val y : string = \"Hello World\"\n";
-    Ok "val z : int list = [2; 4; 6]\n";
+    `Ok "val x : int = 15\n";
+    `Ok "val y : string = \"Hello World\"\n";
+    `Ok "val z : int list = [2; 4; 6]\n";
   ] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__directive ctxt =
   let actual = exec "#load \"str.cma\" ;; Str.regexp" in
-  let expected = [Ok "- : string -> Str.regexp = <fun>\n"] in
+  let expected = [`Ok "- : string -> Str.regexp = <fun>\n"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__external_command ctxt =
   let actual = exec "Sys.command \"ls -l >/dev/null 2>/dev/null\"" in
-  let expected = [Ok "- : int = 0\n"] in
+  let expected = [`Ok "- : int = 0\n"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__syntax_error ctxt =
   let actual = exec "let let let" in
-  let expected = [Compile_error "Syntax error"] in
+  let expected = [`Compile_error "Syntax error"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__unbound_value ctxt =
   let actual = exec "foo 42" in
-  let expected = [Compile_error "Unbound value foo"] in
+  let expected = [`Compile_error "Unbound value foo"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__type_error ctxt =
   let actual = exec "42 = true" in
   let expected = [
-    Compile_error "Error: This expression has type bool \
-                   but an expression was expected of type\
-                   \n         int"] in
+    `Compile_error "Error: This expression has type bool \
+                    but an expression was expected of type\
+                    \n         int"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__exception ctxt =
   let actual = exec "failwith \"FAIL\"" in
-  let expected = [Runtime_error "Failure \"FAIL\""] in
+  let expected = [`Runtime_error "Failure \"FAIL\""] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__unknown_directive ctxt =
   let actual = exec "#foo" in
-  let expected = [Runtime_error "Unknown directive `foo'.\n"] in
+  let expected = [`Runtime_error "Unknown directive `foo'.\n"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__ppx ctxt =
   let actual = exec "#require \"ppx_deriving.show\" ;; \
                      type t = { x : int } [@@deriving show]" in
   let expected = [
-    Ok "type t = { x : int; }\n\
-        val pp : Format.formatter -> t -> Ppx_deriving_runtime.unit = <fun>\n\
-        val show : t -> Ppx_deriving_runtime.string = <fun>\n"
+    `Ok "type t = { x : int; }\n\
+         val pp : Format.formatter -> t -> Ppx_deriving_runtime.unit = <fun>\n\
+         val show : t -> Ppx_deriving_runtime.string = <fun>\n"
   ] in
   assert_equal ~ctxt ~cmp expected actual
 
 let test__camlp4 ctxt =
   let _ = exec "#camlp4o ;;" in
   let actual = exec "[< '1 ; '2 >]" in
-  let expected = [Ok "- : int Stream.t = <abstr>\n"] in
+  let expected = [`Ok "- : int Stream.t = <abstr>\n"] in
   assert_equal ~ctxt ~cmp expected actual
 
 let () = Toploop.init ~init_file:"fixtures/.ocamlinit" ()

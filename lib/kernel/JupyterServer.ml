@@ -26,7 +26,6 @@ open Format
 open Lwt.Infix
 
 module M = JupyterMessage
-module RM = JupyterReplMessage
 module ShC = Jupyter.Content.Shell
 module IoC = Jupyter.Content.Iopub
 
@@ -34,7 +33,7 @@ module Make
     (ShellChannel : JupyterChannelIntf.Shell)
     (IopubChannel : JupyterChannelIntf.Iopub)
     (StdinChannel : JupyterChannelIntf.Stdin)
-    (Repl : JupyterChannelIntf.Repl) =
+    (Repl : module type of JupyterRepl.Process) =
 struct
   type t =
     {
@@ -111,33 +110,14 @@ struct
 
   (** {2 Execute request} *)
 
-  let run_code server code =
-    let filename = sprintf "[%d]" server.execution_count in
-    let%lwt () = Repl.send server.repl (RM.Exec (filename, code)) in
-    let rec aux status_t =
-      match%lwt Repl.recv server.repl with
-      | RM.Ok s ->
-        let%lwt () = send_iopub_exec_result ~klass:"ansi-black-fg" server s in
-        aux status_t
-      | RM.Runtime_error s | RM.Compile_error s ->
-        let%lwt () = send_iopub_exec_result ~klass:"ansi-red-fg" server s in
-        aux (Lwt.return `Error)
-      | RM.Aborted -> aux (Lwt.return `Abort)
-      | RM.Prompt -> status_t
-    in
-    aux (Lwt.return `Ok)
-
   let execute_request ~parent server (body : ShC.execute_request) =
     server.execution_count <- succ server.execution_count ;
     server.current_parent <- Some parent ;
-    let execution_count = server.execution_count in
     let code = body.ShC.code in
     let%lwt () = send_iopub_status server `Busy in
     let%lwt () = send_iopub_exec_input server code in
-    let%lwt status = run_code server code in
-    let%lwt () = send_iopub_status server `Idle in
-    ShC.(`Execute_reply { execution_count; status; })
-    |> ShellChannel.reply server.shell ~parent
+    let filename = sprintf "[%d]" server.execution_count in
+    Repl.run server.repl ~filename code
 
   (** {2 Kernel info request} *)
 
@@ -154,13 +134,49 @@ struct
   (** {2 Main routine} *)
 
   (** a thread capturing stdout and stderr from a REPL. *)
-  let start_capture_repl_output server =
+  let propagate_repl_to_iopub server =
     let strm = Repl.stream server.repl in
-    let rec loop () =
+    let rec loop status =
       match%lwt Lwt_stream.get strm with
       | None -> Lwt.return_unit (* done *)
-      | Some (RM.Stdout s) -> send_iopub_stream server ~name:`Stdout s >>= loop
-      | Some (RM.Stderr s) -> send_iopub_stream server ~name:`Stderr s >>= loop
+      | Some (`Iopub iopub) ->
+        let%lwt () = send_iopub server iopub in
+        loop status
+      | Some (`Stdout s) ->
+        let%lwt () = send_iopub_stream server ~name:`Stdout s in
+        loop status
+      | Some (`Stderr s) ->
+        let%lwt () = send_iopub_stream server ~name:`Stderr s in
+        loop status
+      | Some (`Ok s) ->
+        let%lwt () = send_iopub_exec_result ~klass:"ansi-black-fg" server s in
+        loop status
+      | Some (`Runtime_error s) | Some (`Compile_error s) ->
+        let%lwt () = send_iopub_exec_result ~klass:"ansi-red-fg" server s in
+        loop `Error
+      | Some `Aborted -> loop `Abort (* Interrupted *)
+      | Some `Prompt ->
+        let%lwt () = send_iopub_status server `Idle in
+        let%lwt () =
+          match server.current_parent with
+          | None -> Lwt.return_unit
+          | Some parent ->
+            ShC.(`Execute_reply {
+                execution_count = server.execution_count;
+                status;
+              })
+            |> ShellChannel.reply server.shell ~parent
+        in
+        loop `Ok (* Reset the current status to OK *)
+    in
+    loop `Ok
+
+  (** a thread propagating IOPUB requests to a REPL process *)
+  let propagate_iopub_to_repl server =
+    let rec loop () =
+      let%lwt req = IopubChannel.recv server.iopub in
+      let%lwt () = Repl.send server.repl req.JupyterMessage.content in
+      loop ()
     in
     loop ()
 
@@ -182,7 +198,8 @@ struct
 
   let start server =
     Lwt.choose [
-      start_capture_repl_output server;
+      propagate_repl_to_iopub server;
+      propagate_iopub_to_repl server;
       start_kernel server server.shell;
       start_kernel server server.control;
     ]

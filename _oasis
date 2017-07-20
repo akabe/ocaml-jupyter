@@ -31,9 +31,9 @@ Library "jupyter-kernel"
   Path:                 lib/kernel
   FindlibName:          kernel
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        jupyter, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              JupyterServer,
                         JupyterConnectionInfo,
@@ -49,8 +49,8 @@ Library "jupyter-repl"
   Path:                 lib/repl
   FindlibName:          repl
   FindlibParent:        jupyter
-  BuildDepends:         jupyter.kernel, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix, lwt.ppx
-  XMETARequires:        jupyter.kernel, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix
+  BuildDepends:         jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix, lwt.ppx
+  XMETARequires:        jupyter, compiler-libs.common, compiler-libs.toplevel, lwt, lwt.unix
   Modules:              JupyterRepl,
                         JupyterReplProcess,
                         JupyterReplToploop,
