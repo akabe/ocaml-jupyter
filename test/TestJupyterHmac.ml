@@ -22,7 +22,7 @@
 
 open OUnit2
 
-module Hmac = JupyterHmac
+module Hmac = JupyterKernel.Hmac
 
 (** Success patterns of HMAC computation *)
 let test_create__normal ctxt =

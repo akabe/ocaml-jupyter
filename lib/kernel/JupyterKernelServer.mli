@@ -20,35 +20,36 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Connection information *)
+(** Kernel server *)
 
-(** The type of connection information.
+module Make
+    (ShellChannel : JupyterKernelChannelIntf.Shell)
+    (IopubChannel : JupyterKernelChannelIntf.Iopub)
+    (StdinChannel : JupyterKernelChannelIntf.Stdin)
+    (Repl : module type of JupyterRepl.Process) :
+sig
+  (** The type of servers. *)
+  type t =
+    {
+      repl : Repl.t;
+      shell : ShellChannel.t;
+      control : ShellChannel.t;
+      iopub : IopubChannel.t;
+      stdin : StdinChannel.t;
 
-    See https://ipython.org/ipython-doc/3/development/kernels.html *)
-type t =
-  {
-    control_port : int;
-    shell_port : int;
-    stdin_port : int;
-    iopub_port : int;
-    hb_port : int;
-    ip : string;
-    key : string option [@default None];
-    kernel_name : string;
-    signature_scheme : string;
-    transport : string;
-  } [@@deriving yojson]
+      mutable execution_count : int;
+      mutable current_parent : ShellChannel.input option;
+    }
 
-let from_file fname =
-  if not (Sys.file_exists fname)
-  then failwith ("No such file or director: " ^ fname) ;
-  let json = Yojson.Safe.from_file ~fname fname in
-  JupyterLog.info "Load connection info: %s" (Yojson.Safe.to_string json) ;
-  match [%of_yojson: t] json with
-  | Result.Error msg -> Yojson.json_error msg
-  | Result.Ok info when info.key = Some "" -> { info with key = None }
-  | Result.Ok info -> info
+  (** Connect to Jupyter. *)
+  val create :
+    repl:Repl.t ->
+    ctx:ZMQ.Context.t ->
+    JupyterKernelConnectionInfo.t -> t
 
-(** [make_address info port] returns an address for ZeroMQ communication. *)
-let make_address info port =
-  Format.sprintf "%s://%s:%d" info.transport info.ip port
+  (** Close connection to Jupyter. *)
+  val close : t -> unit Lwt.t
+
+  (** Start a server thread accepting requests from Jupyter. *)
+  val start : t -> unit Lwt.t
+end

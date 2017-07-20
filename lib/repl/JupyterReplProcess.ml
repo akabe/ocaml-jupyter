@@ -32,7 +32,7 @@ type command =
 type reply =
   [
     | JupyterReplToploop.reply
-    | JupyterReplMessage.reply
+    | Jupyter.Message.reply
     | `Stdout of string
     | `Stderr of string
     | `Prompt
@@ -167,6 +167,6 @@ let close repl =
 
 let interrupt repl = Unix.kill repl.pid Sys.sigint
 
-let send repl req =
+let send repl (req : Jupyter.Message.request) =
   let%lwt () = Lwt_io.write_value ~flags repl.jupyterin req in
   Lwt_io.flush repl.jupyterin

@@ -19,31 +19,14 @@ Library jupyter
   BuildDepends:         ppx_deriving_yojson
   XMETARequires:        ppx_deriving_yojson.runtime
   Modules:              Jupyter,
-                        JupyterContentShell,
-                        JupyterContentIopub,
-                        JupyterContentStdin,
-                        JupyterReplMessage,
+                        JupyterMessage,
+                        JupyterShellMessage,
+                        JupyterIopubMessage,
+                        JupyterStdinMessage,
+                        JupyterCommMessage,
                         JupyterJson,
                         JupyterHtml,
                         JupyterVersion
-
-Library "jupyter-kernel"
-  Path:                 lib/kernel
-  FindlibName:          kernel
-  FindlibParent:        jupyter
-  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
-                        lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
-                        lwt.ppx, ppx_deriving_yojson.runtime
-  Modules:              JupyterServer,
-                        JupyterConnectionInfo,
-                        JupyterMessageChannel,
-                        JupyterMessage,
-                        JupyterZmqChannel,
-                        JupyterChannelIntf,
-                        JupyterHmac,
-                        JupyterLog
-  Install:              false
 
 Library "jupyter-repl"
   Path:                 lib/repl
@@ -58,10 +41,28 @@ Library "jupyter-repl"
   Install:              false
   CompiledObject:       byte
 
+Library "jupyter-kernel"
+  Path:                 lib/kernel
+  FindlibName:          kernel
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+                        lwt.ppx, ppx_deriving_yojson
+  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto, uuidm,
+                        lwt.ppx, ppx_deriving_yojson.runtime
+  Modules:              JupyterKernelServer,
+                        JupyterKernelConnectionInfo,
+                        JupyterKernelMessageChannel,
+                        JupyterKernelMessage,
+                        JupyterKernelZmqChannel,
+                        JupyterKernelChannelIntf,
+                        JupyterKernelHmac,
+                        JupyterKernelLog
+  Install:              false
+
 Executable "ocaml-jupyter"
   Path:                 src
   MainIs:               JupyterMain.ml
-  BuildDepends:         jupyter, jupyter.kernel, jupyter.repl
+  BuildDepends:         jupyter.kernel
   CompiledObject:       byte
 
 ##
@@ -73,7 +74,7 @@ Executable test_lib
   MainIs:               TestJupyter.ml
   Build$:               flag(tests)
   Install:              false
-  BuildDepends:         jupyter.kernel, jupyter.repl, str, ppx_deriving.show, oUnit
+  BuildDepends:         jupyter.kernel, str, ppx_deriving.show, oUnit
   CompiledObject:       byte
 
 Test test_lib

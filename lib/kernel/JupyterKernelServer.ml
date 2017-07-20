@@ -25,14 +25,15 @@
 open Format
 open Lwt.Infix
 
-module M = JupyterMessage
-module ShC = Jupyter.Content.Shell
-module IoC = Jupyter.Content.Iopub
+module Log = JupyterKernelLog
+module M = JupyterKernelMessage
+module ShC = Jupyter.ShellMessage
+module IoC = Jupyter.IopubMessage
 
 module Make
-    (ShellChannel : JupyterChannelIntf.Shell)
-    (IopubChannel : JupyterChannelIntf.Iopub)
-    (StdinChannel : JupyterChannelIntf.Stdin)
+    (ShellChannel : JupyterKernelChannelIntf.Shell)
+    (IopubChannel : JupyterKernelChannelIntf.Iopub)
+    (StdinChannel : JupyterKernelChannelIntf.Stdin)
     (Repl : module type of JupyterRepl.Process) =
 struct
   type t =
@@ -48,21 +49,21 @@ struct
     }
 
   let create ~repl ~ctx info =
-    let key = info.JupyterConnectionInfo.key in
+    let key = info.JupyterKernelConnectionInfo.key in
     let shell =
-      JupyterConnectionInfo.(make_address info info.shell_port)
+      JupyterKernelConnectionInfo.(make_address info info.shell_port)
       |> ShellChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
     in
     let control =
-      JupyterConnectionInfo.(make_address info info.control_port)
+      JupyterKernelConnectionInfo.(make_address info info.control_port)
       |> ShellChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
     in
     let iopub =
-      JupyterConnectionInfo.(make_address info info.iopub_port)
+      JupyterKernelConnectionInfo.(make_address info info.iopub_port)
       |> IopubChannel.create ?key ~ctx ~kind:ZMQ.Socket.pub
     in
     let stdin =
-      JupyterConnectionInfo.(make_address info info.stdin_port)
+      JupyterKernelConnectionInfo.(make_address info info.stdin_port)
       |> StdinChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
     in
     {
@@ -171,15 +172,6 @@ struct
     in
     loop `Ok
 
-  (** a thread propagating IOPUB requests to a REPL process *)
-  let propagate_iopub_to_repl server =
-    let rec loop () =
-      let%lwt req = IopubChannel.recv server.iopub in
-      let%lwt () = Repl.send server.repl req.JupyterMessage.content in
-      loop ()
-    in
-    loop ()
-
   let start_kernel server shell =
     let rec reply parent = function
       | `Shutdown_request body -> shutdown_request ~parent shell body
@@ -188,8 +180,11 @@ struct
       | `Inspect_request _
       | `Complete_request _
       | `Connect_request
-      | `Comm_info_request _ ->
-        JupyterLog.error "Unsupported request" ;
+      | `Comm_info_request _
+      | `Comm_open _
+      | `Comm_msg _
+      | `Comm_close _ ->
+        Log.error "Unsupported request" ;
         loop ()
     and loop () =
       ShellChannel.recv shell >>= fun req -> reply req req.M.content
@@ -199,7 +194,6 @@ struct
   let start server =
     Lwt.choose [
       propagate_repl_to_iopub server;
-      propagate_iopub_to_repl server;
       start_kernel server server.shell;
       start_kernel server server.control;
     ]

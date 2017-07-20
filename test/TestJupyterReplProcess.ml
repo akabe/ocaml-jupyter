@@ -24,12 +24,13 @@ open Format
 open Lwt.Infix
 open OUnit2
 open JupyterRepl
-open Jupyter.ReplMessage
 open TestUtil
 
 let printer lst =
   [%to_yojson: JupyterReplProcess.reply list] lst
   |> Yojson.Safe.to_string
+
+let cmp = TestJupyterReplToploop.cmp
 
 let exec ?(hook = fun _ -> Lwt.return_unit) code =
   let repl = Process.create () in
@@ -55,47 +56,40 @@ let test__capture_stdout ctxt =
     exec "print_endline \"Hello World\""
     |> List.sort compare in (* the order of elements is NOT important *)
   let expected = [`Ok "- : unit = ()\n"; `Stdout "Hello World\n"] in
-  assert_equal ~ctxt ~printer expected actual
+  assert_equal ~ctxt ~printer ~cmp expected actual
 
 let test__capture_stderr ctxt =
   let actual =
     exec "prerr_endline \"Hello World\""
     |> List.sort compare in (* the order of elements is NOT important *)
   let expected = [`Ok "- : unit = ()\n"; `Stderr "Hello World\n"] in
-  assert_equal ~ctxt ~printer expected actual
+  assert_equal ~ctxt ~printer ~cmp expected actual
 
 let test__jupyterout ctxt =
   let actual =
     exec "Marshal.to_channel jupyterout (`Stdout \"Hello\") []"
     |> List.sort compare in (* the order of elements is NOT important *)
   let expected = [`Ok "- : unit = ()\n"; `Stdout "Hello"] in
-  assert_equal ~ctxt ~printer expected actual
+  assert_equal ~ctxt ~printer ~cmp expected actual
 
 let test__jupyterin ctxt =
   skip_if
     (not (Sys.file_exists "../_build/lib/core/jupyter.cma"))
     "Not found artifacts" ;
   let hook repl =
-    Process.send repl Jupyter.Content.Iopub.(`Comm_open {
+    Process.send repl (`Shell Jupyter.CommMessage.(`Comm_open {
         target_name = None;
         comm_id = "abcd";
         data = `Null;
-      })
+      }))
   in
   let actual =
     exec ~hook
       "#directory \"../_build/lib/core\";;\
        #load \"jupyter.cma\";;\
-       (Marshal.from_channel jupyterin : Jupyter.Content.Iopub.request)" in
-  let expected =
-    [
-      `Ok "- : Jupyter.Content.Iopub.request =\
-           \n`Comm_open\
-           \n  {Jupyter.Content.Iopub.target_name = None; comm_id = \"abcd\";\
-           \n   data = <abstr>}\n"
-    ]
-  in
-  assert_equal ~ctxt ~printer expected actual
+       (Marshal.from_channel jupyterin : JupyterMessage.request)" in
+  let expected = [`Ok "- : JupyterMessage.request =.*"] in
+  assert_equal ~ctxt ~printer ~cmp expected actual
 
 let suite =
   "Process" >::: [

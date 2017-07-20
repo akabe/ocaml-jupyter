@@ -20,27 +20,23 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** ZeroMQ sockets *)
+(** Jupyter kernel *)
 
-open Lwt.Infix
+open Jupyter
 
-type t = C : _ Lwt_zmq.Socket.t -> t
+module Message = JupyterKernelMessage
 
-type input = string list
-type output = string list
+module ZmqChannel = JupyterKernelZmqChannel
+module ShellChannel = JupyterKernelMessageChannel.Make(ShellMessage)(ZmqChannel)
+module IopubChannel = JupyterKernelMessageChannel.Make(IopubMessage)(ZmqChannel)
+module StdinChannel = JupyterKernelMessageChannel.Make(StdinMessage)(ZmqChannel)
 
-let create ~ctx ~kind addr =
-  let socket = ZMQ.Socket.create ctx kind in
-  ZMQ.Socket.bind socket addr ;
-  JupyterLog.info "Open ZMQ socket to %s" addr ;
-  C (Lwt_zmq.Socket.of_socket socket)
+module ConnectionInfo = JupyterKernelConnectionInfo
 
-let recv (C socket) = Lwt_zmq.Socket.recv_all socket
+module Server =
+  JupyterKernelServer.Make
+    (ShellChannel)(IopubChannel)(StdinChannel)(JupyterReplProcess)
 
-let send (C socket) strs =
-  Lwt_zmq.Socket.send_all socket strs
+module Hmac = JupyterKernelHmac
 
-let close (C socket) =
-  Lwt_zmq.Socket.to_socket socket
-  |> ZMQ.Socket.close
-  |> Lwt.return
+module Log = JupyterKernelLog

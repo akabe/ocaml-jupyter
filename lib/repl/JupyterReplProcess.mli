@@ -25,7 +25,7 @@
 type reply =
   [
     | JupyterReplToploop.reply
-    | JupyterReplMessage.reply
+    | Jupyter.Message.reply
     | `Stdout of string
     | `Stderr of string
     | `Prompt
@@ -45,7 +45,7 @@ val run : filename:string -> t -> string -> unit Lwt.t
 val stream : t -> reply Lwt_stream.t
 
 (** [send repl req] sends [req] to [jupyterin] channel in a REPL process. *)
-val send : t -> Jupyter.Content.Iopub.request -> unit Lwt.t
+val send : t -> Jupyter.Message.request -> unit Lwt.t
 
 (** [interrupt repl] sends [SIGINT] signal (i.e., Ctrl-C) to a REPL process. *)
 val interrupt : t -> unit

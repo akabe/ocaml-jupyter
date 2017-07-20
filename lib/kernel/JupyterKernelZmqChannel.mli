@@ -20,28 +20,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** The core library *)
+(** ZeroMQ sockets *)
 
-(** Version information *)
-module Version = JupyterVersion
-
-(** Messages for communication between REPL and Jupyter. *)
-module Message =  JupyterMessage
-
-(** {2 Jupyter protocol schema} *)
-
-module ShellMessage = JupyterShellMessage
-
-module IopubMessage = JupyterIopubMessage
-
-module StdinMessage = JupyterStdinMessage
-
-module CommMessage = JupyterCommMessage
-
-(** {2 Misc} *)
-
-(** HTML utilities *)
-module Html = JupyterHtml
-
-(** JSON utilities *)
-module Json = JupyterJson
+include JupyterKernelChannelIntf.Zmq

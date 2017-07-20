@@ -35,7 +35,7 @@ sig
   type reply [@@deriving yojson]
 end
 
-module Make (Content : ContentType) (Socket : JupyterChannelIntf.Zmq) =
+module Make (Content : ContentType) (Socket : JupyterKernelChannelIntf.Zmq) =
 struct
   type t =
     {
@@ -45,8 +45,8 @@ struct
 
   type request = Content.request
   type reply = Content.reply
-  type input = request JupyterMessage.t
-  type output = reply JupyterMessage.t
+  type input = request JupyterKernelMessage.t
+  type output = reply JupyterKernelMessage.t
 
   let create ?key ~ctx ~kind uri =
     let key = match key with
@@ -67,23 +67,24 @@ struct
     in
     match aux [] str_lst with
     | ids, hmac :: header :: parent_header :: metadata :: content :: buffers ->
-      JupyterLog.debug
+      let open JupyterKernelMessage in
+      JupyterKernelLog.debug
         "RECV: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
         hmac header parent_header content metadata ;
-      JupyterHmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
-      let header = JupyterMessage.header_of_string header in
+      JupyterKernelHmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
+      let header = header_of_string header in
       let content = Yojson.Safe.from_string content
-                    |> compose_content ~msg_type:header.JupyterMessage.msg_type
+                    |> compose_content ~msg_type:header.msg_type
                     |> [%of_yojson: Content.request]
                     |> JupyterJson.or_die in
-      JupyterMessage.({
-          zmq_ids = ids;
-          header;
-          parent_header = JupyterMessage.header_opt_of_string parent_header;
-          metadata;
-          content;
-          buffers;
-        })
+      {
+        zmq_ids = ids;
+        header;
+        parent_header = header_opt_of_string parent_header;
+        metadata;
+        content;
+        buffers;
+      }
 
     | _ ->
       failwith "Jupyter kernel request is ill-formed."
@@ -93,7 +94,7 @@ struct
   (** {2 Write response} *)
 
   let send ch resp =
-    let open JupyterMessage in
+    let open JupyterKernelMessage in
     let header = string_of_header resp.header in
     let parent_header = string_of_header_opt resp.parent_header in
     let content =
@@ -101,10 +102,10 @@ struct
       | `List (_ :: content :: _) -> Yojson.Safe.to_string content
       | _ -> "{}" in
     let hmac =
-      JupyterHmac.create ?key:ch.key
+      JupyterKernelHmac.create ?key:ch.key
         ~header ~parent_header ~metadata:resp.metadata ~content ()
     in
-    JupyterLog.debug
+    JupyterKernelLog.debug
       "SEND: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
       hmac header parent_header content resp.metadata ;
     [
@@ -125,7 +126,7 @@ struct
   (** {2 Reply} *)
 
   let reply ?time ~parent ch content =
-    JupyterMessage.create_next
+    JupyterKernelMessage.create_next
       ~content_to_yojson:[%to_yojson: Content.reply]
       ?time parent content
     |> send ch

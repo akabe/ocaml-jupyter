@@ -20,33 +20,16 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Kernel server *)
+(** Messages *)
 
-module Make
-    (ShellChannel : JupyterChannelIntf.Shell)
-    (IopubChannel : JupyterChannelIntf.Iopub)
-    (StdinChannel : JupyterChannelIntf.Stdin)
-    (Repl : module type of JupyterRepl.Process) :
-sig
-  (** The type of servers. *)
-  type t =
-    {
-      repl : Repl.t;
-      shell : ShellChannel.t;
-      control : ShellChannel.t;
-      iopub : IopubChannel.t;
-      stdin : StdinChannel.t;
+type request =
+  [
+    | `Shell of JupyterCommMessage.t
+  ]
+[@@deriving yojson]
 
-      mutable execution_count : int;
-      mutable current_parent : ShellChannel.input option;
-    }
-
-  (** Connect to Jupyter. *)
-  val create : repl:Repl.t -> ctx:ZMQ.Context.t -> JupyterConnectionInfo.t -> t
-
-  (** Close connection to Jupyter. *)
-  val close : t -> unit Lwt.t
-
-  (** Start a server thread accepting requests from Jupyter. *)
-  val start : t -> unit Lwt.t
-end
+type reply =
+  [
+    | `Iopub of JupyterIopubMessage.reply
+  ]
+[@@deriving yojson]

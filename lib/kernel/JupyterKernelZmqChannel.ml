@@ -20,15 +20,27 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Messaging channel for Jupyter *)
+(** ZeroMQ sockets *)
 
-module type ContentType =
-sig
-  type request [@@deriving yojson]
-  type reply [@@deriving yojson]
-end
+open Lwt.Infix
 
-module Make (Content : ContentType) (Socket : JupyterChannelIntf.Zmq)
-  : JupyterChannelIntf.Message
-    with type request = Content.request
-     and type reply = Content.reply
+type t = C : _ Lwt_zmq.Socket.t -> t
+
+type input = string list
+type output = string list
+
+let create ~ctx ~kind addr =
+  let socket = ZMQ.Socket.create ctx kind in
+  ZMQ.Socket.bind socket addr ;
+  JupyterKernelLog.info "Open ZMQ socket to %s" addr ;
+  C (Lwt_zmq.Socket.of_socket socket)
+
+let recv (C socket) = Lwt_zmq.Socket.recv_all socket
+
+let send (C socket) strs =
+  Lwt_zmq.Socket.send_all socket strs
+
+let close (C socket) =
+  Lwt_zmq.Socket.to_socket socket
+  |> ZMQ.Socket.close
+  |> Lwt.return

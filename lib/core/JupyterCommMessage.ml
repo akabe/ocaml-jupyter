@@ -20,28 +20,18 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** The core library *)
+(** Custom messages *)
 
-(** Version information *)
-module Version = JupyterVersion
+type comm =
+  {
+    target_name : string option [@default None];
+    comm_id : string;
+    data : Yojson.Safe.json;
+  } [@@deriving yojson { strict = false }]
 
-(** Messages for communication between REPL and Jupyter. *)
-module Message =  JupyterMessage
-
-(** {2 Jupyter protocol schema} *)
-
-module ShellMessage = JupyterShellMessage
-
-module IopubMessage = JupyterIopubMessage
-
-module StdinMessage = JupyterStdinMessage
-
-module CommMessage = JupyterCommMessage
-
-(** {2 Misc} *)
-
-(** HTML utilities *)
-module Html = JupyterHtml
-
-(** JSON utilities *)
-module Json = JupyterJson
+type t =
+  [
+    | `Comm_open of comm [@name "comm_open"]
+    | `Comm_msg of comm [@name "comm_msg"]
+    | `Comm_close of comm [@name "comm_close"]
+  ] [@@deriving yojson]
