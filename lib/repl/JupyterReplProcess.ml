@@ -60,10 +60,17 @@ let define_connection jupyterin jupyterout context =
   Toploop.setvalue "$jupyterout" (Obj.repr (Unix.out_channel_of_descr jupyterout)) ;
   Toploop.setvalue "$jupyterctx" (Obj.repr context)
 
+let override_system_params () =
+  "Sys.interactive := true"
+  |> JupyterReplToploop.run
+    ~filename:"//jupyter//" ~init:()
+    ~f:(fun () -> ignore)
+
 let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
   let context = ref None in
   let preinit () =
-    define_connection jupyterin ctrlout context
+    define_connection jupyterin ctrlout context ;
+    override_system_params ()
   in
   JupyterReplToploop.init ?preload ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in

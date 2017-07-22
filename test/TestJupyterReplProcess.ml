@@ -65,8 +65,15 @@ let test__capture_stderr ctxt =
   let expected = [`Ok "- : unit = ()\n"; `Stderr "Hello World\n"] in
   assert_equal ~ctxt ~printer ~cmp expected actual
 
+(** Check [!Sys.interactive] is [true]. *)
+let test__sys_interactive ctxt =
+  let actual = exec "!Sys.interactive" in
+  let expected = [`Ok "- : bool = true\n"] in
+  assert_equal ~ctxt ~printer ~cmp expected actual
+
 let suite =
   "Process" >::: [
     "capture_stdout" >:: test__capture_stdout;
     "capture_stderr" >:: test__capture_stderr;
+    "Sys.interactive" >:: test__sys_interactive;
   ]
