@@ -93,7 +93,7 @@ let test__unbound_value ctxt =
 let test__type_error ctxt =
   let actual = exec "42 = true" in
   let expected = [
-    `Compile_error "Error: This expression has type bool \
+    `Compile_error "This expression has type bool \
                     but an expression was expected of type\
                     \n         int"] in
   assert_equal ~ctxt ~cmp ~printer expected actual
