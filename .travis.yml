@@ -1,39 +1,65 @@
 language: c
-sudo: required
 dist: trusty
-group: edge
-os: linux
 
-services:
-  - docker
 cache:
+  apt: true
   directories:
-    - $HOME/.docker
+    - $HOME/.bin
+    - $HOME/.opam
+
+addons:
+  apt:
+    sources:
+      - sourceline: ppa:bpaquet/zeromq4-trusty
+    packages:
+      - m4
+      - git
+      - libffi-dev
+      - libgmp-dev
+      - libzmq-dev=4.0.4-bpa~trusty2
 
 env:
   global:
     - PATH=$PATH:$HOME/.bin
-  matrix:
-    - OCAML_VERSION=4.02.3
-    - OCAML_VERSION=4.03.0
-    - OCAML_VERSION=4.04.1
-    - OCAML_VERSION=4.05.0
-    - OCAML_VERSION=4.06.0
+
 matrix:
+  include:
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.02.3
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.03.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0+trunk
   allow_failures:
-    - env: OCAML_VERSION=4.05.0
-    - env: OCAML_VERSION=4.06.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
+    - os: linux
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0+trunk
 
 before_script:
-  - |
-    sed -i "s/__OCAML_VERSION__/$OCAML_VERSION/" docker/Dockerfile
-    if md5sum --check ~/.docker/docker.md5 && [[ -f ~/.docker/image.tar ]] ; then
-        docker load < ~/.docker/image.tar || exit 1
-    else
-        docker build -t ocaml-jupyter docker/ || exit 1
-        docker save ocaml-jupyter > ~/.docker/image.tar || exit 2
-        md5sum docker/* > ~/.docker/docker.md5
+  - |-
+    if [[ "$(type -p brew)" != '' ]]; then
+      brew install m4 libffi zeromq
     fi
+  - |-
+    if [[ "$(type -p opam)" == '' ]]; then
+      mkdir -p $HOME/.bin
+      curl -L -o $HOME/.bin/opam "https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-$(uname -m)-$(uname -s)"
+      chmod 755 $HOME/.bin/opam
+      opam init -a -y --comp $OCAML_VERSION
+    fi
+  - opam install -y cppo lwt yojson 'ZMQ>=4.0-8' base64 lwt-zmq nocrypto uuidm ppx_deriving_yojson ocp-indent camlp4 'ounit>=2.0.0'
 
 script:
-  - docker run --rm -v $PWD:$PWD -w $PWD ocaml-jupyter ./travis.sh
+  - eval $(opam config env)
+  - ocamlfind remove jupyter
+  - ./git/pre-commit
+  - ./configure --prefix=$(opam config var prefix) --enable-tests
+  - make
+  - make test
+  - make install
+  - make uninstall
