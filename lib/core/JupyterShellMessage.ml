@@ -52,7 +52,7 @@ type execute_reply =
 type inspect_request =
   {
     code : string;
-    cursor_pos : bool;
+    cursor_pos : int;
     detail_level : int [@default 0];
   } [@@deriving yojson { strict = false }]
 
