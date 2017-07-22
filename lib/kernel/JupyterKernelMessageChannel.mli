@@ -20,6 +20,15 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** ZeroMQ sockets *)
+(** Messaging channel for Jupyter *)
 
-include JupyterChannelIntf.Zmq
+module type ContentType =
+sig
+  type request [@@deriving yojson]
+  type reply [@@deriving yojson]
+end
+
+module Make (Content : ContentType) (Socket : JupyterKernelChannelIntf.Zmq)
+  : JupyterKernelChannelIntf.Message
+    with type request = Content.request
+     and type reply = Content.reply

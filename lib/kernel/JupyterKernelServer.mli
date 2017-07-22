@@ -20,27 +20,36 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** ZeroMQ sockets *)
+(** Kernel server *)
 
-open Lwt.Infix
+module Make
+    (ShellChannel : JupyterKernelChannelIntf.Shell)
+    (IopubChannel : JupyterKernelChannelIntf.Iopub)
+    (StdinChannel : JupyterKernelChannelIntf.Stdin)
+    (Repl : module type of JupyterRepl.Process) :
+sig
+  (** The type of servers. *)
+  type t =
+    {
+      repl : Repl.t;
+      shell : ShellChannel.t;
+      control : ShellChannel.t;
+      iopub : IopubChannel.t;
+      stdin : StdinChannel.t;
 
-type t = C : _ Lwt_zmq.Socket.t -> t
+      mutable execution_count : int;
+      mutable current_parent : ShellChannel.input option;
+    }
 
-type input = string list
-type output = string list
+  (** Connect to Jupyter. *)
+  val create :
+    repl:Repl.t ->
+    ctx:ZMQ.Context.t ->
+    JupyterKernelConnectionInfo.t -> t
 
-let create ~ctx ~kind addr =
-  let socket = ZMQ.Socket.create ctx kind in
-  ZMQ.Socket.bind socket addr ;
-  JupyterLog.info "Open ZMQ socket to %s" addr ;
-  C (Lwt_zmq.Socket.of_socket socket)
+  (** Close connection to Jupyter. *)
+  val close : t -> unit Lwt.t
 
-let recv (C socket) = Lwt_zmq.Socket.recv_all socket
-
-let send (C socket) strs =
-  Lwt_zmq.Socket.send_all socket strs
-
-let close (C socket) =
-  Lwt_zmq.Socket.to_socket socket
-  |> ZMQ.Socket.close
-  |> Lwt.return
+  (** Start a server thread accepting requests from Jupyter. *)
+  val start : t -> unit Lwt.t
+end

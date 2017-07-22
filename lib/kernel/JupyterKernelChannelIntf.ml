@@ -50,8 +50,8 @@ sig
   type reply
 
   include S
-    with type input = request JupyterMessage.t
-     and type output = reply JupyterMessage.t
+    with type input = request JupyterKernelMessage.t
+     and type output = reply JupyterKernelMessage.t
 
   (** [create ?key ~ctx ~kind address] opens connection to [address].
       @param key   a HMAC key. If [None], HMAC verification is disabled.
@@ -67,18 +67,17 @@ sig
       as a reply of [parent]. *)
   val reply :
     ?time:float ->
-    parent:_ JupyterMessage.t ->
+    parent:_ JupyterKernelMessage.t ->
     t -> reply -> unit Lwt.t
 end
 
 module type Shell =
-  Message with type request = Jupyter.Content.Shell.request
-           and type reply = Jupyter.Content.Shell.reply
+  Message with type request = Jupyter.ShellMessage.request
+           and type reply = Jupyter.ShellMessage.reply
 
 module type Iopub =
-  Message with type request = Jupyter.Content.Iopub.request
-           and type reply = Jupyter.Content.Iopub.reply
+  Message with type reply = Jupyter.IopubMessage.reply
 
 module type Stdin =
-  Message with type request = Jupyter.Content.Stdin.request
-           and type reply = Jupyter.Content.Stdin.reply
+  Message with type request = Jupyter.StdinMessage.request
+           and type reply = Jupyter.StdinMessage.reply

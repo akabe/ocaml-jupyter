@@ -20,25 +20,6 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** ZeroMQ sockets *)
 
-type reply =
-  [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
-  ]
-[@@deriving yojson]
-
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
-
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+include JupyterKernelChannelIntf.Zmq

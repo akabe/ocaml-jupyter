@@ -20,33 +20,28 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Kernel server *)
+(** A library for Jupyter notebooks *)
 
-module Make
-    (ShellChannel : JupyterChannelIntf.Shell)
-    (IopubChannel : JupyterChannelIntf.Iopub)
-    (StdinChannel : JupyterChannelIntf.Stdin)
-    (Repl : module type of JupyterRepl.Process) :
-sig
-  (** The type of servers. *)
-  type t =
-    {
-      repl : Repl.t;
-      shell : ShellChannel.t;
-      control : ShellChannel.t;
-      iopub : IopubChannel.t;
-      stdin : StdinChannel.t;
+type ctx
 
-      mutable execution_count : int;
-      mutable current_parent : ShellChannel.input option;
-    }
+(** The output channel to send displayed data. *)
+val cellout : out_channel
 
-  (** Connect to Jupyter. *)
-  val create : repl:Repl.t -> ctx:ZMQ.Context.t -> JupyterConnectionInfo.t -> t
+(** Returns the current cell context. *)
+val cell_context : unit -> ctx
 
-  (** Close connection to Jupyter. *)
-  val close : t -> unit Lwt.t
+(** [display ?ctx ?base64 mime data] shows [data] at [ctx]. [mime] is the mime
+    type of [data].
+    @param ctx     default = the current cell.
+    @param base64  default = [false]. *)
+val display : ?ctx:ctx -> ?base64:bool -> string -> string -> unit
 
-  (** Start a server thread accepting requests from Jupyter. *)
-  val start : t -> unit Lwt.t
-end
+(** [display_cell ?ctx ?base64 mime] shows data written into [cellout] at [ctx].
+    [mime] is the mime type of the data.
+    @param ctx     default = the current cell.
+    @param base64  default = [false]. *)
+val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
+
+(** {2 Low-level function} *)
+
+val send_iopub : ?ctx:ctx -> Jupyter.IopubMessage.reply -> unit

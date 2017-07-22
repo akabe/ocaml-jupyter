@@ -20,25 +20,23 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** Jupyter kernel *)
 
-type reply =
-  [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
-  ]
-[@@deriving yojson]
+open Jupyter
 
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
+module Message = JupyterKernelMessage
 
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+module ZmqChannel = JupyterKernelZmqChannel
+module ShellChannel = JupyterKernelMessageChannel.Make(ShellMessage)(ZmqChannel)
+module IopubChannel = JupyterKernelMessageChannel.Make(IopubMessage)(ZmqChannel)
+module StdinChannel = JupyterKernelMessageChannel.Make(StdinMessage)(ZmqChannel)
+
+module ConnectionInfo = JupyterKernelConnectionInfo
+
+module Server =
+  JupyterKernelServer.Make
+    (ShellChannel)(IopubChannel)(StdinChannel)(JupyterReplProcess)
+
+module Hmac = JupyterKernelHmac
+
+module Log = JupyterKernelLog

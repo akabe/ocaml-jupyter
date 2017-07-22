@@ -23,7 +23,7 @@
 open Format
 open OUnit2
 open JupyterRepl
-open Jupyter.ReplMessage
+open Jupyter.Message
 open TestUtil
 
 let rec cmp xs ys =
@@ -32,6 +32,7 @@ let rec cmp xs ys =
   | x :: xs, y :: ys when x = y -> cmp xs ys
   (* Check a pattern of an error message
      (concrete error messages depend in OCaml versions) *)
+  | `Ok pattern :: xs, `Ok msg :: ys
   | `Runtime_error pattern :: xs, `Runtime_error msg :: ys
   | `Compile_error pattern :: xs, `Compile_error msg :: ys ->
     begin

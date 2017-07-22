@@ -169,6 +169,7 @@ type request =
     | `Connect_request [@name "connect_request"]
     | `Comm_info_request of comm_info_request [@name "comm_info_request"]
     | `Shutdown_request of shutdown [@name "shutdown_request"]
+    | JupyterCommMessage.t
   ] [@@deriving yojson { strict = false }]
 
 (** {2 Reply} *)

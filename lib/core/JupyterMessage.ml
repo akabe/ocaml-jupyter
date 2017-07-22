@@ -20,25 +20,21 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** Messages *)
 
-type reply =
+(** The type of messages sent from Jupyter to OCaml REPL. *)
+type request =
   [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
+    | `Shell of JupyterCommMessage.t JupyterKernelMessage.t
   ]
 [@@deriving yojson]
 
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
+(** The type of messages sent from OCaml REPL to Jupyter. *)
+type reply =
+  [
+    | `Iopub of JupyterIopubMessage.reply JupyterKernelMessage.t
+  ]
+[@@deriving yojson]
 
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+(** The type of execution context (i.e., reference to a code cell). *)
+type ctx = JupyterShellMessage.request JupyterKernelMessage.t

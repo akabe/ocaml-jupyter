@@ -1,11 +1,10 @@
 # OASIS_START
-# DO NOT EDIT (digest: 7680ce28e000cb257542f2ce1b4d3d88)
-JupyterServer
-JupyterConnectionInfo
-JupyterMessageChannel
-JupyterMessage
-JupyterZmqChannel
-JupyterChannelIntf
-JupyterHmac
-JupyterLog
+# DO NOT EDIT (digest: 3cd9848beefa7a83b63efb6ed8b1cc7e)
+JupyterKernelServer
+JupyterKernelConnectionInfo
+JupyterKernelMessageChannel
+JupyterKernelZmqChannel
+JupyterKernelChannelIntf
+JupyterKernelHmac
+JupyterKernelLog
 # OASIS_STOP

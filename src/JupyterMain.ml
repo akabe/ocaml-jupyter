@@ -24,28 +24,23 @@
 
 open Format
 open Lwt.Infix
-
-module ShellChannel = JupyterMessageChannel.Make(Jupyter.Content.Shell)(JupyterZmqChannel)
-module IopubChannel = JupyterMessageChannel.Make(Jupyter.Content.Iopub)(JupyterZmqChannel)
-module StdinChannel = JupyterMessageChannel.Make(Jupyter.Content.Stdin)(JupyterZmqChannel)
-
-module Server =
-  JupyterServer.Make
-    (ShellChannel)(IopubChannel)(StdinChannel)(JupyterReplProcess)
+open Jupyter
+open JupyterKernel
 
 let start_heartbeat ~ctx info =
   let hb =
-    JupyterConnectionInfo.(make_address info info.hb_port)
-    |> JupyterZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep
+    ConnectionInfo.(make_address info info.hb_port)
+    |> ZmqChannel.create ~ctx ~kind:ZMQ.Socket.rep
   in
   let rec loop () =
-    JupyterZmqChannel.recv hb >>= fun data ->
-    JupyterLog.debug "Heartbeat" ;
-    JupyterZmqChannel.send hb data >>= loop
+    ZmqChannel.recv hb >>= fun data ->
+    Log.debug "Heartbeat" ;
+    ZmqChannel.send hb data >>= loop
   in
   loop ()
 
 let () =
+  Printexc.record_backtrace true ;
   let () = JupyterArgs.parse () in
   (* Fork OCaml REPL before starting a server!
      A few Lwt_unix functions (such as Lwt_unix.getservbyname, getaddrinfo)
@@ -56,7 +51,7 @@ let () =
       ~preload:!JupyterArgs.preload_objs
       ~init_file:!JupyterArgs.init_file () in
   (* Start a kernel server. *)
-  let conn_info = JupyterConnectionInfo.from_file !JupyterArgs.connection_file in
+  let conn_info = ConnectionInfo.from_file !JupyterArgs.connection_file in
   let ctx = ZMQ.Context.create () in
   let heartbeat = start_heartbeat ~ctx conn_info in
   let server = Server.create ~repl ~ctx conn_info in

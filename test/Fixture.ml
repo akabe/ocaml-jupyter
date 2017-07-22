@@ -20,7 +20,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-open JupyterMessage
+open JupyterKernel.Message
 
 let ctx = ZMQ.Context.create ()
 
@@ -109,7 +109,7 @@ struct
           username = "aabe";
           version = "5.2";
         };
-      content = `Kernel_info_reply JupyterContentShell.{
+      content = `Kernel_info_reply Jupyter.ShellMessage.{
           protocol_version = "5.2";
           implemenation = "ocaml-jupyter";
           implementation_version = "5.0.0";

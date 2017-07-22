@@ -25,18 +25,22 @@
 (** Version information *)
 module Version = JupyterVersion
 
-(** Messages between REPL process and kernel process *)
-module ReplMessage = JupyterReplMessage
+(** Messages for communication between REPL and Jupyter. *)
+module Message =  JupyterMessage
 
-(** Jupyter message contents *)
-module Content =
-struct
-  module Shell = JupyterContentShell
+(** {2 Jupyter protocol schema} *)
 
-  module Iopub = JupyterContentIopub
+module KernelMessage = JupyterKernelMessage
 
-  module Stdin = JupyterContentStdin
-end
+module ShellMessage = JupyterShellMessage
+
+module IopubMessage = JupyterIopubMessage
+
+module StdinMessage = JupyterStdinMessage
+
+module CommMessage = JupyterCommMessage
+
+(** {2 Misc} *)
 
 (** HTML utilities *)
 module Html = JupyterHtml

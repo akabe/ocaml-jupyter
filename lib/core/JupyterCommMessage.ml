@@ -20,25 +20,18 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Top-level loop of OCaml code evaluation *)
+(** Custom messages *)
 
-type reply =
+type comm =
+  {
+    target_name : string option [@default None];
+    comm_id : string;
+    data : Yojson.Safe.json;
+  } [@@deriving yojson { strict = false }]
+
+type t =
   [
-    | `Ok of string
-    | `Runtime_error of string
-    | `Compile_error of string
-    | `Aborted
-  ]
-[@@deriving yojson]
-
-val init :
-  ?preload:string list ->
-  ?preinit:(unit -> unit) ->
-  ?init_file:string ->
-  unit -> unit
-
-val run :
-  filename:string ->
-  f:('accum -> reply -> 'accum) ->
-  init:'accum ->
-  string -> 'accum
+    | `Comm_open of comm [@name "comm_open"]
+    | `Comm_msg of comm [@name "comm_msg"]
+    | `Comm_close of comm [@name "comm_close"]
+  ] [@@deriving yojson]

@@ -47,7 +47,7 @@ type display_data =
   {
     data : Yojson.Safe.json;
     metadata : Yojson.Safe.json;
-    transient : Yojson.Safe.json [@default `Null];
+    transient : transient option [@default None];
   } [@@deriving yojson { strict = false }]
 
 (** {2 Code inputs} *)
@@ -89,23 +89,9 @@ type status =
 
     Not implemented yet. *)
 
-(** {2 Custom messages} *)
-
-type comm =
-  {
-    target_name : string option;
-    comm_id : string;
-    data : Yojson.Safe.json;
-  } [@@deriving yojson { strict = false }]
-
 (** {2 Request} *)
 
-type request =
-  [
-    | `Comm_open of comm [@name "comm_open"]
-    | `Comm_msg of comm [@name "comm_msg"]
-    | `Comm_close of comm [@name "comm_close"]
-  ] [@@deriving yojson]
+type request = unit [@@deriving yojson]
 
 (** {2 Reply} *)
 
@@ -117,7 +103,5 @@ type reply =
     | `Execute_input of execute_input [@name "execute_input"]
     | `Execute_result of execute_result [@name "execute_result"]
     | `Status of status [@name "status"]
-    | `Comm_open of comm [@name "comm_open"]
-    | `Comm_msg of comm [@name "comm_msg"]
-    | `Comm_close of comm [@name "comm_close"]
+    | JupyterCommMessage.t
   ] [@@deriving yojson]

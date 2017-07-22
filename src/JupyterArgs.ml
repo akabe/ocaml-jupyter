@@ -30,7 +30,7 @@ let preload_objs = ref ["stdlib.cma"]
 
 let set_verbosity level_str =
   match Lwt_log.level_of_string level_str with
-  | Some level -> JupyterLog.set_level level
+  | Some level -> JupyterKernel.Log.set_level level
   | None -> failwith ("Unrecognized log level: " ^ level_str)
 
 let parse () =
