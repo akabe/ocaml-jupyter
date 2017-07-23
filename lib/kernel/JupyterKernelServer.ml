@@ -135,6 +135,12 @@ struct
     ShC.(`Shutdown_reply body)
     |> ShellChannel.reply shell ~parent
 
+  (** {2 Comm messages} *)
+
+  let propagate_comm ~parent repl content =
+    let msg = { parent with M.content } in
+    Repl.send repl (`Shell msg)
+
   (** {2 Main routine} *)
 
   (** a thread capturing stdout and stderr from a REPL. *)
@@ -180,13 +186,12 @@ struct
       | `Shutdown_request body -> shutdown_request ~parent shell body
       | `Kernel_info_request -> kernel_info_request ~parent shell >>= loop
       | `Execute_request body -> execute_request ~parent server body >>= loop
+      | `Comm_open _ | `Comm_msg _ | `Comm_close _ as comm ->
+        propagate_comm ~parent server.repl comm >>= loop
       | `Inspect_request _
       | `Complete_request _
       | `Connect_request
-      | `Comm_info_request _
-      | `Comm_open _
-      | `Comm_msg _
-      | `Comm_close _ ->
+      | `Comm_info_request _ ->
         Log.error "Unsupported request" ;
         loop ()
     and loop () =

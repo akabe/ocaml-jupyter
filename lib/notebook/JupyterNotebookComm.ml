@@ -20,30 +20,35 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Unsafe low-level functions for Jupyter notebooks *)
+(** User-defined communication *)
 
-let jupyterout : out_channel =
-  Obj.obj (Toploop.getvalue "$jupyterout")
+type t = string
 
-let jupyterin : in_channel =
-  Obj.obj (Toploop.getvalue "$jupyterin")
-
-let context : JupyterMessage.ctx option ref =
-  Obj.obj (Toploop.getvalue "$jupyterctx")
-
-let send (data : Jupyter.Message.reply) =
-  Marshal.to_channel jupyterout data [] ;
-  flush jupyterout
-
-let recv () : Jupyter.Message.request = Marshal.from_channel jupyterin
-
-let send_iopub ?ctx content =
-  let parent = match ctx, !context with
-    | Some ctx, _ -> ctx
-    | None, Some ctx -> ctx
-    | None, None -> failwith "Undefined current context"
+let create name data =
+  let comm_id = Uuidm.(to_string (create `V4)) in
+  let msg = JupyterCommMessage.(`Comm_open {
+      target_name = Some name;
+      comm_id;
+      data;
+    })
   in
-  let message =
-    Jupyter.KernelMessage.create_next parent content
-      ~content_to_yojson:[%to_yojson: Jupyter.IopubMessage.reply] in
-  send (`Iopub message)
+  JupyterNotebookUnsafe.send_iopub msg ;
+  comm_id
+
+let close comm_id =
+  let msg = JupyterCommMessage.(`Comm_close {
+      target_name = None;
+      comm_id;
+      data = `Assoc [];
+    })
+  in
+  JupyterNotebookUnsafe.send_iopub msg
+
+let send comm_id data =
+  let msg = JupyterCommMessage.(`Comm_msg {
+      target_name = None;
+      comm_id;
+      data;
+    })
+  in
+  JupyterNotebookUnsafe.send_iopub msg
