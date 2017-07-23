@@ -6,6 +6,8 @@ cache:
   directories:
     - $HOME/.bin
     - $HOME/.opam
+    - $HOME/.local
+    - $HOME/Library/Caches/Homebrew
 
 addons:
   apt:
