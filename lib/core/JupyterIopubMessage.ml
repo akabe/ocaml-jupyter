@@ -81,9 +81,14 @@ type status =
     execution_state : execution_status;
   } [@@deriving yojson { strict = false }]
 
-(** {2 Execution errors}
+(** {2 Execution errors} *)
 
-    Not implemented yet. *)
+type error =
+  {
+    ename : string;
+    evalue : string;
+    traceback : string list;
+  } [@@deriving yojson { strict = false }]
 
 (** {2 Clear output}
 
@@ -102,6 +107,7 @@ type reply =
     | `Update_display_data of display_data [@name "update_display_data"]
     | `Execute_input of execute_input [@name "execute_input"]
     | `Execute_result of execute_result [@name "execute_result"]
+    | `Execute_error of error [@name "error"]
     | `Status of status [@name "status"]
     | JupyterCommMessage.t
   ] [@@deriving yojson]

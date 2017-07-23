@@ -42,8 +42,5 @@ module CommMessage = JupyterCommMessage
 
 (** {2 Misc} *)
 
-(** HTML utilities *)
-module Html = JupyterHtml
-
 (** JSON utilities *)
 module Json = JupyterJson
