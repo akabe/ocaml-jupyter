@@ -11,7 +11,16 @@ AlphaFeatures:          ocamlbuild_more_args
 XOCamlbuildPluginTags:  package(cppo_ocamlbuild)
 FilesAB:                lib/core/JupyterVersion.ml.ab
 
+Flag "install-kernel"
+  Default:              true
+  Description:          Add ocaml-jupyter kernel to Jupyter
+
 PreConfCommand:         ./git/init.sh
+
+PostConfCommand:        ./kernelspec.sh create $(bindir) > src/kernel.json
+PostDistcleanCommand:   rm src/kernel.json
+PostInstallCommand:     ./kernelspec.sh install $(install_kernel) $datadir/$pkg_name
+PreUninstallCommand:    ./kernelspec.sh uninstall
 
 Library jupyter
   Path:                 lib/core
@@ -73,6 +82,7 @@ Executable "ocaml-jupyter"
   MainIs:               JupyterMain.ml
   BuildDepends:         jupyter.kernel
   CompiledObject:       byte
+  DataFiles:            kernel.json
 
 ##
 ## Tests
