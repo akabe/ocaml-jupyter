@@ -1,0 +1,38 @@
+opam-version: "1.2"
+name: "jupyter"
+version: "dev"
+maintainer: [
+  "Akinori ABE <aabe.65535@gmail.com>"
+]
+authors: [
+  "Akinori ABE"
+]
+homepage: "https://github.com/akabe/ocaml-jupyter"
+bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
+dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
+
+available: [ ocaml-version >= "4.02.3" ]
+build: [
+  [ "ocaml" "setup.ml" "-configure" "--prefix"prefix  ]
+  [ "ocaml" "setup.ml" "-build" ]
+]
+install: [ "ocaml" "setup.ml" "-install" ]
+remove: [
+  [ "ocaml" "setup.ml" "-uninstall" ]
+  [ "rm" "-f" "%{bin}%/ocaml-jupyter-kernel" ]
+]
+depends: [
+  "base-threads"
+  "base-unix"
+  "uuidm"
+  "base64"
+  "lwt"
+  "zmq" {>= "4.0-8"}
+  "lwt-zmq"
+  "yojson"
+  "ppx_deriving_yojson"
+  "nocrypto"
+  "ocamlfind" {build & >= "1.5.0"}
+  "ocamlbuild" {build}
+  "cppo" {build}
+]

@@ -28,7 +28,7 @@ function create() {
   "display_name": "OCaml ${OCAML_VERSION}",
   "language": "OCaml",
   "argv": [
-    "${bindir}/ocaml-jupyter",
+    "${bindir}/ocaml-jupyter-kernel",
     "--init",
     "${HOME}/.ocamlinit",
     "--verbosity",
