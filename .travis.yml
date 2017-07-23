@@ -6,6 +6,8 @@ cache:
   directories:
     - $HOME/.bin
     - $HOME/.opam
+    - $HOME/.local
+    - $HOME/Library/Caches/Homebrew
 
 addons:
   apt:
@@ -20,7 +22,8 @@ addons:
 
 env:
   global:
-    - PATH=$PATH:$HOME/.bin
+    - PATH=$PATH:$HOME/.bin:$HOME/.local/bin
+    - PYTHONUSERBASE=$HOME/.local
 
 matrix:
   include:
@@ -48,6 +51,7 @@ before_script:
     if [[ "$(type -p brew)" != '' ]]; then
       brew install m4 libffi zeromq
     fi
+  - pip install --user ipython==5.4.1 jupyter
   - |-
     if [[ "$(type -p opam)" == '' ]]; then
       mkdir -p $HOME/.bin
@@ -65,4 +69,18 @@ script:
   - make
   - make test
   - make install
+  - |-
+    if jupyter kernelspec list | grep ocaml-jupyter; then
+      echo -e "[Passed] ocaml-jupyter kernel is installed."
+    else
+      echo -e "[Failed] ocaml-jupyter kernel is NOT installed."
+      exit 2
+    fi
   - make uninstall
+  - |-
+    if jupyter kernelspec list | grep ocaml-jupyter; then
+      echo -e "[Passed] ocaml-jupyter kernel is NOT uninstalled."
+      exit 2
+    else
+      echo -e "[Failed] ocaml-jupyter kernel is uninstalled."
+    fi
