@@ -33,7 +33,6 @@ Library jupyter
                         JupyterStdinMessage,
                         JupyterCommMessage,
                         JupyterJson,
-                        JupyterHtml,
                         JupyterVersion
 
 Library "jupyter-notebook"

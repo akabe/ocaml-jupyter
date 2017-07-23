@@ -98,15 +98,18 @@ struct
     let execution_count = server.execution_count in
     send_iopub server IoC.(`Execute_input { code; execution_count; })
 
-  let send_iopub_exec_result ~klass server msg =
-    let html =
-      sprintf "<pre><span class=\"%s\">%s</span></pre>"
-        klass (JupyterHtml.escape msg)
-    in
+  let send_iopub_exec_success server msg =
     send_iopub server IoC.(`Execute_result {
         execution_count = server.execution_count;
-        data = `Assoc ["text/html", `String html];
+        data = `Assoc ["text/plain", `String msg];
         metadata = `Assoc [];
+      })
+
+  let send_iopub_exec_error server msg =
+    send_iopub server IoC.(`Execute_error {
+        ename = "error";
+        evalue = "error";
+        traceback = [sprintf "\x1b[31m%s\x1b[0m" msg];
       })
 
   (** {2 Execute request} *)
@@ -150,10 +153,10 @@ struct
         let%lwt () = send_iopub_stream server ~name:`Stderr s in
         loop status
       | Some (`Ok s) ->
-        let%lwt () = send_iopub_exec_result ~klass:"ansi-black-fg" server s in
+        let%lwt () = send_iopub_exec_success server s in
         loop status
       | Some (`Runtime_error s) | Some (`Compile_error s) ->
-        let%lwt () = send_iopub_exec_result ~klass:"ansi-red-fg" server s in
+        let%lwt () = send_iopub_exec_error server s in
         loop `Error
       | Some `Aborted -> loop `Abort (* Interrupted *)
       | Some `Prompt ->
