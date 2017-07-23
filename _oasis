@@ -15,8 +15,6 @@ Flag "install-kernel"
   Default:              true
   Description:          Add ocaml-jupyter kernel to Jupyter
 
-PreConfCommand:         ./git/init.sh
-
 PostConfCommand:        ./kernelspec.sh create $(bindir) > src/kernel.json
 PostDistcleanCommand:   rm src/kernel.json
 PostInstallCommand:     ./kernelspec.sh install $(install_kernel) $datadir/$pkg_name
@@ -77,7 +75,7 @@ Library "jupyter-kernel"
                         JupyterKernelLog
   Install:              false
 
-Executable "ocaml-jupyter"
+Executable "ocaml-jupyter-kernel"
   Path:                 src
   MainIs:               JupyterMain.ml
   BuildDepends:         jupyter.kernel

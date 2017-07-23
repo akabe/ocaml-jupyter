@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 08f16660ddf4c44003b8013f3d5e6cae)
+# DO NOT EDIT (digest: 69fa10a58db41c274edc394f31d6189b)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -49,7 +49,7 @@ true: annot, bin_annot
 <lib/kernel/*.ml{,i,y}>: package(yojson)
 <lib/kernel/*.ml{,i,y}>: use_jupyter
 <lib/kernel/*.ml{,i,y}>: use_jupyter-repl
-# Executable ocaml-jupyter
+# Executable ocaml-jupyter-kernel
 "src/JupyterMain.byte": package(compiler-libs.common)
 "src/JupyterMain.byte": package(compiler-libs.toplevel)
 "src/JupyterMain.byte": package(lwt)

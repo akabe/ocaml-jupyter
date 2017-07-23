@@ -65,22 +65,11 @@ script:
   - eval $(opam config env)
   - ocamlfind remove jupyter
   - ./git/pre-commit
-  - ./configure --prefix=$(opam config var prefix) --enable-tests
+  - opam lint jupyter.opam
+  - ./configure --enable-tests
   - make
   - make test
-  - make install
-  - |-
-    if jupyter kernelspec list | grep ocaml-jupyter; then
-      echo -e "[Passed] ocaml-jupyter kernel is installed."
-    else
-      echo -e "[Failed] ocaml-jupyter kernel is NOT installed."
-      exit 2
-    fi
-  - make uninstall
-  - |-
-    if jupyter kernelspec list | grep ocaml-jupyter; then
-      echo -e "[Passed] ocaml-jupyter kernel is NOT uninstalled."
-      exit 2
-    else
-      echo -e "[Failed] ocaml-jupyter kernel is uninstalled."
-    fi
+  - opam pin add -y jupyter .
+  - jupyter kernelspec list | grep ocaml-jupyter # ocaml-jupyter is installed.
+  - opam remove jupyter
+  - (! (jupyter kernelspec list | grep ocaml-jupyter)) # ocaml-jupyter is uninstalled.
