@@ -60,7 +60,7 @@ let () =
   let rec main () =
     try
       Lwt_main.run begin
-        let%lwt () = server_thread <?> heartbeat in
+        let%lwt () = Lwt.pick [server_thread; heartbeat] in
         Server.close server
       end
     with Sys.Break ->

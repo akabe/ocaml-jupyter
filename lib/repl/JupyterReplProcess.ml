@@ -139,7 +139,7 @@ let create ?preload ?init_file () =
       pid; stream; push; ctrlout; stdout; stderr;
       jupyterin = Lwt_io.(of_unix_fd ~mode:output p_jupyterin);
       ctrlin = Lwt_io.(of_unix_fd ~mode:output p_ctrlin);
-      thread = Lwt.choose [
+      thread = Lwt.pick [
           recv_ctrlout_thread ~push ctrlout;
           recv_output_thread ~push ~f:(fun s -> `Stdout s) stdout;
           recv_output_thread ~push ~f:(fun s -> `Stderr s) stderr;

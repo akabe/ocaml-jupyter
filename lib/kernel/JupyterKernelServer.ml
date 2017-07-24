@@ -195,7 +195,7 @@ struct
     loop ()
 
   let start server =
-    Lwt.choose [
+    Lwt.pick [
       propagate_repl_to_iopub server;
       start_kernel server server.shell;
       start_kernel server server.control;
