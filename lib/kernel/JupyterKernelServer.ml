@@ -158,7 +158,9 @@ struct
       | Some (`Runtime_error s) | Some (`Compile_error s) ->
         let%lwt () = send_iopub_exec_error server s in
         loop `Error
-      | Some `Aborted -> loop `Abort (* Interrupted *)
+      | Some `Aborted ->
+        let%lwt () = send_iopub_exec_error server "Interrupted." in
+        loop `Abort
       | Some `Prompt ->
         let%lwt () = send_iopub_status server `Idle in
         let%lwt () =
