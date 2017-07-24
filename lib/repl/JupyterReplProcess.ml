@@ -75,18 +75,21 @@ let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
   JupyterReplToploop.init ?preload ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in
   let ctrlout = Unix.out_channel_of_descr ctrlout in
+  let send resp =
+    Marshal.to_channel ctrlout resp flags ;
+    flush ctrlout
+  in
   let rec aux () =
-    match Marshal.from_channel ctrlin with
-    | exception End_of_file -> exit 0
-    | Quit -> exit 0 (* Shutdown request *)
-    | Exec (ctx, filename, code) ->
-      context := ctx ;
-      JupyterReplToploop.run ~filename code
-        ~f:(fun () resp -> Marshal.to_channel ctrlout resp flags)
-        ~init:() ;
-      Marshal.to_channel ctrlout `Prompt flags ;
-      flush ctrlout ;
-      aux ()
+    try
+      match Marshal.from_channel ctrlin with
+      | Quit -> exit 0 (* Shutdown request *)
+      | Exec (ctx, filename, code) ->
+        context := ctx ;
+        JupyterReplToploop.run ~filename code ~init:() ~f:(fun () -> send) ;
+        send `Prompt ; aux ()
+    with
+    | End_of_file -> exit 0 (* control channel is closed. *)
+    | Sys.Break -> send `Abort ; send `Prompt ; aux () (* Interrupted *)
   in
   aux ()
 
@@ -139,7 +142,7 @@ let create ?preload ?init_file () =
       pid; stream; push; ctrlout; stdout; stderr;
       jupyterin = Lwt_io.(of_unix_fd ~mode:output p_jupyterin);
       ctrlin = Lwt_io.(of_unix_fd ~mode:output p_ctrlin);
-      thread = Lwt.choose [
+      thread = Lwt.pick [
           recv_ctrlout_thread ~push ctrlout;
           recv_output_thread ~push ~f:(fun s -> `Stdout s) stdout;
           recv_output_thread ~push ~f:(fun s -> `Stderr s) stderr;

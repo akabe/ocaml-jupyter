@@ -73,6 +73,9 @@ let display_cell ?ctx ?base64 mime =
   read_as_possible cellin
   |> display ?ctx ?base64 mime
 
+let clear_output ?ctx ?(wait = false) () =
+  send_iopub ?ctx Jupyter.IopubMessage.(`Clear_output { wait })
+
 let cell_context () =
   match !JupyterNotebookUnsafe.context with
   | None -> failwith "JupyterNotebook has no execution context"

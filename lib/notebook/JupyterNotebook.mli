@@ -42,6 +42,12 @@ val display : ?ctx:ctx -> ?base64:bool -> string -> string -> unit
     @param base64  default = [false]. *)
 val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
 
+(** [clear_output ?ctx ?wait ()] removes displayed elements from [ctx].
+    @param ctx   default = the current cell.
+    @param wait  default = [false]. Wait to clear the output until new output is
+    available. *)
+val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
+
 (** {2 Low-level function} *)
 
 val send_iopub : ?ctx:ctx -> Jupyter.IopubMessage.reply -> unit
