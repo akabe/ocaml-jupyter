@@ -55,11 +55,12 @@ let () =
   let ctx = ZMQ.Context.create () in
   let heartbeat = start_heartbeat ~ctx conn_info in
   let server = Server.create ~repl ~ctx conn_info in
+  let server_thread = Server.start server in
   Sys.catch_break true ; (* Catch `Interrupt' signal *)
   let rec main () =
     try
       Lwt_main.run begin
-        let%lwt () = Server.start server <?> heartbeat in
+        let%lwt () = server_thread <?> heartbeat in
         Server.close server
       end
     with Sys.Break ->
