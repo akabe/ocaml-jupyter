@@ -26,6 +26,7 @@ Library jupyter
   BuildDepends:         uuidm, ppx_deriving_yojson
   XMETARequires:        uuidm, ppx_deriving_yojson.runtime
   Modules:              Jupyter,
+                        JupyterComm,
                         JupyterMessage,
                         JupyterKernelMessage,
                         JupyterShellMessage,
@@ -39,9 +40,12 @@ Library "jupyter-notebook"
   Path:                 lib/notebook
   FindlibName:          notebook
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, base64, compiler-libs
-  XMETARequires:        jupyter, base64, compiler-libs
-  Modules:              JupyterNotebook
+  BuildDepends:         jupyter, threads, base64, compiler-libs
+  XMETARequires:        jupyter, threads, base64, compiler-libs
+  Modules:              JupyterNotebook,
+                        JupyterNotebookComm,
+                        JupyterNotebookCommManager,
+                        JupyterNotebookIO
   InternalModules:      JupyterNotebookUnsafe
 
 Library "jupyter-repl"

@@ -82,7 +82,7 @@ let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
     | Exec (ctx, filename, code) ->
       context := ctx ;
       JupyterReplToploop.run ~filename code
-        ~f:(fun () resp -> Marshal.to_channel ctrlout resp flags)
+        ~f:(fun () resp -> Marshal.to_channel ctrlout resp flags ; flush ctrlout)
         ~init:() ;
       Marshal.to_channel ctrlout `Prompt flags ;
       flush ctrlout ;

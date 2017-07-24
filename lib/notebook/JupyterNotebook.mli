@@ -42,6 +42,5 @@ val display : ?ctx:ctx -> ?base64:bool -> string -> string -> unit
     @param base64  default = [false]. *)
 val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
 
-(** {2 Low-level function} *)
-
-val send_iopub : ?ctx:ctx -> Jupyter.IopubMessage.reply -> unit
+(** User-defined communication *)
+module Comm = JupyterNotebookComm

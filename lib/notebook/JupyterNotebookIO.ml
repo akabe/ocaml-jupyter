@@ -20,30 +20,44 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Unsafe low-level functions for Jupyter notebooks *)
+(** IO interface *)
 
-let jupyterout : out_channel =
-  Obj.obj (Toploop.getvalue "$jupyterout")
+module type S =
+sig
+  type 'a future
 
-let jupyterin : in_channel =
-  Obj.obj (Toploop.getvalue "$jupyterin")
+  val bind : ('a -> 'b future) -> 'a future -> 'b future
+  val return : 'a -> 'a future
 
-let context : JupyterMessage.ctx option ref =
-  Obj.obj (Toploop.getvalue "$jupyterctx")
+  type in_channel
+  type out_channel
 
-let send (data : Jupyter.Message.reply) =
-  Marshal.to_channel jupyterout data [] ;
-  flush jupyterout
+  val recv : in_channel -> Jupyter.Message.request future
+  val send : out_channel -> Jupyter.Message.reply -> unit future
 
-let recv () : Jupyter.Message.request = Marshal.from_channel jupyterin
+  type thread
 
-let send_iopub ?ctx content =
-  let parent = match ctx, !context with
-    | Some ctx, _ -> ctx
-    | None, Some ctx -> ctx
-    | None, None -> failwith "Undefined current context"
-  in
-  let message =
-    Jupyter.KernelMessage.create_next parent content
-      ~content_to_yojson:[%to_yojson: Jupyter.IopubMessage.reply] in
-  send (`Iopub message)
+  val async : (unit -> unit future) -> thread
+end
+
+(** Implementation by the OCaml standard library. *)
+module Std =
+struct
+  type 'a future = 'a
+
+  let bind f x = f x
+  let return x = x
+
+  type in_channel = Pervasives.in_channel
+  type out_channel = Pervasives.out_channel
+
+  let send oc (data : Jupyter.Message.reply) =
+    Marshal.to_channel oc data [] ;
+    flush oc
+
+  let recv ic : Jupyter.Message.request = Marshal.from_channel ic
+
+  type thread = Thread.t
+
+  let async f = Thread.create f ()
+end

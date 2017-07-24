@@ -20,30 +20,12 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Unsafe low-level functions for Jupyter notebooks *)
+(** User-defined communication *)
 
-let jupyterout : out_channel =
-  Obj.obj (Toploop.getvalue "$jupyterout")
+type comm_id
 
-let jupyterin : in_channel =
-  Obj.obj (Toploop.getvalue "$jupyterin")
+val create : string -> Yojson.Safe.json -> comm_id
 
-let context : JupyterMessage.ctx option ref =
-  Obj.obj (Toploop.getvalue "$jupyterctx")
+val close : comm_id -> unit
 
-let send (data : Jupyter.Message.reply) =
-  Marshal.to_channel jupyterout data [] ;
-  flush jupyterout
-
-let recv () : Jupyter.Message.request = Marshal.from_channel jupyterin
-
-let send_iopub ?ctx content =
-  let parent = match ctx, !context with
-    | Some ctx, _ -> ctx
-    | None, Some ctx -> ctx
-    | None, None -> failwith "Undefined current context"
-  in
-  let message =
-    Jupyter.KernelMessage.create_next parent content
-      ~content_to_yojson:[%to_yojson: Jupyter.IopubMessage.reply] in
-  send (`Iopub message)
+val send : comm_id -> Yojson.Safe.json -> unit
