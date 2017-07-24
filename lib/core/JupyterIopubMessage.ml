@@ -90,9 +90,12 @@ type error =
     traceback : string list;
   } [@@deriving yojson { strict = false }]
 
-(** {2 Clear output}
+(** {2 Clear output} *)
 
-    Not implemented yet. *)
+type clear_output =
+  {
+    wait : bool;
+  } [@@deriving yojson { strict = false }]
 
 (** {2 Request} *)
 
@@ -109,5 +112,6 @@ type reply =
     | `Execute_result of execute_result [@name "execute_result"]
     | `Execute_error of error [@name "error"]
     | `Status of status [@name "status"]
+    | `Clear_output of clear_output [@name "clear_output"]
     | JupyterCommMessage.t
   ] [@@deriving yojson]
