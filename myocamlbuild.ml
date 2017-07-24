@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: e6a9e916f0e4a514ca8f9d1e4f3c6b64) *)
+(* DO NOT EDIT (digest: ee889d6c21bb29b7db150019f4abd8e4) *)
 module OASISGettext = struct
 (* # 22 "src/oasis/OASISGettext.ml" *)
 
@@ -105,7 +105,10 @@ module OASISString = struct
         ok := false;
       incr str_idx
     done;
-    !what_idx = String.length what
+    if !what_idx = String.length what then
+      true
+    else
+      false
 
 
   let strip_starts_with ~what str =
@@ -128,7 +131,10 @@ module OASISString = struct
         ok := false;
       decr str_idx
     done;
-    !what_idx = -1
+    if !what_idx = -1 then
+      true
+    else
+      false
 
 
   let strip_ends_with ~what str =
@@ -434,7 +440,7 @@ module OASISExpr = struct
 end
 
 
-# 437 "myocamlbuild.ml"
+# 443 "myocamlbuild.ml"
 module BaseEnvLight = struct
 (* # 22 "src/base/BaseEnvLight.ml" *)
 
@@ -514,7 +520,7 @@ module BaseEnvLight = struct
 end
 
 
-# 517 "myocamlbuild.ml"
+# 523 "myocamlbuild.ml"
 module MyOCamlbuildFindlib = struct
 (* # 22 "src/plugins/ocamlbuild/MyOCamlbuildFindlib.ml" *)
 
@@ -875,7 +881,7 @@ module MyOCamlbuildBase = struct
 end
 
 
-# 878 "myocamlbuild.ml"
+# 884 "myocamlbuild.ml"
 open Ocamlbuild_plugin;;
 let package_default =
   {
@@ -903,7 +909,7 @@ let conf = {MyOCamlbuildFindlib.no_automatic_syntax = false}
 
 let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
-# 907 "myocamlbuild.ml"
+# 913 "myocamlbuild.ml"
 (* OASIS_STOP *)
 
 let () =

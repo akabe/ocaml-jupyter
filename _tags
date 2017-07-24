@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 69fa10a58db41c274edc394f31d6189b)
+# DO NOT EDIT (digest: 7dfa6f4f5ff680a3062c7de585a6af10)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -23,6 +23,7 @@ true: annot, bin_annot
 <lib/notebook/*.ml{,i,y}>: package(base64)
 <lib/notebook/*.ml{,i,y}>: package(compiler-libs)
 <lib/notebook/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/notebook/*.ml{,i,y}>: package(threads)
 <lib/notebook/*.ml{,i,y}>: package(uuidm)
 <lib/notebook/*.ml{,i,y}>: use_jupyter
 # Library jupyter-repl
@@ -90,6 +91,7 @@ true: annot, bin_annot
 "test/TestJupyter.byte": package(ppx_deriving.show)
 "test/TestJupyter.byte": package(ppx_deriving_yojson)
 "test/TestJupyter.byte": package(str)
+"test/TestJupyter.byte": package(threads)
 "test/TestJupyter.byte": package(uuidm)
 "test/TestJupyter.byte": package(yojson)
 "test/TestJupyter.byte": use_jupyter
@@ -109,6 +111,7 @@ true: annot, bin_annot
 <test/*.ml{,i,y}>: package(ppx_deriving.show)
 <test/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <test/*.ml{,i,y}>: package(str)
+<test/*.ml{,i,y}>: package(threads)
 <test/*.ml{,i,y}>: package(uuidm)
 <test/*.ml{,i,y}>: package(yojson)
 <test/*.ml{,i,y}>: use_jupyter

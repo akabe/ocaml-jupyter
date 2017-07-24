@@ -40,10 +40,12 @@ Library "jupyter-notebook"
   Path:                 lib/notebook
   FindlibName:          notebook
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, base64, compiler-libs
-  XMETARequires:        jupyter, base64, compiler-libs
+  BuildDepends:         jupyter, threads, base64, compiler-libs
+  XMETARequires:        jupyter, threads, base64, compiler-libs
   Modules:              JupyterNotebook,
-                        JupyterNotebookComm
+                        JupyterNotebookComm,
+                        JupyterNotebookCommManager,
+                        JupyterNotebookIO
   InternalModules:      JupyterNotebookUnsafe
 
 Library "jupyter-repl"

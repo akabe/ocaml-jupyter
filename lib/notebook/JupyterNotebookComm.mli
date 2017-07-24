@@ -22,10 +22,10 @@
 
 (** User-defined communication *)
 
-type t
+type comm_id
 
-val create : string -> Yojson.Safe.json -> t
+val create : string -> Yojson.Safe.json -> comm_id
 
-val close : t -> unit
+val close : comm_id -> unit
 
-val send : t -> Yojson.Safe.json -> unit
+val send : comm_id -> Yojson.Safe.json -> unit

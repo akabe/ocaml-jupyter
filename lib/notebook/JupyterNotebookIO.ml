@@ -20,35 +20,44 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** User-defined communication *)
+(** IO interface *)
 
-type comm_id = string
+module type S =
+sig
+  type 'a future
 
-let create name data =
-  let comm_id = Uuidm.(to_string (create `V4)) in
-  let msg = JupyterCommMessage.(`Comm_open {
-      target_name = Some name;
-      comm_id;
-      data;
-    })
-  in
-  JupyterNotebookUnsafe.send_iopub msg ;
-  comm_id
+  val bind : ('a -> 'b future) -> 'a future -> 'b future
+  val return : 'a -> 'a future
 
-let close comm_id =
-  let msg = JupyterCommMessage.(`Comm_close {
-      target_name = None;
-      comm_id;
-      data = `Assoc [];
-    })
-  in
-  JupyterNotebookUnsafe.send_iopub msg
+  type in_channel
+  type out_channel
 
-let send comm_id data =
-  let msg = JupyterCommMessage.(`Comm_msg {
-      target_name = None;
-      comm_id;
-      data;
-    })
-  in
-  JupyterNotebookUnsafe.send_iopub msg
+  val recv : in_channel -> Jupyter.Message.request future
+  val send : out_channel -> Jupyter.Message.reply -> unit future
+
+  type thread
+
+  val async : (unit -> unit future) -> thread
+end
+
+(** Implementation by the OCaml standard library. *)
+module Std =
+struct
+  type 'a future = 'a
+
+  let bind f x = f x
+  let return x = x
+
+  type in_channel = Pervasives.in_channel
+  type out_channel = Pervasives.out_channel
+
+  let send oc (data : Jupyter.Message.reply) =
+    Marshal.to_channel oc data [] ;
+    flush oc
+
+  let recv ic : Jupyter.Message.request = Marshal.from_channel ic
+
+  type thread = Thread.t
+
+  let async f = Thread.create f ()
+end
