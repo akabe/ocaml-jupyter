@@ -18,7 +18,10 @@
 <link title="JupyterStdinMessage" rel="Chapter" href="JupyterStdinMessage.html">
 <link title="JupyterCommMessage" rel="Chapter" href="JupyterCommMessage.html">
 <link title="JupyterJson" rel="Chapter" href="JupyterJson.html">
-<link title="JupyterVersion" rel="Chapter" href="JupyterVersion.html"><title>Jupyter.StdinMessage</title>
+<link title="JupyterVersion" rel="Chapter" href="JupyterVersion.html"><link title="Inputs" rel="Section" href="#2_Inputs">
+<link title="Request" rel="Section" href="#2_Request">
+<link title="Reply" rel="Section" href="#2_Reply">
+<title>Jupyter.StdinMessage</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Jupyter.IopubMessage.html" title="Jupyter.IopubMessage">Previous</a>
@@ -28,6 +31,8 @@
 <h1>Module <a href="type_Jupyter.StdinMessage.html">Jupyter.StdinMessage</a></h1>
 
 <pre><span class="keyword">module</span> StdinMessage: <code class="type"><a href="JupyterStdinMessage.html">JupyterStdinMessage</a></code></pre><hr width="100%">
+<br>
+<h2 id="2_Inputs">Inputs</h2><br>
 
 <pre><code><span id="TYPEinput_request"><span class="keyword">type</span> <code class="type"></code>input_request</span> = {</code></pre><table class="typetable">
 <tr>
@@ -63,12 +68,16 @@
 
 
 <pre><span id="VALinput_reply_to_yojson"><span class="keyword">val</span> input_reply_to_yojson</span> : <code class="type"><a href="JupyterStdinMessage.html#TYPEinput_reply">input_reply</a> -> Yojson.Safe.json</code></pre>
-<pre><span id="VALinput_reply_of_yojson"><span class="keyword">val</span> input_reply_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterStdinMessage.html#TYPEinput_reply">input_reply</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><span id="VALinput_reply_of_yojson"><span class="keyword">val</span> input_reply_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterStdinMessage.html#TYPEinput_reply">input_reply</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Request">Request</h2><br>
+
 <pre><span id="TYPErequest"><span class="keyword">type</span> <code class="type"></code>request</span> = <code class="type">[ `Input_request of <a href="JupyterStdinMessage.html#TYPEinput_request">input_request</a> ]</code> </pre>
 
 
 <pre><span id="VALrequest_to_yojson"><span class="keyword">val</span> request_to_yojson</span> : <code class="type"><a href="JupyterStdinMessage.html#TYPErequest">request</a> -> Yojson.Safe.json</code></pre>
-<pre><span id="VALrequest_of_yojson"><span class="keyword">val</span> request_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterStdinMessage.html#TYPErequest">request</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><span id="VALrequest_of_yojson"><span class="keyword">val</span> request_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterStdinMessage.html#TYPErequest">request</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Reply">Reply</h2><br>
+
 <pre><span id="TYPEreply"><span class="keyword">type</span> <code class="type"></code>reply</span> = <code class="type">[ `Input_reply of <a href="JupyterStdinMessage.html#TYPEinput_reply">input_reply</a> ]</code> </pre>
 
 
