@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 69fa10a58db41c274edc394f31d6189b)
+# DO NOT EDIT (digest: 152d9b8388cc921ae0e4fe33aa002cd2)
 # Ignore VCS directories, you can use the same kind of rule outside
 # OASIS_START/STOP if you want to exclude directories that contains
 # useless stuff for the build process
@@ -18,13 +18,6 @@ true: annot, bin_annot
 "lib/core/jupyter.cmxs": use_jupyter
 <lib/core/*.ml{,i,y}>: package(ppx_deriving_yojson)
 <lib/core/*.ml{,i,y}>: package(uuidm)
-# Library jupyter-notebook
-"lib/notebook/jupyter-notebook.cmxs": use_jupyter-notebook
-<lib/notebook/*.ml{,i,y}>: package(base64)
-<lib/notebook/*.ml{,i,y}>: package(compiler-libs)
-<lib/notebook/*.ml{,i,y}>: package(ppx_deriving_yojson)
-<lib/notebook/*.ml{,i,y}>: package(uuidm)
-<lib/notebook/*.ml{,i,y}>: use_jupyter
 # Library jupyter-repl
 "lib/repl/jupyter-repl.cmxs": use_jupyter-repl
 <lib/repl/*.ml{,i,y}>: package(compiler-libs.common)
@@ -76,6 +69,22 @@ true: annot, bin_annot
 <src/*.ml{,i,y}>: use_jupyter
 <src/*.ml{,i,y}>: use_jupyter-kernel
 <src/*.ml{,i,y}>: use_jupyter-repl
+# Library jupyter-notebook
+"lib/notebook/jupyter-notebook.cmxs": use_jupyter-notebook
+<lib/notebook/*.ml{,i,y}>: package(base64)
+<lib/notebook/*.ml{,i,y}>: package(compiler-libs)
+<lib/notebook/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/notebook/*.ml{,i,y}>: package(uuidm)
+<lib/notebook/*.ml{,i,y}>: use_jupyter
+# Library jupyter-archimedes
+"lib/archimedes/jupyter-archimedes.cmxs": use_jupyter-archimedes
+<lib/archimedes/*.ml{,i,y}>: package(archimedes.cairo)
+<lib/archimedes/*.ml{,i,y}>: package(base64)
+<lib/archimedes/*.ml{,i,y}>: package(compiler-libs)
+<lib/archimedes/*.ml{,i,y}>: package(ppx_deriving_yojson)
+<lib/archimedes/*.ml{,i,y}>: package(uuidm)
+<lib/archimedes/*.ml{,i,y}>: use_jupyter
+<lib/archimedes/*.ml{,i,y}>: use_jupyter-notebook
 # Executable test_lib
 "test/TestJupyter.byte": package(base64)
 "test/TestJupyter.byte": package(compiler-libs)

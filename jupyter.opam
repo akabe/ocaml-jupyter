@@ -14,7 +14,9 @@ dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
 
 available: [ ocaml-version >= "4.02.3" ]
 build: [
-  [ "ocaml" "setup.ml" "-configure" "--prefix" prefix ]
+  [ "ocaml" "setup.ml" "-configure"
+            "--prefix" prefix
+            "--enable-archimedes" {cairo2:installed & archimedes:installed} ]
   [ "ocaml" "setup.ml" "-build" ]
 ]
 install: [
@@ -40,6 +42,10 @@ depends: [
   "ocamlfind" {build & >= "1.5.0"}
   "ocamlbuild" {build}
   "cppo" {build}
+]
+depopts: [
+  "cairo2"
+  "archimedes"
 ]
 
 post-messages: [

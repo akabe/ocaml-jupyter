@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: bd8af61a9e3d966e981b24c9b085f81e)
+# DO NOT EDIT (digest: a160ddede6a6372ed3c9ac475e503d59)
 version = "0.0.0"
 description = "An OCaml kernel for Jupyter notebooks"
 requires = "uuidm ppx_deriving_yojson.runtime"
@@ -39,6 +39,17 @@ package "kernel" (
  archive(native) = "jupyter-kernel.cmxa"
  archive(native, plugin) = "jupyter-kernel.cmxs"
  exists_if = "jupyter-kernel.cma"
+)
+
+package "archimedes" (
+ version = "0.0.0"
+ description = "An OCaml kernel for Jupyter notebooks"
+ requires = "jupyter.notebook archimedes.cairo"
+ archive(byte) = "jupyter-archimedes.cma"
+ archive(byte, plugin) = "jupyter-archimedes.cma"
+ archive(native) = "jupyter-archimedes.cmxa"
+ archive(native, plugin) = "jupyter-archimedes.cmxs"
+ exists_if = "jupyter-archimedes.cma"
 )
 # OASIS_STOP
 

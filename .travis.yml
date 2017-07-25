@@ -49,7 +49,7 @@ matrix:
 before_script:
   - |-
     if [[ "$(type -p brew)" != '' ]]; then
-      brew install m4 libffi zeromq
+      brew install m4 libffi zeromq cairo
     fi
   - pip install --user ipython==5.4.1 jupyter
   - |-
@@ -60,7 +60,7 @@ before_script:
       opam init -a -y --comp $OCAML_VERSION
     fi
   - eval $(opam config env)
-  - opam install -y ocamlfind ocp-indent
+  - opam install -y ocamlfind ocp-indent cairo2 archimedes
   - ocamlfind remove jupyter
 
 script:
