@@ -14,7 +14,7 @@ function check_user_mode() {
 
 function get_ocaml_version() {
     if type -p opam >/dev/null 2>/dev/null; then
-        opam switch show
+        opam config var switch
     else
         ocaml -vnum
     fi
@@ -49,9 +49,15 @@ function install() {
         install_flags+=" --user"
     fi
 
-	if [[ "$install_kernel" == 'true' ]] && type -p jupyter >/dev/null 2>/dev/null; then
-		jupyter kernelspec install $install_flags "$datadir"
-	fi
+    if [[ "$install_kernel" == 'true' ]] && type jupyter >/dev/null 2>&1; then
+        jupyter kernelspec install $install_flags "$datadir"
+    fi
+}
+
+function uninstall() {
+    if type jupyter >/dev/null 2>&1; then
+        jupyter kernelspec remove "$KERNEL_NAME" -f
+    fi
 }
 
 OCAML_VERSION=$(get_ocaml_version | sed 's@[^0-9A-Za-z_\.+-]@_@g')
@@ -59,12 +65,12 @@ KERNEL_NAME="ocaml-jupyter-${OCAML_VERSION}"
 
 case $1 in
     create )
-		create $2
+        create $2
     ;;
     install )
         install $2 $3
-	;;
-	uninstall )
-		jupyter kernelspec remove "$KERNEL_NAME" -f || :
+    ;;
+    uninstall )
+		uninstall
 	;;
 esac
