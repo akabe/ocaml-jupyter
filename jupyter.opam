@@ -12,7 +12,7 @@ homepage: "https://github.com/akabe/ocaml-jupyter"
 bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
 dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
 
-available: [ ocaml-version >= "4.02.3" ]
+available: [ ocaml-version >= "4.02.0" ]
 build: [
   [ "ocaml" "setup.ml" "-configure"
             "--prefix" prefix
@@ -23,9 +23,7 @@ install: [
   [ "ocaml" "setup.ml" "-install" ]
 ]
 remove: [
-  [ "./kernelspec.sh" "uninstall" ]
-  [ "ocamlfind" "remove" "jupyter" ]
-  [ "rm" "%{bin}%/ocaml-jupyter-kernel" ]
+  [ "sh" "-c" "cd %{share}%/ocaml-jupyter ; ocaml setup.ml -uninstall" ]
   [ "rm" "-rf" "%{share}%/ocaml-jupyter" ]
 ]
 depends: [

@@ -74,7 +74,11 @@ Executable "ocaml-jupyter-kernel"
   MainIs:               JupyterMain.ml
   BuildDepends:         jupyter.kernel
   CompiledObject:       byte
-  DataFiles:            kernel.json
+  DataFiles:            ../setup.ml,
+                        ../setup.log,
+                        ../setup.data,
+                        ../kernelspec.sh,
+                        kernel.json
 
 ##
 ## Sub-packages
