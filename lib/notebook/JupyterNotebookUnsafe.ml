@@ -35,4 +35,15 @@ let send (data : Jupyter.Message.reply) =
   Marshal.to_channel jupyterout data [] ;
   flush jupyterout
 
+let send_iopub ?ctx content =
+  let parent = match ctx, !context with
+    | Some ctx, _ -> ctx
+    | None, Some ctx -> ctx
+    | None, None -> failwith "Undefined current context"
+  in
+  let message =
+    Jupyter.KernelMessage.create_next parent content
+      ~content_to_yojson:[%to_yojson: Jupyter.IopubMessage.reply] in
+  send (`Iopub message)
+
 let recv () : Jupyter.Message.request = Marshal.from_channel jupyterin

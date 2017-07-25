@@ -24,24 +24,11 @@
 
 type ctx = JupyterMessage.ctx
 
-(** {2 Low-level functions} *)
-
-let send_iopub ?ctx content =
-  let parent = match ctx, !JupyterNotebookUnsafe.context with
-    | Some ctx, _ -> ctx
-    | None, Some ctx -> ctx
-    | None, None -> failwith "Undefined current context"
-  in
-  let message =
-    Jupyter.KernelMessage.create_next parent content
-      ~content_to_yojson:[%to_yojson: Jupyter.IopubMessage.reply] in
-  JupyterNotebookUnsafe.send (`Iopub message)
-
 (** {2 Display} *)
 
 let display ?ctx ?(base64 = false) mime data =
   let data = if base64 then B64.encode data else data in
-  send_iopub ?ctx
+  JupyterNotebookUnsafe.send_iopub ?ctx
     Jupyter.IopubMessage.(`Display_data {
         data = `Assoc [mime, `String data];
         metadata = `Assoc [];
@@ -74,7 +61,8 @@ let display_cell ?ctx ?base64 mime =
   |> display ?ctx ?base64 mime
 
 let clear_output ?ctx ?(wait = false) () =
-  send_iopub ?ctx Jupyter.IopubMessage.(`Clear_output { wait })
+  JupyterNotebookUnsafe.send_iopub ?ctx
+    Jupyter.IopubMessage.(`Clear_output { wait })
 
 let cell_context () =
   match !JupyterNotebookUnsafe.context with
