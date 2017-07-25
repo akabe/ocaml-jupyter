@@ -32,7 +32,7 @@ matrix:
     - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.03.0
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
+      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2 UPDATE_GH_PAGES=1
     - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
     - os: linux
@@ -78,3 +78,21 @@ script:
   - ./configure --enable-tests
   - make
   - make test
+
+after_success: |
+  if [[ -n "$UPDATE_GH_PAGES" ]] && [[ -n "$GITHUB_API_KEY" ]] && [[ "$TRAVIS_BRANCH" == 'master' ]] && [[ "$TRAVIS_PULL_REQUEST" = 'false' ]]; then
+    # Generate documentation
+    make doc
+    # Clone "gh-pages" and remove old files
+    git clone https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter -b gh-pages gh-pages
+    cd gh-pages
+    rm -f README.md core/* notebook/*
+    # Update files
+    cp ../README.md .
+    cp ../jupyter.docdir/* core/
+    cp ../jupyter-notebook.docdir/* notebook/
+    git add README.md core notebook
+    # Commit and push
+    git -c user.name='Travis' -c user.email='travis@example.com' commit -m 'Update documentation'
+    git push origin gh-pages
+  fi
