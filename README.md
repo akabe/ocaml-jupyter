@@ -43,7 +43,7 @@ OCaml Jupyter includes some sub-packages:
 
 - [jupyter][jupyter-core]: definitions of Jupyter protocol. This package is internally used. You don't need it directly.
 - [jupyter.notebook][jupyter-notebook]: a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
-- jupyter.archimedes: Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package has no interface, but it registers the `jupyter` backend to Archimedes.
+- `jupyter.archimedes`: Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package has no interface, but it registers the `jupyter` backend to Archimedes.
 
 [jupyter-core]:     https://akabe.github.io/ocaml-jupyter/core/index.html
 [jupyter-notebook]: https://akabe.github.io/ocaml-jupyter/notebook/index.html
