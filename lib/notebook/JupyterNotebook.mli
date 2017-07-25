@@ -47,7 +47,3 @@ val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
     @param wait  default = [false]. Wait to clear the output until new output is
     available. *)
 val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
-
-(** {2 Low-level function} *)
-
-val send_iopub : ?ctx:ctx -> Jupyter.IopubMessage.reply -> unit

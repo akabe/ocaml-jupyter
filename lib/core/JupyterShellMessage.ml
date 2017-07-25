@@ -27,7 +27,7 @@ type status =
     | `Ok    [@name "ok"]
     | `Error [@name "error"]
     | `Abort [@name "abort"]
-  ] JupyterJson.enum [@@deriving yojson]
+  ] [@@deriving yojson]
 
 (** {2 Execute} *)
 
@@ -44,7 +44,7 @@ type execute_request =
 type execute_reply =
   {
     execution_count : int;
-    status : status;
+    status : status JupyterJson.enum;
   } [@@deriving yojson { strict = false }]
 
 (** {2 Instrospection} *)
@@ -58,7 +58,7 @@ type inspect_request =
 
 type inspect_reply =
   {
-    status : status;
+    status : status JupyterJson.enum;
     found : bool;
     data : Yojson.Safe.json [@default `Null];
     metadata : Yojson.Safe.json [@default `Null];
@@ -78,7 +78,7 @@ type complete_reply =
     cursor_start : int;
     cursor_end : int;
     metadata : Yojson.Safe.json;
-    status : status;
+    status : status JupyterJson.enum;
     code : string;
     cursor_pos : int;
   } [@@deriving yojson { strict = false }]

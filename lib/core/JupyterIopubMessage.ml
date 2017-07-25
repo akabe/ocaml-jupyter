@@ -28,11 +28,11 @@ type stream_name =
   [
     | `Stdout [@name "stdout"]
     | `Stderr [@name "stderr"]
-  ] JupyterJson.enum [@@deriving yojson { strict = false }]
+  ] [@@deriving yojson { strict = false }]
 
 type stream =
   {
-    name : stream_name;
+    name : stream_name JupyterJson.enum;
     text : string;
   } [@@deriving yojson { strict = false }]
 
@@ -74,11 +74,11 @@ type execution_status =
     | `Busy     [@name "busy"]
     | `Idle     [@name "idle"]
     | `Starting [@name "starting"]
-  ] JupyterJson.enum [@@deriving yojson]
+  ] [@@deriving yojson]
 
 type status =
   {
-    execution_state : execution_status;
+    execution_state : execution_status JupyterJson.enum;
   } [@@deriving yojson { strict = false }]
 
 (** {2 Execution errors} *)
