@@ -49,19 +49,8 @@ function install() {
         install_flags+=" --user"
     fi
 
-    local cmd="jupyter kernelspec install ${install_flags} $datadir"
-
 	if [[ "$install_kernel" == 'true' ]] && type -p jupyter >/dev/null 2>/dev/null; then
-		echo "$cmd"
-		eval $cmd
-	else
-		cat <<EOF
-=*=*=*=*=*=*=*=*=*=*= Add ocaml-jupyter kernel =*=*=*=*=*=*=*=*=*=*=
-
-  You can add ocaml-jupyter kernel to Jupyter by the following command:
-
-  \$ $cmd
-EOF
+		jupyter kernelspec install $install_flags "$datadir"
 	fi
 }
 
