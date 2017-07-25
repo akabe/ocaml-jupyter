@@ -37,6 +37,11 @@ $ jupyter notebook
 
 ## Usage
 
+### Examples
+
+- [Introduction](notebooks/introduction.ipynb): a very simple example for use of OCaml Jupyter and sub-packages.
+- [Get a description of a word from DuckDuckGo API](notebooks/word_description_from_DuckDuckGoAPI.ipynb): request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
+
 ### API documentation
 
 OCaml Jupyter includes some sub-packages:
