@@ -15,7 +15,7 @@ An OCaml kernel for [Jupyter notebook][jupyter].
 
 This provides an OCaml REPL with a great user interface such as markdown/HTML documentation, LaTeX formula by MathJax, and image embedding.
 
-![Screenshot](https://raw.githubusercontent.com/akabe/ocaml-jupyter/images/screenshot.png)
+![Screenshot](https://akabe.github.io/ocaml-jupyter/images/screenshot.png)
 
 ## Getting started
 
