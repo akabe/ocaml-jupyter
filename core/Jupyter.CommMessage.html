@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Jupyter.StdinMessage.html">
+<link rel="next" href="Jupyter.Json.html">
+<link rel="Up" href="Jupyter.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jupyter" rel="Chapter" href="Jupyter.html">
+<link title="JupyterMessage" rel="Chapter" href="JupyterMessage.html">
+<link title="JupyterKernelMessage" rel="Chapter" href="JupyterKernelMessage.html">
+<link title="JupyterShellMessage" rel="Chapter" href="JupyterShellMessage.html">
+<link title="JupyterIopubMessage" rel="Chapter" href="JupyterIopubMessage.html">
+<link title="JupyterStdinMessage" rel="Chapter" href="JupyterStdinMessage.html">
+<link title="JupyterCommMessage" rel="Chapter" href="JupyterCommMessage.html">
+<link title="JupyterJson" rel="Chapter" href="JupyterJson.html">
+<link title="JupyterVersion" rel="Chapter" href="JupyterVersion.html"><title>Jupyter.CommMessage</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Jupyter.StdinMessage.html" title="Jupyter.StdinMessage">Previous</a>
+&nbsp;<a class="up" href="Jupyter.html" title="Jupyter">Up</a>
+&nbsp;<a class="post" href="Jupyter.Json.html" title="Jupyter.Json">Next</a>
+</div>
+<h1>Module <a href="type_Jupyter.CommMessage.html">Jupyter.CommMessage</a></h1>
+
+<pre><span class="keyword">module</span> CommMessage: <code class="type"><a href="JupyterCommMessage.html">JupyterCommMessage</a></code></pre><hr width="100%">
+
+<pre><code><span id="TYPEcomm"><span class="keyword">type</span> <code class="type"></code>comm</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcomm.target_name">target_name</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcomm.comm_id">comm_id</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcomm.data">data</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALcomm_to_yojson"><span class="keyword">val</span> comm_to_yojson</span> : <code class="type"><a href="JupyterCommMessage.html#TYPEcomm">comm</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALcomm_of_yojson"><span class="keyword">val</span> comm_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterCommMessage.html#TYPEcomm">comm</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Comm_close of <a href="JupyterCommMessage.html#TYPEcomm">comm</a><br>       | `Comm_msg of <a href="JupyterCommMessage.html#TYPEcomm">comm</a><br>       | `Comm_open of <a href="JupyterCommMessage.html#TYPEcomm">comm</a> ]</code> </pre>
+
+
+<pre><span id="VALto_yojson"><span class="keyword">val</span> to_yojson</span> : <code class="type"><a href="JupyterCommMessage.html#TYPEt">t</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALof_yojson"><span class="keyword">val</span> of_yojson</span> : <code class="type">Yojson.Safe.json -> <a href="JupyterCommMessage.html#TYPEt">t</a> Ppx_deriving_yojson_runtime.error_or</code></pre></body></html>

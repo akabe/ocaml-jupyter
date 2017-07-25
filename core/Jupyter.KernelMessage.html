@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Jupyter.Message.html">
+<link rel="next" href="Jupyter.ShellMessage.html">
+<link rel="Up" href="Jupyter.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jupyter" rel="Chapter" href="Jupyter.html">
+<link title="JupyterMessage" rel="Chapter" href="JupyterMessage.html">
+<link title="JupyterKernelMessage" rel="Chapter" href="JupyterKernelMessage.html">
+<link title="JupyterShellMessage" rel="Chapter" href="JupyterShellMessage.html">
+<link title="JupyterIopubMessage" rel="Chapter" href="JupyterIopubMessage.html">
+<link title="JupyterStdinMessage" rel="Chapter" href="JupyterStdinMessage.html">
+<link title="JupyterCommMessage" rel="Chapter" href="JupyterCommMessage.html">
+<link title="JupyterJson" rel="Chapter" href="JupyterJson.html">
+<link title="JupyterVersion" rel="Chapter" href="JupyterVersion.html"><link title="Headers" rel="Section" href="#2_Headers">
+<link title="Top-level message" rel="Section" href="#2_Toplevelmessage">
+<title>Jupyter.KernelMessage</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Jupyter.Message.html" title="Jupyter.Message">Previous</a>
+&nbsp;<a class="up" href="Jupyter.html" title="Jupyter">Up</a>
+&nbsp;<a class="post" href="Jupyter.ShellMessage.html" title="Jupyter.ShellMessage">Next</a>
+</div>
+<h1>Module <a href="type_Jupyter.KernelMessage.html">Jupyter.KernelMessage</a></h1>
+
+<pre><span class="keyword">module</span> KernelMessage: <code class="type"><a href="JupyterKernelMessage.html">JupyterKernelMessage</a></code></pre><hr width="100%">
+<br>
+<h2 id="2_Headers">Headers</h2><br>
+
+<pre><code><span id="TYPEheader"><span class="keyword">type</span> <code class="type"></code>header</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.msg_id">msg_id</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+typically UUID, must be unique per message<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.msg_type">msg_type</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+the kind of message<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.session">session</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+typically UUID, should be unique per session<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.date">date</span>&nbsp;: <code class="type">string option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+ISO8601 timestamp for when
+                                              the message is created<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.username">username</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+the current username<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTheader.version">version</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+the message protocol version<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+
+<pre><span id="VALheader_to_yojson"><span class="keyword">val</span> header_to_yojson</span> : <code class="type"><a href="JupyterKernelMessage.html#TYPEheader">header</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALheader_of_yojson"><span class="keyword">val</span> header_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterKernelMessage.html#TYPEheader">header</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><span id="VALheader_of_string"><span class="keyword">val</span> header_of_string</span> : <code class="type">string -> <a href="JupyterKernelMessage.html#TYPEheader">header</a></code></pre>
+<pre><span id="VALheader_opt_of_string"><span class="keyword">val</span> header_opt_of_string</span> : <code class="type">string -> <a href="JupyterKernelMessage.html#TYPEheader">header</a> option</code></pre>
+<pre><span id="VALstring_of_header"><span class="keyword">val</span> string_of_header</span> : <code class="type"><a href="JupyterKernelMessage.html#TYPEheader">header</a> -> string</code></pre>
+<pre><span id="VALstring_of_header_opt"><span class="keyword">val</span> string_of_header_opt</span> : <code class="type"><a href="JupyterKernelMessage.html#TYPEheader">header</a> option -> string</code></pre><br>
+<h2 id="2_Toplevelmessage">Top-level message</h2><br>
+
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type">'a</code> t</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.zmq_ids">zmq_ids</span>&nbsp;: <code class="type">string list</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.header">header</span>&nbsp;: <code class="type"><a href="JupyterKernelMessage.html#TYPEheader">header</a></code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The message header contains a pair of unique identifiers for the
+        originating session and the actual message id, in addition to the
+        username for the process that generated the message.  This is useful in
+        collaborative settings where multiple users may be interacting with the
+        same kernel simultaneously, so that frontends can label the various
+        messages in a meaningful way.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.parent_header">parent_header</span>&nbsp;: <code class="type"><a href="JupyterKernelMessage.html#TYPEheader">header</a> option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+In a chain of messages, the header from the parent is copied so that
+        clients can track where messages come from.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.metadata">metadata</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Any metadata associated with the message.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.content">content</span>&nbsp;: <code class="type">'a</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The actual content of the message must be a dict, whose structure
+        depends on the message type.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.buffers">buffers</span>&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+optional: buffers is a list of binary data buffers for implementations
+        that support binary extensions to the protocol.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+
+
+<pre><span id="VALto_yojson"><span class="keyword">val</span> to_yojson</span> : <code class="type">'a. ('a -> Yojson.Safe.json) -> 'a <a href="JupyterKernelMessage.html#TYPEt">t</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALof_yojson"><span class="keyword">val</span> of_yojson</span> : <code class="type">'a.<br>         (Yojson.Safe.json -> 'a Ppx_deriving_yojson_runtime.error_or) -><br>         Yojson.Safe.json -><br>         'a <a href="JupyterKernelMessage.html#TYPEt">t</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><span id="VALepoch_to_iso8601_string"><span class="keyword">val</span> epoch_to_iso8601_string</span> : <code class="type">float -> string</code></pre>
+<pre><span id="VALcreate_next"><span class="keyword">val</span> create_next</span> : <code class="type">?time:float -><br>       content_to_yojson:('a -> [> `List of [> `String of string ] list ]) -><br>       'b <a href="JupyterKernelMessage.html#TYPEt">t</a> -> 'a -> 'a <a href="JupyterKernelMessage.html#TYPEt">t</a></code></pre></body></html>

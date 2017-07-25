@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="JupyterShellMessage.html">
+<link rel="next" href="JupyterStdinMessage.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jupyter" rel="Chapter" href="Jupyter.html">
+<link title="JupyterMessage" rel="Chapter" href="JupyterMessage.html">
+<link title="JupyterKernelMessage" rel="Chapter" href="JupyterKernelMessage.html">
+<link title="JupyterShellMessage" rel="Chapter" href="JupyterShellMessage.html">
+<link title="JupyterIopubMessage" rel="Chapter" href="JupyterIopubMessage.html">
+<link title="JupyterStdinMessage" rel="Chapter" href="JupyterStdinMessage.html">
+<link title="JupyterCommMessage" rel="Chapter" href="JupyterCommMessage.html">
+<link title="JupyterJson" rel="Chapter" href="JupyterJson.html">
+<link title="JupyterVersion" rel="Chapter" href="JupyterVersion.html"><link title="Streams" rel="Section" href="#2_Streams">
+<link title="Display data" rel="Section" href="#2_Displaydata">
+<link title="Code inputs" rel="Section" href="#2_Codeinputs">
+<link title="Execution results" rel="Section" href="#2_Executionresults">
+<link title="Kernel status" rel="Section" href="#2_Kernelstatus">
+<link title="Execution errors" rel="Section" href="#2_Executionerrors">
+<link title="Clear output" rel="Section" href="#2_Clearoutput">
+<link title="Request" rel="Section" href="#2_Request">
+<link title="Reply" rel="Section" href="#2_Reply">
+<title>JupyterIopubMessage</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="JupyterShellMessage.html" title="JupyterShellMessage">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="JupyterStdinMessage.html" title="JupyterStdinMessage">Next</a>
+</div>
+<h1>Module <a href="type_JupyterIopubMessage.html">JupyterIopubMessage</a></h1>
+
+<pre><span class="keyword">module</span> JupyterIopubMessage: <code class="code">sig</code> <a href="JupyterIopubMessage.html">..</a> <code class="code">end</code></pre><div class="info module top">
+Messages on IOPUB channel<br>
+</div>
+<hr width="100%">
+<br>
+<h2 id="2_Streams">Streams</h2><br>
+
+<pre><span id="TYPEstream_name"><span class="keyword">type</span> <code class="type"></code>stream_name</span> = <code class="type">[ `Stderr | `Stdout ]</code> </pre>
+
+
+<pre><span id="VALstream_name_to_yojson"><span class="keyword">val</span> stream_name_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEstream_name">stream_name</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALstream_name_of_yojson"><span class="keyword">val</span> stream_name_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEstream_name">stream_name</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><code><span id="TYPEstream"><span class="keyword">type</span> <code class="type"></code>stream</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstream.name">name</span>&nbsp;: <code class="type"><a href="JupyterIopubMessage.html#TYPEstream_name">stream_name</a> <a href="JupyterJson.html#TYPEenum">JupyterJson.enum</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstream.text">text</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALstream_to_yojson"><span class="keyword">val</span> stream_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEstream">stream</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALstream_of_yojson"><span class="keyword">val</span> stream_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEstream">stream</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Displaydata">Display data</h2><br>
+
+<pre><code><span id="TYPEtransient"><span class="keyword">type</span> <code class="type"></code>transient</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtransient.display_id">display_id</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALtransient_to_yojson"><span class="keyword">val</span> transient_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEtransient">transient</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALtransient_of_yojson"><span class="keyword">val</span> transient_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEtransient">transient</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><code><span id="TYPEdisplay_data"><span class="keyword">type</span> <code class="type"></code>display_data</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdisplay_data.data">data</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdisplay_data.metadata">metadata</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTdisplay_data.transient">transient</span>&nbsp;: <code class="type"><a href="JupyterIopubMessage.html#TYPEtransient">transient</a> option</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALdisplay_data_to_yojson"><span class="keyword">val</span> display_data_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEdisplay_data">display_data</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALdisplay_data_of_yojson"><span class="keyword">val</span> display_data_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEdisplay_data">display_data</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Codeinputs">Code inputs</h2><br>
+
+<pre><code><span id="TYPEexecute_input"><span class="keyword">type</span> <code class="type"></code>execute_input</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecute_input.code">code</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecute_input.execution_count">execution_count</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALexecute_input_to_yojson"><span class="keyword">val</span> execute_input_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEexecute_input">execute_input</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALexecute_input_of_yojson"><span class="keyword">val</span> execute_input_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEexecute_input">execute_input</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Executionresults">Execution results</h2><br>
+
+<pre><code><span id="TYPEexecute_result"><span class="keyword">type</span> <code class="type"></code>execute_result</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecute_result.execution_count">execution_count</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecute_result.data">data</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecute_result.metadata">metadata</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALexecute_result_to_yojson"><span class="keyword">val</span> execute_result_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEexecute_result">execute_result</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALexecute_result_of_yojson"><span class="keyword">val</span> execute_result_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEexecute_result">execute_result</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Kernelstatus">Kernel status</h2><br>
+
+<pre><span id="TYPEexecution_status"><span class="keyword">type</span> <code class="type"></code>execution_status</span> = <code class="type">[ `Busy | `Idle | `Starting ]</code> </pre>
+
+
+<pre><span id="VALexecution_status_to_yojson"><span class="keyword">val</span> execution_status_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEexecution_status">execution_status</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALexecution_status_of_yojson"><span class="keyword">val</span> execution_status_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEexecution_status">execution_status</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><code><span id="TYPEstatus"><span class="keyword">type</span> <code class="type"></code>status</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstatus.execution_state">execution_state</span>&nbsp;: <code class="type"><a href="JupyterIopubMessage.html#TYPEexecution_status">execution_status</a> <a href="JupyterJson.html#TYPEenum">JupyterJson.enum</a></code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALstatus_to_yojson"><span class="keyword">val</span> status_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEstatus">status</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALstatus_of_yojson"><span class="keyword">val</span> status_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEstatus">status</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Executionerrors">Execution errors</h2><br>
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.ename">ename</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.evalue">evalue</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.traceback">traceback</span>&nbsp;: <code class="type">string list</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALerror_to_yojson"><span class="keyword">val</span> error_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEerror">error</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALerror_of_yojson"><span class="keyword">val</span> error_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEerror">error</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Clearoutput">Clear output</h2><br>
+
+<pre><code><span id="TYPEclear_output"><span class="keyword">type</span> <code class="type"></code>clear_output</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTclear_output.wait">wait</span>&nbsp;: <code class="type">bool</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALclear_output_to_yojson"><span class="keyword">val</span> clear_output_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEclear_output">clear_output</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALclear_output_of_yojson"><span class="keyword">val</span> clear_output_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEclear_output">clear_output</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Request">Request</h2><br>
+
+<pre><span id="TYPErequest"><span class="keyword">type</span> <code class="type"></code>request</span> = <code class="type">unit</code> </pre>
+
+
+<pre><span id="VALrequest_to_yojson"><span class="keyword">val</span> request_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPErequest">request</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALrequest_of_yojson"><span class="keyword">val</span> request_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPErequest">request</a> Ppx_deriving_yojson_runtime.error_or</code></pre><br>
+<h2 id="2_Reply">Reply</h2><br>
+
+<pre><span id="TYPEreply"><span class="keyword">type</span> <code class="type"></code>reply</span> = <code class="type">[ `Clear_output of <a href="JupyterIopubMessage.html#TYPEclear_output">clear_output</a><br>       | `Comm_close of <a href="JupyterCommMessage.html#TYPEcomm">JupyterCommMessage.comm</a><br>       | `Comm_msg of <a href="JupyterCommMessage.html#TYPEcomm">JupyterCommMessage.comm</a><br>       | `Comm_open of <a href="JupyterCommMessage.html#TYPEcomm">JupyterCommMessage.comm</a><br>       | `Display_data of <a href="JupyterIopubMessage.html#TYPEdisplay_data">display_data</a><br>       | `Execute_error of <a href="JupyterIopubMessage.html#TYPEerror">error</a><br>       | `Execute_input of <a href="JupyterIopubMessage.html#TYPEexecute_input">execute_input</a><br>       | `Execute_result of <a href="JupyterIopubMessage.html#TYPEexecute_result">execute_result</a><br>       | `Status of <a href="JupyterIopubMessage.html#TYPEstatus">status</a><br>       | `Stream of <a href="JupyterIopubMessage.html#TYPEstream">stream</a><br>       | `Update_display_data of <a href="JupyterIopubMessage.html#TYPEdisplay_data">display_data</a> ]</code> </pre>
+
+
+<pre><span id="VALreply_to_yojson"><span class="keyword">val</span> reply_to_yojson</span> : <code class="type"><a href="JupyterIopubMessage.html#TYPEreply">reply</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALreply_of_yojson"><span class="keyword">val</span> reply_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterIopubMessage.html#TYPEreply">reply</a> Ppx_deriving_yojson_runtime.error_or</code></pre></body></html>
