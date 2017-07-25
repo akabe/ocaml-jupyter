@@ -15,6 +15,10 @@ Flag "install-kernel"
   Default:              true
   Description:          Add ocaml-jupyter kernel to Jupyter
 
+Flag "archimedes"
+  Default:              false
+  Description:          Install jupyter.archimedes sub-package
+
 PostConfCommand:        ./kernelspec.sh create $(bindir) > src/kernel.json
 PostDistcleanCommand:   rm src/kernel.json
 PostInstallCommand:     ./kernelspec.sh install $(install_kernel) $datadir/$pkg_name
@@ -34,15 +38,6 @@ Library jupyter
                         JupyterCommMessage,
                         JupyterJson,
                         JupyterVersion
-
-Library "jupyter-notebook"
-  Path:                 lib/notebook
-  FindlibName:          notebook
-  FindlibParent:        jupyter
-  BuildDepends:         jupyter, base64, compiler-libs
-  XMETARequires:        jupyter, base64, compiler-libs
-  Modules:              JupyterNotebook
-  InternalModules:      JupyterNotebookUnsafe
 
 Library "jupyter-repl"
   Path:                 lib/repl
@@ -80,6 +75,29 @@ Executable "ocaml-jupyter-kernel"
   BuildDepends:         jupyter.kernel
   CompiledObject:       byte
   DataFiles:            kernel.json
+
+##
+## Sub-packages
+##
+
+Library "jupyter-notebook"
+  Path:                 lib/notebook
+  FindlibName:          notebook
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter, base64, compiler-libs
+  XMETARequires:        jupyter, base64, compiler-libs
+  Modules:              JupyterNotebook
+  InternalModules:      JupyterNotebookUnsafe
+
+Library "jupyter-archimedes"
+  Path:                 lib/archimedes
+  Build$:               flag(archimedes)
+  Install$:             flag(archimedes)
+  FindlibName:          archimedes
+  FindlibParent:        jupyter
+  BuildDepends:         jupyter.notebook, archimedes.cairo
+  XMETARequires:        jupyter.notebook, archimedes.cairo
+  Modules:              JupyterArchimedes
 
 ##
 ## Tests

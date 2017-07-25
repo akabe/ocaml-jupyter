@@ -7,7 +7,7 @@ cache:
     - $HOME/.bin
     - $HOME/.opam
     - $HOME/.local
-    - $HOME/Library/Caches/Homebrew
+    # - $HOME/Library/Caches/Homebrew
 
 addons:
   apt:
@@ -37,9 +37,9 @@ matrix:
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
     - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0+trunk
-    - os: osx
-      osx_image: xcode7.3
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
+    # - os: osx
+    #   osx_image: xcode7.3
+    #   env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
   allow_failures:
     - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
@@ -47,10 +47,10 @@ matrix:
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0+trunk
 
 before_script:
-  - |-
-    if [[ "$(type -p brew)" != '' ]]; then
-      brew install m4 libffi zeromq
-    fi
+  # - |-
+  #   if [[ "$(type -p brew)" != '' ]]; then
+  #     brew install m4 libffi zeromq cairo
+  #   fi
   - pip install --user ipython==5.4.1 jupyter
   - |-
     if [[ "$(type -p opam)" == '' ]]; then
@@ -60,7 +60,7 @@ before_script:
       opam init -a -y --comp $OCAML_VERSION
     fi
   - eval $(opam config env)
-  - opam install -y ocamlfind ocp-indent
+  - opam install -y ocamlfind ocp-indent cairo2 archimedes
   - ocamlfind remove jupyter
 
 script:

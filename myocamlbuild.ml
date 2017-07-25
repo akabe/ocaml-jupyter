@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: e6a9e916f0e4a514ca8f9d1e4f3c6b64) *)
+(* DO NOT EDIT (digest: db64cacb11bc0fe624866297b9f63e69) *)
 module OASISGettext = struct
 (* # 22 "src/oasis/OASISGettext.ml" *)
 
@@ -882,9 +882,10 @@ let package_default =
      MyOCamlbuildBase.lib_ocaml =
        [
           ("jupyter", ["lib/core"], []);
-          ("jupyter-notebook", ["lib/notebook"], []);
           ("jupyter-repl", ["lib/repl"], []);
-          ("jupyter-kernel", ["lib/kernel"], [])
+          ("jupyter-kernel", ["lib/kernel"], []);
+          ("jupyter-notebook", ["lib/notebook"], []);
+          ("jupyter-archimedes", ["lib/archimedes"], [])
        ];
      lib_c = [];
      flags = [];
@@ -894,7 +895,8 @@ let package_default =
           ("src", ["lib/kernel"]);
           ("lib/repl", ["lib/core"]);
           ("lib/notebook", ["lib/core"]);
-          ("lib/kernel", ["lib/core"; "lib/repl"])
+          ("lib/kernel", ["lib/core"; "lib/repl"]);
+          ("lib/archimedes", ["lib/notebook"])
        ]
   }
   ;;
@@ -903,7 +905,7 @@ let conf = {MyOCamlbuildFindlib.no_automatic_syntax = false}
 
 let dispatch_default = MyOCamlbuildBase.dispatch_default conf package_default;;
 
-# 907 "myocamlbuild.ml"
+# 909 "myocamlbuild.ml"
 (* OASIS_STOP *)
 
 let () =
