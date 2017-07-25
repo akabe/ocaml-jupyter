@@ -100,6 +100,26 @@ Library "jupyter-archimedes"
   Modules:              JupyterArchimedes
 
 ##
+## Documentation
+##
+
+Document jupyter
+  Title:                OCaml Jupyter Core Library
+  Type:                 OCamlbuild (0.4)
+  BuildTools+:          ocamldoc
+  InstallDir:           $docdir/core
+  XOCamlbuildPath:      lib/core
+  XOCamlbuildLibraries: jupyter
+
+Document "jupyter-notebook"
+  Title:                OCaml Jupyter Notebook Library
+  Type:                 OCamlbuild (0.4)
+  BuildTools+:          ocamldoc
+  InstallDir:           $docdir/notebook
+  XOCamlbuildPath:      lib/notebook
+  XOCamlbuildLibraries: jupyter.notebook
+
+##
 ## Tests
 ##
 

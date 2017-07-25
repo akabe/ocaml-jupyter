@@ -13,6 +13,7 @@
 
 # ocamlbuild working directory
 _build/
+*.docdir
 
 # ocamlbuild targets
 *.byte
