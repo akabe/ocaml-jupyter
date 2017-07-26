@@ -68,3 +68,7 @@ let cell_context () =
   match !JupyterNotebookUnsafe.context with
   | None -> failwith "JupyterNotebook has no execution context"
   | Some ctx -> ctx
+
+(** {2 User-defined communication} *)
+
+module CommManager = JupyterNotebookCommManager

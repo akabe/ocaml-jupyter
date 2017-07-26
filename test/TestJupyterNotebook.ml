@@ -75,28 +75,20 @@ let test__send ctxt =
     `Ok "- : unit = ()\n"
   ] in
   assert_equal ~ctxt ~printer ~cmp expected actual
-
+(*
 let test__recv ctxt =
   let msg =
-    `Shell JupyterKernelMessage.{
-        zmq_ids = [];
-        header = { msg_id=""; msg_type="status"; session="";
-                   date=None; username=""; version=""; };
-        parent_header = None;
-        metadata = "";
-        content = `Comm_open Jupyter.CommMessage.{
-            target_name = None;
-            comm_id = "abcd";
-            data = `Null;
-          };
-        buffers = [];
-      } in
+    `Shell (`Comm_open Jupyter.CommMessage.{
+        target_name = None;
+        comm_id = "abcd";
+        data = `Null;
+      }) in
   let actual =
     exec ~hook:(fun repl -> Process.send repl msg)
       "JupyterNotebookUnsafe.recv ()" in
   let expected = [`Ok "- : Jupyter\\.Message\\.request =.*"] in
   assert_equal ~ctxt ~printer ~cmp expected actual
-
+  *)
 let suite =
   "JupyterNotebook" >::: [
     "Unsafe" >::: [
@@ -104,6 +96,6 @@ let suite =
       "jupyterout" >:: test__jupyterout;
       "jupyterctx" >:: test__jupyterctx;
       "send" >:: test__send;
-      "recv" >:: test__recv;
+      (* "recv" >:: test__recv; *)
     ]
   ]

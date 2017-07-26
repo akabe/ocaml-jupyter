@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: a160ddede6a6372ed3c9ac475e503d59)
+# DO NOT EDIT (digest: 22f5ecd7f7ad9918b561a420a7ee4a58)
 version = "0.0.0"
 description = "An OCaml kernel for Jupyter notebooks"
 requires = "uuidm ppx_deriving_yojson.runtime"
@@ -21,7 +21,7 @@ package "repl" (
 package "notebook" (
  version = "0.0.0"
  description = "An OCaml kernel for Jupyter notebooks"
- requires = "jupyter base64 compiler-libs"
+ requires = "jupyter threads base64 compiler-libs"
  archive(byte) = "jupyter-notebook.cma"
  archive(byte, plugin) = "jupyter-notebook.cma"
  archive(native) = "jupyter-notebook.cmxa"

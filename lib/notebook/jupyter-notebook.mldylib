@@ -1,5 +1,7 @@
 # OASIS_START
-# DO NOT EDIT (digest: 334b6a953573329ebaf8d6f793948160)
+# DO NOT EDIT (digest: 0b140742ddf1ef548e6c10a26e74c61e)
 JupyterNotebook
+JupyterNotebookCommManager
+JupyterNotebookRouter
 JupyterNotebookUnsafe
 # OASIS_STOP

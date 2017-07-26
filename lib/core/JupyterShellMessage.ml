@@ -98,7 +98,7 @@ type connect_reply =
 
 type comm_info_request =
   {
-    target_name : string;
+    target_name : string option [@default None];
   } [@@deriving yojson { strict = false }]
 
 type comm_info_reply =

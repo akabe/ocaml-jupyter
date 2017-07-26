@@ -25,13 +25,14 @@
 (** The type of messages sent from Jupyter to OCaml REPL. *)
 type request =
   [
-    | `Shell of JupyterCommMessage.t JupyterKernelMessage.t
+    | `Shell of JupyterShellMessage.request JupyterKernelMessage.t
   ]
 [@@deriving yojson]
 
 (** The type of messages sent from OCaml REPL to Jupyter. *)
 type reply =
   [
+    | `Shell of JupyterShellMessage.reply JupyterKernelMessage.t
     | `Iopub of JupyterIopubMessage.reply JupyterKernelMessage.t
   ]
 [@@deriving yojson]
