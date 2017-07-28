@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: 22f5ecd7f7ad9918b561a420a7ee4a58)
-version = "0.0.0"
+# DO NOT EDIT (digest: 2ffce45da8cfcb8fb7bbc1cafc7907ea)
+version = "0.1.0"
 description = "An OCaml kernel for Jupyter notebooks"
 requires = "uuidm ppx_deriving_yojson.runtime"
 archive(byte) = "jupyter.cma"
@@ -9,7 +9,7 @@ archive(native) = "jupyter.cmxa"
 archive(native, plugin) = "jupyter.cmxs"
 exists_if = "jupyter.cma"
 package "repl" (
- version = "0.0.0"
+ version = "0.1.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires =
  "jupyter compiler-libs.common compiler-libs.toplevel lwt lwt.unix"
@@ -19,7 +19,7 @@ package "repl" (
 )
 
 package "notebook" (
- version = "0.0.0"
+ version = "0.1.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires = "jupyter threads base64 compiler-libs"
  archive(byte) = "jupyter-notebook.cma"
@@ -30,7 +30,7 @@ package "notebook" (
 )
 
 package "kernel" (
- version = "0.0.0"
+ version = "0.1.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires =
  "jupyter jupyter.repl lwt lwt.unix yojson lwt-zmq nocrypto lwt.ppx ppx_deriving_yojson.runtime"
@@ -42,7 +42,7 @@ package "kernel" (
 )
 
 package "archimedes" (
- version = "0.0.0"
+ version = "0.1.0"
  description = "An OCaml kernel for Jupyter notebooks"
  requires = "jupyter.notebook archimedes.cairo"
  archive(byte) = "jupyter-archimedes.cma"
