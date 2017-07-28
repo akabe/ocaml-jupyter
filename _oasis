@@ -88,10 +88,12 @@ Library "jupyter-notebook"
   Path:                 lib/notebook
   FindlibName:          notebook
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, base64, compiler-libs
-  XMETARequires:        jupyter, base64, compiler-libs
-  Modules:              JupyterNotebook
-  InternalModules:      JupyterNotebookUnsafe
+  BuildDepends:         jupyter, threads, base64, compiler-libs
+  XMETARequires:        jupyter, threads, base64, compiler-libs
+  Modules:              JupyterNotebook,
+                        JupyterNotebookCommManager
+  InternalModules:      JupyterNotebookRouter,
+                        JupyterNotebookUnsafe
 
 Library "jupyter-archimedes"
   Path:                 lib/archimedes

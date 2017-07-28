@@ -143,6 +143,9 @@ struct
     let rec loop status =
       match%lwt Lwt_stream.get strm with
       | None -> Lwt.return_unit (* done *)
+      | Some (`Shell msg) -> (* propagate an SHELL message to Jupyter *)
+        let%lwt () = ShellChannel.send server.shell msg in
+        loop status
       | Some (`Iopub msg) -> (* propagate an IOPUB message to Jupyter *)
         let%lwt () = IopubChannel.send server.iopub msg in
         loop status
@@ -182,13 +185,11 @@ struct
       | `Shutdown_request body -> shutdown_request ~parent shell body
       | `Kernel_info_request -> kernel_info_request ~parent shell >>= loop
       | `Execute_request body -> execute_request ~parent server body >>= loop
+      | `Comm_open _ | `Comm_msg _ | `Comm_close _ | `Comm_info_request _ ->
+        Repl.send server.repl (`Shell parent) >>= loop (* propagete to REPL *)
       | `Inspect_request _
       | `Complete_request _
-      | `Connect_request
-      | `Comm_info_request _
-      | `Comm_open _
-      | `Comm_msg _
-      | `Comm_close _ ->
+      | `Connect_request ->
         Log.error "Unsupported request" ;
         loop ()
     and loop () =

@@ -23,87 +23,95 @@
 open Format
 open Lwt.Infix
 open OUnit2
-open JupyterRepl
+open JupyterKernelMessage
 
-let printer lst =
-  [%to_yojson: JupyterReplProcess.reply list] lst
-  |> Yojson.Safe.to_string
+let exec = TestJupyterNotebookUnsafe.exec
 
-let cmp = TestJupyterReplToploop.cmp
-
-let exec ?hook ?ctx code =
-  TestJupyterReplProcess.exec
-    ?hook ?ctx ~init_file:"fixtures/notebook.init.ml" code
+let ctx =
+  {
+    zmq_ids = []; buffers = []; metadata = ""; parent_header = None;
+    header = {
+      msg_id = "";
+      msg_type = "execute_request";
+      session = "";
+      date = None;
+      username = "";
+      version = "";
+    };
+    content = `Execute_request JupyterShellMessage.({
+        code = "";
+        silent = false;
+        store_history = true;
+        user_expressions = `Null;
+        allow_stdin = true;
+        stop_on_error = true;
+      });
+  }
 
 (** {2 Test suite} *)
 
-let test__jupyterin ctxt =
-  let actual = exec "JupyterNotebookUnsafe.jupyterin" in
-  let expected = [`Ok "- : in_channel = <abstr>\n"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
+let test_display__rawdata ctxt =
+  let expected_content =
+    `Display_data JupyterIopubMessage.({
+        data = `Assoc ["text", `String "Hello"];
+        metadata = `Assoc [];
+        transient = None;
+      })
+  in
+  match exec ~ctx {|JupyterNotebook.display "text" "Hello"|} with
+  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+    assert_equal ~ctxt ctx.header ph ;
+    assert_equal ~ctxt expected_content content
+  | xs ->
+    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
-let test__jupyterout ctxt =
-  let actual = exec "JupyterNotebookUnsafe.jupyterout" in
-  let expected = [`Ok "- : out_channel = <abstr>\n"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
+let test_display__base64 ctxt =
+  let expected_content =
+    `Display_data JupyterIopubMessage.({
+        data = `Assoc ["text", `String "SGVsbG8="];
+        metadata = `Assoc [];
+        transient = None;
+      })
+  in
+  match exec ~ctx {|JupyterNotebook.display ~base64:true "text" "Hello"|} with
+  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+    assert_equal ~ctxt ctx.header ph ;
+    assert_equal ~ctxt expected_content content
+  | xs ->
+    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
-let test__jupyterctx ctxt =
-  let ctx = Fixture.KernelInfoRequest.message in
-  let actual = exec ~ctx "!JupyterNotebookUnsafe.context" in
-  let expected = [`Ok "- : JupyterMessage.ctx option =.*"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
+let test_display_cell ctxt =
+  let expected_content =
+    `Display_data JupyterIopubMessage.({
+        data = `Assoc ["text", `String "Hello"];
+        metadata = `Assoc [];
+        transient = None;
+      })
+  in
+  match exec ~ctx {|output_string JupyterNotebook.cellout "Hello" ;
+                    JupyterNotebook.display_cell "text"|} with
+  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+    assert_equal ~ctxt ctx.header ph ;
+    assert_equal ~ctxt expected_content content
+  | xs ->
+    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
-let test__send ctxt =
-  let actual =
-    exec
-      "let open JupyterKernelMessage in \
-       let content = `Status JupyterIopubMessage.{ execution_state = `Idle } in \
-       let header = { msg_id=\"\"; msg_type=\"status\"; session=\"\"; date=None; username=\"\"; version=\"\"; } in \
-       let m = { zmq_ids=[]; header; parent_header=None; metadata=\"\"; content; buffers=[]; } in \
-       JupyterNotebookUnsafe.send (`Iopub m)"
-    |> List.sort compare in (* the order of elements is NOT important *)
-  let expected = [
-    `Iopub JupyterKernelMessage.{
-        zmq_ids = [];
-        header = { msg_id=""; msg_type="status"; session="";
-                   date=None; username=""; version=""; };
-        parent_header = None;
-        metadata = "";
-        content = `Status JupyterIopubMessage.{ execution_state = `Idle };
-        buffers = [];
-      };
-    `Ok "- : unit = ()\n"
-  ] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
-
-let test__recv ctxt =
-  let msg =
-    `Shell JupyterKernelMessage.{
-        zmq_ids = [];
-        header = { msg_id=""; msg_type="status"; session="";
-                   date=None; username=""; version=""; };
-        parent_header = None;
-        metadata = "";
-        content = `Comm_open Jupyter.CommMessage.{
-            target_name = None;
-            comm_id = "abcd";
-            data = `Null;
-          };
-        buffers = [];
-      } in
-  let actual =
-    exec ~hook:(fun repl -> Process.send repl msg)
-      "JupyterNotebookUnsafe.recv ()" in
-  let expected = [`Ok "- : Jupyter\\.Message\\.request =.*"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
+let test_clear_output ctxt =
+  let expected_content =
+    `Clear_output JupyterIopubMessage.({ wait = false }) in
+  match exec ~ctx {|JupyterNotebook.clear_output ~wait:false ()|} with
+  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+    assert_equal ~ctxt ctx.header ph ;
+    assert_equal ~ctxt expected_content content
+  | xs ->
+    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
 let suite =
   "JupyterNotebook" >::: [
-    "Unsafe" >::: [
-      "jupyterin" >:: test__jupyterin;
-      "jupyterout" >:: test__jupyterout;
-      "jupyterctx" >:: test__jupyterctx;
-      "send" >:: test__send;
-      "recv" >:: test__recv;
-    ]
+    "display" >::: [
+      "rawdata" >:: test_display__rawdata;
+      "base64" >:: test_display__base64;
+    ];
+    "display_cell" >:: test_display_cell;
+    "clear_output" >:: test_clear_output;
   ]

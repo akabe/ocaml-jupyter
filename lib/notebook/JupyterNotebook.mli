@@ -47,3 +47,9 @@ val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
     @param wait  default = [false]. Wait to clear the output until new output is
     available. *)
 val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
+
+(** {2 User-defined communication} *)
+
+(** User-defined communication
+    @since 0.1.0 *)
+module CommManager = JupyterNotebookCommManager

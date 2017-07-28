@@ -23,7 +23,7 @@
 (** Version information *)
 
 (** The version of OCaml kernel *)
-let kernel_version = "0.0.0"
+let kernel_version = "5.0.0"
 
 (** The version of OCaml *)
 let ocaml_version = Sys.ocaml_version

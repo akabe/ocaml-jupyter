@@ -2,10 +2,10 @@
 
 exit_code=0
 
-for fname in $(find lib src test -regex '.*\.\(ml\|mli\)'); do
+for fname in $(find lib src test -type f | grep '.*\.\(ml\|mli\)$'); do
 	if [[ "$(echo $fname | grep cppo)" == '' ]]; then
-		hash0=$(md5sum "$fname" | awk '{print $1}')
-		hash1=$(ocp-indent "$fname" | md5sum | awk '{print $1}')
+		hash0=$(cat "$fname")
+		hash1=$(ocp-indent "$fname")
 
 		if [[ "$hash0" == "$hash1" ]]; then
 			echo -e "\033[32m[Passed]\033[0m $fname is already formatted."
