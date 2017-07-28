@@ -33,7 +33,7 @@ let cmp = TestJupyterReplToploop.cmp
 
 let exec ?hook ?ctx code =
   TestJupyterReplProcess.exec
-    ?hook ?ctx ~init_file:"fixtures/notebook.init.ml" code
+    ?hook ?ctx ~init_file:"fixtures/nbinit.ml" code
 
 (** {2 Test suite} *)
 

@@ -124,7 +124,7 @@ let test__camlp4 ctxt =
   let expected = [`Ok "- : int Stream.t = <abstr>\n"] in
   assert_equal ~ctxt ~cmp ~printer expected actual
 
-let () = Toploop.init ~init_file:"fixtures/.ocamlinit" ()
+let () = Toploop.init ~init_file:"fixtures/ocamlinit.ml" ()
 
 let suite =
   "Toploop" >::: [
