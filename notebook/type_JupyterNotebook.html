@@ -6,7 +6,8 @@
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
-<link title="JupyterNotebook" rel="Chapter" href="JupyterNotebook.html"><title>JupyterNotebook</title>
+<link title="JupyterNotebook" rel="Chapter" href="JupyterNotebook.html">
+<link title="JupyterNotebookCommManager" rel="Chapter" href="JupyterNotebookCommManager.html"><title>JupyterNotebook</title>
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span><br>
@@ -18,4 +19,5 @@
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;display_cell&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clear_output&nbsp;:&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?wait:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">CommManager</span>&nbsp;=&nbsp;<span class="constructor">JupyterNotebookCommManager</span><br>
 <span class="keyword">end</span></code></body></html>

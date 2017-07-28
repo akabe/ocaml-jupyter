@@ -33,7 +33,7 @@ Messages for communication between REPL and Jupyter.<br>
 </div>
 <hr width="100%">
 
-<pre><span id="TYPErequest"><span class="keyword">type</span> <code class="type"></code>request</span> = <code class="type">[ `Shell of <a href="JupyterCommMessage.html#TYPEt">JupyterCommMessage.t</a> <a href="JupyterKernelMessage.html#TYPEt">JupyterKernelMessage.t</a> ]</code> </pre>
+<pre><span id="TYPErequest"><span class="keyword">type</span> <code class="type"></code>request</span> = <code class="type">[ `Shell of <a href="JupyterShellMessage.html#TYPErequest">JupyterShellMessage.request</a> <a href="JupyterKernelMessage.html#TYPEt">JupyterKernelMessage.t</a> ]</code> </pre>
 <div class="info ">
 The type of messages sent from Jupyter to OCaml REPL.<br>
 </div>
@@ -41,7 +41,7 @@ The type of messages sent from Jupyter to OCaml REPL.<br>
 
 <pre><span id="VALrequest_to_yojson"><span class="keyword">val</span> request_to_yojson</span> : <code class="type"><a href="JupyterMessage.html#TYPErequest">request</a> -> Yojson.Safe.json</code></pre>
 <pre><span id="VALrequest_of_yojson"><span class="keyword">val</span> request_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterMessage.html#TYPErequest">request</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
-<pre><span id="TYPEreply"><span class="keyword">type</span> <code class="type"></code>reply</span> = <code class="type">[ `Iopub of <a href="JupyterIopubMessage.html#TYPEreply">JupyterIopubMessage.reply</a> <a href="JupyterKernelMessage.html#TYPEt">JupyterKernelMessage.t</a> ]</code> </pre>
+<pre><span id="TYPEreply"><span class="keyword">type</span> <code class="type"></code>reply</span> = <code class="type">[ `Iopub of <a href="JupyterIopubMessage.html#TYPEreply">JupyterIopubMessage.reply</a> <a href="JupyterKernelMessage.html#TYPEt">JupyterKernelMessage.t</a><br>       | `Shell of <a href="JupyterShellMessage.html#TYPEreply">JupyterShellMessage.reply</a> <a href="JupyterKernelMessage.html#TYPEt">JupyterKernelMessage.t</a> ]</code> </pre>
 <div class="info ">
 The type of messages sent from OCaml REPL to Jupyter.<br>
 </div>
