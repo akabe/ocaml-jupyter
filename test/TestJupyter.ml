@@ -32,6 +32,7 @@ let suite =
       TestJupyterReplToploop.suite;
     ];
     TestJupyterNotebookUnsafe.suite;
+    TestJupyterNotebook.suite;
   ]
 
 let () = run_test_tt_main suite
