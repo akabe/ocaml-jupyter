@@ -31,9 +31,9 @@ let printer lst =
 
 let cmp = TestJupyterReplToploop.cmp
 
-let exec ?hook ?ctx code =
+let exec ?pre_exec ?post_exec ?ctx code =
   TestJupyterReplProcess.exec
-    ?hook ?ctx ~init_file:"fixtures/nbinit.ml" code
+    ?pre_exec ?post_exec ?ctx ~init_file:"fixtures/nbinit.ml" code
 
 (** {2 Test suite} *)
 
@@ -75,20 +75,7 @@ let test__send ctxt =
     `Ok "- : unit = ()\n"
   ] in
   assert_equal ~ctxt ~printer ~cmp expected actual
-(*
-let test__recv ctxt =
-  let msg =
-    `Shell (`Comm_open Jupyter.CommMessage.{
-        target_name = None;
-        comm_id = "abcd";
-        data = `Null;
-      }) in
-  let actual =
-    exec ~hook:(fun repl -> Process.send repl msg)
-      "JupyterNotebookUnsafe.recv ()" in
-  let expected = [`Ok "- : Jupyter\\.Message\\.request =.*"] in
-  assert_equal ~ctxt ~printer ~cmp expected actual
-  *)
+
 let suite =
   "JupyterNotebook" >::: [
     "Unsafe" >::: [
@@ -96,6 +83,5 @@ let suite =
       "jupyterout" >:: test__jupyterout;
       "jupyterctx" >:: test__jupyterctx;
       "send" >:: test__send;
-      (* "recv" >:: test__recv; *)
     ]
   ]

@@ -32,7 +32,9 @@ let printer lst =
 
 let cmp = TestJupyterReplToploop.cmp
 
-let exec ?(hook = fun _ -> Lwt.return_unit) ?ctx ?init_file code =
+let default _ = Lwt.return_unit
+
+let exec ?(pre_exec = default) ?(post_exec = default) ?ctx ?init_file code =
   let repl = Process.create ?init_file () in
   let strm = Process.stream repl in
   let rec recv_all acc =
@@ -41,9 +43,10 @@ let exec ?(hook = fun _ -> Lwt.return_unit) ?ctx ?init_file code =
     | Some reply -> recv_all (reply :: acc)
   in
   Lwt_main.run begin
+    let%lwt () = pre_exec repl in
     let%lwt () = Process.run ?ctx ~filename:"//toplevel//" repl code in
-    let%lwt () = hook repl in
     let%lwt resp1 = recv_all [] in
+    let%lwt () = post_exec repl in
     let%lwt () = Process.close repl in
     let%lwt resp2 = Lwt_stream.to_list (Process.stream repl) in
     Lwt.return (resp1 @ resp2)
