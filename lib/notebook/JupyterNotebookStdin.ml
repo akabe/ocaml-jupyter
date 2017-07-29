@@ -20,31 +20,39 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Messages on STDIN channel *)
+(** Jupyter stdin *)
 
-(** {2 Inputs} *)
+let stdin, stdin_out =
+  let fin, fout = Unix.pipe () in
+  let ic = Unix.in_channel_of_descr fin in
+  let oc = Unix.out_channel_of_descr fout in
+  (ic, oc)
 
-type input_request =
-  {
-    prompt : string;
-    password : bool;
-  } [@@deriving yojson { strict = false }]
+let blocking_on_recv value =
+  output_string stdin_out value ;
+  output_char stdin_out '\n' ;
+  flush stdin_out
 
-type input_reply =
-  {
-    value : string;
-  } [@@deriving yojson { strict = false }]
+let on_recv = ref blocking_on_recv
 
-(** {2 Request} *)
+let send_stdin content =
+  let parent = match !JupyterNotebookUnsafe.context with
+    | None -> failwith "Undefined current context"
+    | Some ctx -> ctx in
+  let message =
+    Jupyter.KernelMessage.create_next parent content
+      ~content_to_yojson:[%to_yojson: Jupyter.StdinMessage.reply] in
+  JupyterNotebookUnsafe.send (`Stdin message)
 
-type reply =
-  [
-    | `Input_request of input_request [@name "input_request"]
-  ] [@@deriving yojson]
+let recv msg =
+  let open Jupyter in
+  let (`Input_reply { StdinMessage.value }) = msg.KernelMessage.content in
+  !on_recv value
 
-(** {2 Reply} *)
+let read_line_async on_recv_ ?(password = false) prompt =
+  on_recv := on_recv_ ;
+  send_stdin JupyterStdinMessage.(`Input_request { prompt; password; })
 
-type request =
-  [
-    | `Input_reply of input_reply [@name "input_reply"]
-  ] [@@deriving yojson]
+let read_line ?password prompt =
+  read_line_async blocking_on_recv ?password prompt ;
+  input_line stdin

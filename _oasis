@@ -93,6 +93,7 @@ Library "jupyter-notebook"
   Modules:              JupyterNotebook,
                         JupyterNotebookCommManager
   InternalModules:      JupyterNotebookRouter,
+                        JupyterNotebookStdin,
                         JupyterNotebookUnsafe
 
 Library "jupyter-archimedes"

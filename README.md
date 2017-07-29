@@ -106,7 +106,7 @@ Many Jupyter kernels for functional programming languages are available such as 
 | Code completion        | Todo          | Yes           |
 | Introspection          | Todo          | Yes           |
 | User-defined messages  | Yes           | No            |
-| Stdin                  | Todo          | No            |
+| Stdin                  | Yes           | No            |
 
 In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.
 

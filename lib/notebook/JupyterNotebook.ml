@@ -69,6 +69,10 @@ let cell_context () =
   | None -> failwith "JupyterNotebook has no execution context"
   | Some ctx -> ctx
 
+let read_line = JupyterNotebookStdin.read_line
+
+let read_line_async = JupyterNotebookStdin.read_line_async
+
 (** {2 User-defined communication} *)
 
 module CommManager = JupyterNotebookCommManager

@@ -149,6 +149,9 @@ struct
       | Some (`Iopub msg) -> (* propagate an IOPUB message to Jupyter *)
         let%lwt () = IopubChannel.send server.iopub msg in
         loop status
+      | Some (`Stdin msg) -> (* propagate an STDIN message to Jupyter *)
+        let%lwt () = StdinChannel.send server.stdin msg in
+        loop status
       | Some (`Stdout s) ->
         let%lwt () = send_iopub_stream server ~name:`Stdout s in
         loop status
@@ -180,6 +183,13 @@ struct
     in
     loop `Ok
 
+  let propagate_stdin server =
+    let rec loop () =
+      StdinChannel.recv server.stdin >>= fun req ->
+      Repl.send server.repl (`Stdin req) >>= loop
+    in
+    loop ()
+
   let start_kernel server shell =
     let rec reply parent = function
       | `Shutdown_request body -> shutdown_request ~parent shell body
@@ -200,6 +210,7 @@ struct
   let start server =
     Lwt.pick [
       propagate_repl_to_iopub server;
+      propagate_stdin server;
       start_kernel server server.shell;
       start_kernel server server.control;
     ]
