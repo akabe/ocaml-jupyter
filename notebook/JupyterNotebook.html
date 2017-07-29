@@ -11,7 +11,8 @@
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="JupyterNotebook" rel="Chapter" href="JupyterNotebook.html">
-<link title="JupyterNotebookCommManager" rel="Chapter" href="JupyterNotebookCommManager.html"><link title="User-defined communication" rel="Section" href="#2_Userdefinedcommunication">
+<link title="JupyterNotebookCommManager" rel="Chapter" href="JupyterNotebookCommManager.html"><link title="User input" rel="Section" href="#2_Userinput">
+<link title="User-defined communication" rel="Section" href="#2_Userdefinedcommunication">
 <title>JupyterNotebook</title>
 </head>
 <body>
@@ -56,6 +57,18 @@ Returns the current cell context.<br>
 <div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
 <div class="param_info"><code class="code">wait</code> : default = <code class="code">false</code>. Wait to clear the output until new output is
     available.</div>
+<br>
+<h2 id="2_Userinput">User input</h2><br>
+
+<pre><span id="VALread_line"><span class="keyword">val</span> read_line</span> : <code class="type">?password:bool -> string -> string</code></pre><div class="info ">
+<code class="code">read_line ?password prompt</code> requests user's input.<br>
+<b>Since</b> 0.1.0<br>
+</div>
+
+<pre><span id="VALread_line_async"><span class="keyword">val</span> read_line_async</span> : <code class="type">(string -> unit) -> ?password:bool -> string -> unit</code></pre><div class="info ">
+Asynchronous version of <code class="code">read_line</code>.<br>
+<b>Since</b> 0.1.0<br>
+</div>
 <br>
 <h2 id="2_Userdefinedcommunication">User-defined communication</h2><br>
 
