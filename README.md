@@ -1,7 +1,9 @@
-# OCaml Jupyter &nbsp;&nbsp; [![Kernel version][version-img]][version] [![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
+# OCaml Jupyter
+
+[![Kernel version][version-img]][version] [![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
 
 [version]:      https://github.com/akabe/ocaml-jupyter/releases
-[version-img]:  https://img.shields.io/badge/version-0.0.0-blue.svg
+[version-img]:  https://img.shields.io/badge/version-0.1.0-blue.svg
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
 [protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
@@ -19,13 +21,11 @@ This provides an OCaml REPL with a great user interface such as markdown/HTML do
 
 ## Getting started
 
-Installation requires [Jupyter][jupyter], [OPAM][opam] and OCaml >= 4.03.2.
-The current development version can be installed by
+OCaml Jupyter can be installed by [OPAM][opam] as follows:
 
-```console
-$ git clone https://github.com/akabe/ocaml-jupyter
-$ cd ocaml-jupyter/
-$ opam pin add jupyter .
+``` console
+$ pip install jupyter
+$ opam install jupyter
 ```
 
 which will automatically register the kernel to Jupyter.
@@ -35,12 +35,23 @@ After installation, you can use `ocaml-jupyter` kernel by launching Jupyter note
 $ jupyter notebook
 ```
 
+### Development version
+
+```console
+$ git clone https://github.com/akabe/ocaml-jupyter
+$ cd ocaml-jupyter/
+$ opam pin add jupyter .
+```
+
 ## Usage
 
 ### Examples
 
-- [Introduction](notebooks/introduction.ipynb): a very simple example for use of OCaml Jupyter and sub-packages.
-- [Get a description of a word from DuckDuckGo API](notebooks/word_description_from_DuckDuckGoAPI.ipynb): request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
+- [Introduction][nb-intro]: a very simple example for use of OCaml Jupyter and sub-packages.
+- [Get a description of a word from DuckDuckGo API][nb-cohttp-lwt]: request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
+
+[nb-intro]: https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/introduction.ipynb
+[nb-cohttp-lwt]: https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/word_description_from_DuckDuckGoAPI.ipynb
 
 ### API documentation
 
@@ -48,7 +59,7 @@ OCaml Jupyter includes some sub-packages:
 
 - [jupyter][jupyter-core]: definitions of Jupyter protocol. This package is internally used. You don't need it directly.
 - [jupyter.notebook][jupyter-notebook]: a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
-- `jupyter.archimedes`: Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package has no interface, but it registers the `jupyter` backend to Archimedes.
+- `jupyter.archimedes`: Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package has no interface, but it registers the `jupyter` backend to Archimedes. (`opam install cairo2 archimedes` is required.)
 
 [jupyter-core]:     https://akabe.github.io/ocaml-jupyter/core/index.html
 [jupyter-notebook]: https://akabe.github.io/ocaml-jupyter/notebook/index.html
@@ -94,7 +105,7 @@ Many Jupyter kernels for functional programming languages are available such as 
 | Session key support    | Yes           | No            |
 | Code completion        | Todo          | Yes           |
 | Introspection          | Todo          | Yes           |
-| User-defined messages  | Todo          | No            |
+| User-defined messages  | Yes           | No            |
 | Stdin                  | Todo          | No            |
 
 In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.

@@ -33,7 +33,7 @@ depends: [
   "base64"
   "lwt"
   "zmq" {>= "4.0-8"}
-  "lwt-zmq"
+  "lwt-zmq" {>= "2.1.0"}
   "yojson"
   "ppx_deriving_yojson"
   "nocrypto"
