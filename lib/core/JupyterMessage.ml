@@ -26,6 +26,7 @@
 type request =
   [
     | `Shell of JupyterShellMessage.request JupyterKernelMessage.t
+    | `Stdin of JupyterStdinMessage.request JupyterKernelMessage.t
   ]
 [@@deriving yojson]
 
@@ -34,6 +35,7 @@ type reply =
   [
     | `Shell of JupyterShellMessage.reply JupyterKernelMessage.t
     | `Iopub of JupyterIopubMessage.reply JupyterKernelMessage.t
+    | `Stdin of JupyterStdinMessage.reply JupyterKernelMessage.t
   ]
 [@@deriving yojson]
 

@@ -52,6 +52,8 @@ let _ =
             comm_info_request msg target_name
           | _ -> ()
         end
+      | `Stdin msg ->
+        JupyterNotebookStdin.recv msg
     done
   in
   Thread.create loop ()

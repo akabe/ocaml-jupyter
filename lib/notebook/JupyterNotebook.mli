@@ -48,6 +48,16 @@ val display_cell : ?ctx:ctx -> ?base64:bool -> string -> unit
     available. *)
 val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
 
+(** {2 User input} *)
+
+(** [read_line ?password prompt] requests user's input.
+    @since 0.1.0 *)
+val read_line : ?password:bool -> string -> string
+
+(** Asynchronous version of [read_line].
+    @since 0.1.0 *)
+val read_line_async : (string -> unit) -> ?password:bool -> string -> unit
+
 (** {2 User-defined communication} *)
 
 (** User-defined communication
