@@ -34,6 +34,7 @@ let suite =
     TestJupyterNotebookUnsafe.suite;
     TestJupyterNotebook.suite;
     TestJupyterNotebookCommManager.suite;
+    TestJupyterKernelMerlin.suite;
   ]
 
 let () = run_test_tt_main suite

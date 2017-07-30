@@ -42,8 +42,12 @@ depends: [
   "cppo" {build}
 ]
 depopts: [
+  "merlin"
   "cairo2"
   "archimedes"
+]
+conflicts: [
+  "merlin" {< "3.0.0"}
 ]
 
 post-messages: [

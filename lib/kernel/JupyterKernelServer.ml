@@ -38,17 +38,19 @@ module Make
 struct
   type t =
     {
+      merlin : JupyterKernelMerlin.t;
       repl : Repl.t;
       shell : ShellChannel.t;
       control : ShellChannel.t;
       iopub : IopubChannel.t;
       stdin : StdinChannel.t;
+      code : Buffer.t; (* code that have been executed ever *)
 
       mutable execution_count : int;
       mutable current_parent : ShellChannel.input option;
     }
 
-  let create ~repl ~ctx info =
+  let create ~merlin ~repl ~ctx info =
     let key = info.JupyterKernelConnectionInfo.key in
     let shell =
       JupyterKernelConnectionInfo.(make_address info info.shell_port)
@@ -67,9 +69,10 @@ struct
       |> StdinChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
     in
     {
-      repl; shell; control; iopub; stdin;
+      merlin; repl; shell; control; iopub; stdin;
       execution_count = 0;
       current_parent = None;
+      code = Buffer.create 256;
     }
 
   let close server =
@@ -135,7 +138,57 @@ struct
     ShC.(`Shutdown_reply body)
     |> ShellChannel.reply shell ~parent
 
+  (** {2 Complete request} *)
+
+  let string_of_complete_entry entry = entry.JupyterKernelMerlin.name
+
+  let complete_request ~parent server shell body =
+    let open JupyterKernelMerlin in
+    let context = Buffer.contents server.code in
+    let code = body.ShC.code in
+    let cursor_pos = body.ShC.cursor_pos in
+    let%lwt result = complete ~context server.merlin code cursor_pos in
+    let reply = match result with
+      | Result.Ok { entries = []; _ } -> (* no candidates *)
+        ShC.{
+          status = `Ok; metadata = `Assoc [];
+          matches = []; cursor_start = None; cursor_end = None;
+        }
+      | Result.Ok { entries; cursor_start; cursor_end; } -> (* non-empty candidates *)
+        let matches = List.map string_of_complete_entry entries in
+        ShC.{
+          status = `Ok; matches;
+          cursor_start = Some cursor_start;
+          cursor_end = Some cursor_end;
+          metadata = `Assoc [];
+        }
+      | Result.Error j -> (* merlin returns an error *)
+        Log.info "Merlin Error: %s" (Yojson.Safe.to_string j) ;
+        ShC.{
+          status = `Error; metadata = `Assoc [];
+          matches = []; cursor_start = None; cursor_end = None;
+        }
+    in
+    ShellChannel.reply shell ~parent (`Complete_reply reply)
+
   (** {2 Main routine} *)
+
+  let append_code server = function
+    | None -> ()
+    | Some code ->
+      Buffer.add_string server.code code ;
+      Buffer.add_string server.code " ;; "
+
+  let send_execute_reply server status =
+    let%lwt () = send_iopub_status server `Idle in
+    match server.current_parent with
+    | None -> Lwt.return_unit
+    | Some parent ->
+      ShC.(`Execute_reply {
+          execution_count = server.execution_count;
+          status;
+        })
+      |> ShellChannel.reply server.shell ~parent
 
   (** a thread capturing stdout and stderr from a REPL. *)
   let propagate_repl_to_iopub server =
@@ -167,18 +220,9 @@ struct
       | Some `Aborted ->
         let%lwt () = send_iopub_exec_error server "Interrupted." in
         loop `Abort
-      | Some `Prompt ->
-        let%lwt () = send_iopub_status server `Idle in
-        let%lwt () =
-          match server.current_parent with
-          | None -> Lwt.return_unit
-          | Some parent ->
-            ShC.(`Execute_reply {
-                execution_count = server.execution_count;
-                status;
-              })
-            |> ShellChannel.reply server.shell ~parent
-        in
+      | Some (`Prompt code_opt) ->
+        let%lwt () = send_execute_reply server status in
+        append_code server code_opt ;
         loop `Ok (* Reset the current status to OK *)
     in
     loop `Ok
@@ -197,9 +241,9 @@ struct
       | `Execute_request body -> execute_request ~parent server body >>= loop
       | `Comm_open _ | `Comm_msg _ | `Comm_close _ | `Comm_info_request _ ->
         Repl.send server.repl (`Shell parent) >>= loop (* propagete to REPL *)
+      | `Complete_request body -> complete_request ~parent server shell body >>= loop
       | `Inspect_request _
-      | `Complete_request _
-      | `Connect_request ->
+      | `Connect_request -> (* Deprecated since v5.1 *)
         Log.error "Unsupported request" ;
         loop ()
     and loop () =

@@ -50,11 +50,13 @@ let () =
     JupyterRepl.Process.create
       ~preload:!JupyterArgs.preload_objs
       ~init_file:!JupyterArgs.init_file () in
+  let merlin =
+    Merlin.create () in
   (* Start a kernel server. *)
   let conn_info = ConnectionInfo.from_file !JupyterArgs.connection_file in
   let ctx = ZMQ.Context.create () in
   let heartbeat = start_heartbeat ~ctx conn_info in
-  let server = Server.create ~repl ~ctx conn_info in
+  let server = Server.create ~merlin ~repl ~ctx conn_info in
   let server_thread = Server.start server in
   Sys.catch_break true ; (* Catch `Interrupt' signal *)
   let rec main () =

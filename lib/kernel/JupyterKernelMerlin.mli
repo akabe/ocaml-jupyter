@@ -20,25 +20,51 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Jupyter kernel *)
+(** Merlin completion
 
-open Jupyter
+    https://github.com/ocaml/merlin/blob/master/doc/dev/PROTOCOL.md *)
 
-module Message = JupyterKernelMessage
+open Lwt.Infix
 
-module ZmqChannel = JupyterKernelZmqChannel
-module ShellChannel = JupyterKernelMessageChannel.Make(ShellMessage)(ZmqChannel)
-module IopubChannel = JupyterKernelMessageChannel.Make(IopubMessage)(ZmqChannel)
-module StdinChannel = JupyterKernelMessageChannel.Make(StdinMessage)(ZmqChannel)
+type entry_kind =
+  [
+    | `Value [@name "Value"]
+    | `Variant [@name "Variant"]
+    | `Constructor [@name "Constructor"]
+    | `Label [@name "Label"]
+    | `Module [@name "Module"]
+    | `Sig [@name "Signature"]
+    | `Type [@name "Type"]
+    | `Method [@name "Method"]
+    | `Method_call [@name "#"]
+    | `Exn [@name "Exn"]
+    | `Class [@name "Class"]
+  ] [@@deriving yojson]
 
-module Merlin = JupyterKernelMerlin
+type complete_entry =
+  {
+    name : string;
+    kind : entry_kind JupyterJson.enum;
+    desc : string;
+    info : string;
+  }
+[@@deriving yojson { strict = false }]
 
-module ConnectionInfo = JupyterKernelConnectionInfo
+type complete_reply =
+  {
+    entries : complete_entry list;
+    cursor_start : int [@default 0];
+    cursor_end : int [@default 0];
+  }
+[@@deriving yojson { strict = false }]
 
-module Server =
-  JupyterKernelServer.Make
-    (ShellChannel)(IopubChannel)(StdinChannel)(JupyterReplProcess)
+type t
 
-module Hmac = JupyterKernelHmac
+val create : ?bin_path:string -> ?dot_merlin:string -> unit -> t
 
-module Log = JupyterKernelLog
+val complete :
+  ?context:string ->
+  ?doc:bool -> ?types:bool -> t -> string -> int ->
+  (complete_reply, Yojson.Safe.json) Result.result Lwt.t
+
+val extract_prefix : string -> int -> (int * int) option

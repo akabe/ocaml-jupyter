@@ -65,6 +65,7 @@ Library "jupyter-kernel"
                         JupyterKernelMessageChannel,
                         JupyterKernelZmqChannel,
                         JupyterKernelChannelIntf,
+                        JupyterKernelMerlin,
                         JupyterKernelHmac,
                         JupyterKernelLog
   Install:              false

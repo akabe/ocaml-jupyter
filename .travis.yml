@@ -60,7 +60,8 @@ before_script:
       opam init -a -y --comp $OCAML_VERSION
     fi
   - eval $(opam config env)
-  - opam install -y ocamlfind ocp-indent cairo2 archimedes
+  - opam update
+  - opam install -y ocamlfind 'merlin>=3.0.0' ocp-indent cairo2 archimedes
   - ocamlfind remove jupyter
 
 script:

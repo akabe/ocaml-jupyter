@@ -35,7 +35,7 @@ type reply =
     | Jupyter.Message.reply
     | `Stdout of string
     | `Stderr of string
-    | `Prompt
+    | `Prompt of string option
   ]
 [@@deriving yojson]
 
@@ -79,20 +79,27 @@ let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
     Marshal.to_channel ctrlout resp flags ;
     flush ctrlout
   in
+  let send_toploop ok resp =
+    send resp ;
+    match resp with
+    | `Ok _ -> ok
+    | `Runtime_error _ | `Compile_error _ | `Aborted -> false
+  in
   let rec loop () =
     try
       match Marshal.from_channel ctrlin with
       | Quit -> exit 0 (* Shutdown request *)
       | Exec (ctx, filename, code) ->
         context := ctx ;
-        JupyterReplToploop.run ~filename code ~init:() ~f:(fun () -> send) ;
-        send `Prompt ; loop ()
+        let ok = JupyterReplToploop.run ~filename code ~init:true ~f:send_toploop in
+        let prompt = `Prompt (if ok then Some code else None) in
+        send prompt ; loop ()
     with
     | End_of_file -> exit 0 (* control channel is closed. *)
     | Sys.Break ->
       let handler' = Sys.(signal sigint (Signal_handle (fun _ -> ()))) in
       send `Abort ;
-      send `Prompt ;
+      send (`Prompt None) ;
       ignore Sys.(signal sigint handler') ;
       loop ()
   in
