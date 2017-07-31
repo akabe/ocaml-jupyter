@@ -50,8 +50,9 @@ let () =
     JupyterRepl.Process.create
       ~preload:!JupyterArgs.preload_objs
       ~init_file:!JupyterArgs.init_file () in
-  let merlin =
-    Merlin.create () in
+  let merlin = Merlin.create ()
+      ~bin_path:!JupyterArgs.merlin
+      ~dot_merlin:!JupyterArgs.dot_merlin in
   (* Start a kernel server. *)
   let conn_info = ConnectionInfo.from_file !JupyterArgs.connection_file in
   let ctx = ZMQ.Context.create () in

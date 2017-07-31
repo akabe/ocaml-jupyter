@@ -28,6 +28,10 @@ let init_file = ref "~/.ocamlinit"
 
 let preload_objs = ref ["stdlib.cma"]
 
+let merlin = ref "ocamlmerlin"
+
+let dot_merlin = ref "./.merlin"
+
 let set_verbosity level_str =
   match Lwt_log.level_of_string level_str with
   | Some level -> JupyterKernel.Log.set_level level
@@ -43,6 +47,12 @@ let parse () =
       "--init",
       Set_string init_file,
       "<file> load a file instead of ~/.ocamlinit";
+      "--merlin",
+      Set_string merlin,
+      "<file> path of ocamlmerlin";
+      "--dot-merlin",
+      Set_string dot_merlin,
+      "<file> path of .merlin";
       "--verbosity",
       Symbol (["debug"; "info"; "warning"; "error"; "fatal"], set_verbosity),
       "set log level";

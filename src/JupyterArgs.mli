@@ -28,4 +28,8 @@ val init_file : string ref
 
 val preload_objs : string list ref
 
+val merlin : string ref
+
+val dot_merlin : string ref
+
 val parse : unit -> unit
