@@ -75,12 +75,10 @@ type complete_request =
 type complete_reply =
   {
     matches : string list;
-    cursor_start : int;
-    cursor_end : int;
+    cursor_start : int option;
+    cursor_end : int option;
     metadata : Yojson.Safe.json;
     status : status JupyterJson.enum;
-    code : string;
-    cursor_pos : int;
   } [@@deriving yojson { strict = false }]
 
 (** {2 Connect} *)

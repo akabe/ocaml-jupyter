@@ -31,8 +31,8 @@ function create() {
     "${bindir}/ocaml-jupyter-kernel",
     "--init",
     "${HOME}/.ocamlinit",
-    "--verbosity",
-    "info",
+    "--merlin",
+    "${bindir}/ocamlmerlin",
     "--connection-file",
     "{connection_file}"
   ]

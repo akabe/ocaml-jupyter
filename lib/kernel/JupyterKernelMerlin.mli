@@ -20,43 +20,51 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Command-line arguments *)
+(** Merlin completion
 
-let connection_file = ref ""
+    https://github.com/ocaml/merlin/blob/master/doc/dev/PROTOCOL.md *)
 
-let init_file = ref "~/.ocamlinit"
+open Lwt.Infix
 
-let preload_objs = ref ["stdlib.cma"]
+type entry_kind =
+  [
+    | `Value [@name "Value"]
+    | `Variant [@name "Variant"]
+    | `Constructor [@name "Constructor"]
+    | `Label [@name "Label"]
+    | `Module [@name "Module"]
+    | `Sig [@name "Signature"]
+    | `Type [@name "Type"]
+    | `Method [@name "Method"]
+    | `Method_call [@name "#"]
+    | `Exn [@name "Exn"]
+    | `Class [@name "Class"]
+  ] [@@deriving yojson]
 
-let merlin = ref "ocamlmerlin"
+type complete_entry =
+  {
+    name : string;
+    kind : entry_kind JupyterJson.enum;
+    desc : string;
+    info : string;
+  }
+[@@deriving yojson { strict = false }]
 
-let dot_merlin = ref "./.merlin"
+type complete_reply =
+  {
+    entries : complete_entry list;
+    cursor_start : int [@default 0];
+    cursor_end : int [@default 0];
+  }
+[@@deriving yojson { strict = false }]
 
-let set_verbosity level_str =
-  match Lwt_log.level_of_string level_str with
-  | Some level -> JupyterKernel.Log.set_level level
-  | None -> failwith ("Unrecognized log level: " ^ level_str)
+type t
 
-let parse () =
-  let open Arg in
-  let specs =
-    align [
-      "--connection-file",
-      Set_string connection_file,
-      "<file> connection information to Jupyter";
-      "--init",
-      Set_string init_file,
-      "<file> load a file instead of ~/.ocamlinit";
-      "--merlin",
-      Set_string merlin,
-      "<file> path of ocamlmerlin";
-      "--dot-merlin",
-      Set_string dot_merlin,
-      "<file> path of .merlin";
-      "--verbosity",
-      Symbol (["debug"; "info"; "warning"; "error"; "fatal"], set_verbosity),
-      "set log level";
-    ]
-  in
-  let doc = "An OCaml kernel for Jupyter (IPython) notebook" in
-  parse specs (fun obj -> preload_objs := obj :: !preload_objs) doc
+val create : ?bin_path:string -> ?dot_merlin:string -> unit -> t
+
+val complete :
+  ?context:string ->
+  ?doc:bool -> ?types:bool -> t -> string -> int ->
+  (complete_reply, Yojson.Safe.json) Result.result Lwt.t
+
+val extract_prefix : string -> int -> (int * int) option

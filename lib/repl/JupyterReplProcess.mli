@@ -28,7 +28,7 @@ type reply =
     | Jupyter.Message.reply
     | `Stdout of string
     | `Stderr of string
-    | `Prompt
+    | `Prompt of string option
   ]
 [@@deriving yojson]
 

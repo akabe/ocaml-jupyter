@@ -31,6 +31,8 @@ module ShellChannel = JupyterKernelMessageChannel.Make(ShellMessage)(ZmqChannel)
 module IopubChannel = JupyterKernelMessageChannel.Make(IopubMessage)(ZmqChannel)
 module StdinChannel = JupyterKernelMessageChannel.Make(StdinMessage)(ZmqChannel)
 
+module Merlin = JupyterKernelMerlin
+
 module ConnectionInfo = JupyterKernelConnectionInfo
 
 module Server =

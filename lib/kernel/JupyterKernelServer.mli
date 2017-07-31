@@ -31,11 +31,13 @@ sig
   (** The type of servers. *)
   type t =
     {
+      merlin : JupyterKernelMerlin.t;
       repl : Repl.t;
       shell : ShellChannel.t;
       control : ShellChannel.t;
       iopub : IopubChannel.t;
       stdin : StdinChannel.t;
+      code : Buffer.t; (* code that have been executed ever *)
 
       mutable execution_count : int;
       mutable current_parent : ShellChannel.input option;
@@ -43,6 +45,7 @@ sig
 
   (** Connect to Jupyter. *)
   val create :
+    merlin:JupyterKernelMerlin.t ->
     repl:Repl.t ->
     ctx:ZMQ.Context.t ->
     JupyterKernelConnectionInfo.t -> t

@@ -39,7 +39,7 @@ let exec ?(pre_exec = default) ?(post_exec = default) ?ctx ?init_file code =
   let strm = Process.stream repl in
   let rec recv_all acc =
     Lwt_stream.get strm >>= function
-    | None | Some `Prompt -> Lwt.return (List.rev acc)
+    | None | Some (`Prompt _) -> Lwt.return (List.rev acc)
     | Some reply -> recv_all (reply :: acc)
   in
   Lwt_main.run begin
