@@ -103,8 +103,8 @@ Many Jupyter kernels for functional programming languages are available such as 
 | Jupyter protocol       | v5.2          | v3.2          |
 | OCaml PPX support      | Yes           | No            |
 | Session key support    | Yes           | No            |
-| Code completion        | Todo          | Yes           |
-| Introspection          | Todo          | Yes           |
+| Code completion        | Yes           | Yes           |
+| Introspection          | No            | Yes           |
 | User-defined messages  | Yes           | No            |
 | Stdin                  | Yes           | No            |
 
