@@ -13,7 +13,7 @@ B _build/test
 B +threads
 PKG base64
 PKG uuidm
-PKG nocrypto
+PKG cryptokit
 PKG lwt
 PKG lwt.unix
 PKG lwt.ppx

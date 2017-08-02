@@ -40,7 +40,7 @@ struct
   type t =
     {
       socket : Socket.t;
-      key : Cstruct.t option;
+      key : JupyterKernelHmac.t option;
     }
 
   type request = Content.request
@@ -51,7 +51,7 @@ struct
   let create ?key ~ctx ~kind uri =
     let key = match key with
       | None -> None
-      | Some key -> Some (Cstruct.of_string key)
+      | Some key -> Some (JupyterKernelHmac.create key)
     in
     { socket = Socket.create ~ctx ~kind uri; key; }
 
@@ -102,7 +102,7 @@ struct
       | `List (_ :: content :: _) -> Yojson.Safe.to_string content
       | _ -> "{}" in
     let hmac =
-      JupyterKernelHmac.create ?key:ch.key
+      JupyterKernelHmac.encode ?key:ch.key
         ~header ~parent_header ~metadata:resp.metadata ~content ()
     in
     JupyterKernelLog.debug

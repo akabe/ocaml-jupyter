@@ -56,9 +56,9 @@ Library "jupyter-kernel"
   Path:                 lib/kernel
   FindlibName:          kernel
   FindlibParent:        jupyter
-  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
+  BuildDepends:         jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, cryptokit,
                         lwt.ppx, ppx_deriving_yojson
-  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, nocrypto,
+  XMETARequires:        jupyter, jupyter.repl, lwt, lwt.unix, yojson, lwt-zmq, cryptokit,
                         lwt.ppx, ppx_deriving_yojson.runtime
   Modules:              JupyterKernelServer,
                         JupyterKernelConnectionInfo,

@@ -22,34 +22,24 @@
 
 (** HMAC verification *)
 
-let to_hex_char i =
-  if 0 <= i && i <= 9
-  then Char.chr (i + Char.code '0')
-  else Char.chr (i + Char.code 'a' - 10)
+type t = string
 
-let to_hex_string cstr =
-  let n = Cstruct.len cstr in
-  let b = Bytes.create (n * 2) in
-  for i = 0 to n - 1 do
-    let c = Cstruct.get_uint8 cstr i in
-    let j = 2 * i in
-    Bytes.set b j     @@ to_hex_char (c lsr 4) ;
-    Bytes.set b (j+1) @@ to_hex_char (c land 0xf)
-  done ;
-  Bytes.to_string b
+let create key = key
 
-let create ?key ~header ~parent_header ~metadata ~content () =
+let hexa = Cryptokit.Hexa.encode ()
+
+let encode ?key ~header ~parent_header ~metadata ~content () =
   match key with
   | None -> ""
   | Some key ->
+    let hash = Cryptokit.MAC.hmac_sha256 key in
     (header ^ parent_header ^ metadata ^ content)
-    |> Cstruct.of_string
-    |> Nocrypto.Hash.SHA256.hmac ~key
-    |> to_hex_string
+    |> Cryptokit.hash_string hash
+    |> Cryptokit.transform_string hexa
 
 let validate ?key ~hmac ~header ~parent_header ~metadata ~content () =
   match key with
   | None -> () (* don't check HMAC *)
   | Some key ->
-    let e_hmac = create ~key ~header ~parent_header ~metadata ~content () in
+    let e_hmac = encode ~key ~header ~parent_header ~metadata ~content () in
     if e_hmac <> hmac then failwith "HMAC validation failed"

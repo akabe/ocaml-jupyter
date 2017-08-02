@@ -16,6 +16,8 @@ addons:
     packages:
       - m4
       - git
+      - rsync
+      - aspcud
       - libffi-dev
       - libgmp-dev
       - libzmq-dev=4.0.4-bpa~trusty2
