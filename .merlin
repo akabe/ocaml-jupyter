@@ -11,6 +11,7 @@ B _build/lib/kernel
 B _build/src
 B _build/test
 B +threads
+PKG base64
 PKG uuidm
 PKG nocrypto
 PKG lwt
