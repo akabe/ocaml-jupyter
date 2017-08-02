@@ -23,17 +23,29 @@
 (** A library for Jupyter notebooks *)
 
 type ctx = JupyterMessage.ctx
+type display_id = string
 
 (** {2 Display} *)
 
-let display ?ctx ?(base64 = false) mime data =
+let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data =
   let data = if base64 then B64.encode data else data in
-  JupyterNotebookUnsafe.send_iopub ?ctx
-    Jupyter.IopubMessage.(`Display_data {
+  let send content = JupyterNotebookUnsafe.send_iopub ?ctx content in
+  match display_id with
+  | None ->
+    let display_id = Uuidm.(to_string (create `V4)) in
+    send Jupyter.IopubMessage.(`Display_data {
         data = `Assoc [mime, `String data];
-        metadata = `Assoc [];
-        transient = None;
-      })
+        metadata;
+        transient = Some { display_id };
+      }) ;
+    display_id
+  | Some display_id ->
+    send Jupyter.IopubMessage.(`Update_display_data {
+        data = `Assoc [mime, `String data];
+        metadata;
+        transient = Some { display_id };
+      }) ;
+    display_id
 
 let read_as_possible fd =
   let n = 1024 in
@@ -55,10 +67,10 @@ let cellin, cellout =
   set_binary_mode_out cellout true ;
   (cell_r, cellout)
 
-let display_cell ?ctx ?base64 mime =
+let display_cell ?ctx ?display_id ?metadata ?base64 mime =
   flush cellout ;
   read_as_possible cellin
-  |> display ?ctx ?base64 mime
+  |> display ?ctx ?display_id ?metadata ?base64 mime
 
 let clear_output ?ctx ?(wait = false) () =
   JupyterNotebookUnsafe.send_iopub ?ctx

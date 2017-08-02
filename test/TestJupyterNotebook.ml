@@ -24,6 +24,7 @@ open Format
 open Lwt.Infix
 open OUnit2
 open JupyterKernelMessage
+open JupyterIopubMessage
 
 let exec = TestJupyterNotebookUnsafe.exec
 
@@ -51,48 +52,40 @@ let ctx =
 (** {2 Test suite} *)
 
 let test_display__rawdata ctxt =
-  let expected_content =
-    `Display_data JupyterIopubMessage.({
-        data = `Assoc ["text", `String "Hello"];
-        metadata = `Assoc [];
-        transient = None;
-      })
-  in
   match exec ~ctx {|JupyterNotebook.display "text" "Hello"|} with
-  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+  | `Iopub { parent_header = Some ph; content = `Display_data dd; _ } :: _ ->
     assert_equal ~ctxt ctx.header ph ;
-    assert_equal ~ctxt expected_content content
+    assert_equal ~ctxt (`Assoc ["text", `String "Hello"]) dd.data ;
+    assert_equal ~ctxt (`Assoc []) dd.metadata
   | xs ->
     assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
 let test_display__base64 ctxt =
-  let expected_content =
-    `Display_data JupyterIopubMessage.({
-        data = `Assoc ["text", `String "SGVsbG8="];
-        metadata = `Assoc [];
-        transient = None;
-      })
-  in
   match exec ~ctx {|JupyterNotebook.display ~base64:true "text" "Hello"|} with
-  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+  | `Iopub { parent_header = Some ph; content = `Display_data dd; _ } :: _ ->
     assert_equal ~ctxt ctx.header ph ;
-    assert_equal ~ctxt expected_content content
+    assert_equal ~ctxt (`Assoc ["text", `String "SGVsbG8="]) dd.data ;
+    assert_equal ~ctxt (`Assoc []) dd.metadata
+  | xs ->
+    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
+
+let test_display__update ctxt =
+  match exec ~ctx {|JupyterNotebook.display ~display_id:(Obj.magic "abcd") "text" "Hello"|} with
+  | `Iopub { parent_header = Some ph; content = `Update_display_data dd; _ } :: _ ->
+    assert_equal ~ctxt ctx.header ph ;
+    assert_equal ~ctxt (`Assoc ["text", `String "Hello"]) dd.data ;
+    assert_equal ~ctxt (`Assoc []) dd.metadata ;
+    assert_equal ~ctxt (Some { display_id = Obj.magic "abcd" }) dd.transient
   | xs ->
     assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
 let test_display_cell ctxt =
-  let expected_content =
-    `Display_data JupyterIopubMessage.({
-        data = `Assoc ["text", `String "Hello"];
-        metadata = `Assoc [];
-        transient = None;
-      })
-  in
   match exec ~ctx {|output_string JupyterNotebook.cellout "Hello" ;
                     JupyterNotebook.display_cell "text"|} with
-  | `Iopub { parent_header = Some ph; content; _ } :: _ ->
+  | `Iopub { parent_header = Some ph; content = `Display_data dd; _ } :: _ ->
     assert_equal ~ctxt ctx.header ph ;
-    assert_equal ~ctxt expected_content content
+    assert_equal ~ctxt (`Assoc ["text", `String "Hello"]) dd.data ;
+    assert_equal ~ctxt (`Assoc []) dd.metadata
   | xs ->
     assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
@@ -111,6 +104,7 @@ let suite =
     "display" >::: [
       "rawdata" >:: test_display__rawdata;
       "base64" >:: test_display__base64;
+      "update" >:: test_display__update;
     ];
     "display_cell" >:: test_display_cell;
     "clear_output" >:: test_clear_output;
