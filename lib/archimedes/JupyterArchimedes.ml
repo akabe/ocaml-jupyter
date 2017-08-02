@@ -34,5 +34,5 @@ module R = Archimedes.Backend.Register(struct
       let surf = Cairo.get_target ctx in
       Cairo.PNG.write_to_stream ~output:(output_string cellout) surf ;
       close ~options b ;
-      display_cell ~base64:true "image/png"
+      ignore (display_cell ~base64:true "image/png")
   end)

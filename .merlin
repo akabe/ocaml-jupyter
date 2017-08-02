@@ -23,4 +23,6 @@ PKG ppx_deriving_yojson
 PKG compiler-libs.common
 PKG compiler-libs.toplevel
 PKG oUnit
+PKG cairo2
+PKG archimedes
 FLG -short-paths
