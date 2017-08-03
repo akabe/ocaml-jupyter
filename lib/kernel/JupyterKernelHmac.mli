@@ -22,10 +22,14 @@
 
 (** HMAC verification *)
 
+type t
+
+val create : string -> t
+
 (** Returns the HMAC of message contents from a given key,
     or an empty string if [key] is [None]. *)
-val create :
-  ?key:Cstruct.t ->
+val encode :
+  ?key:t ->
   header:string ->
   parent_header:string ->
   metadata:string ->
@@ -35,7 +39,7 @@ val create :
     @param key default = ignore validation
     @raise Failure if validation fails. *)
 val validate :
-  ?key:Cstruct.t ->
+  ?key:t ->
   hmac:string ->
   header:string ->
   parent_header:string ->

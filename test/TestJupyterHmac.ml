@@ -25,43 +25,43 @@ open OUnit2
 module Hmac = JupyterKernel.Hmac
 
 (** Success patterns of HMAC computation *)
-let test_create__normal ctxt =
+let test_encode__normal ctxt =
   let open Fixture.KernelInfoRequest in
-  let key = Cstruct.of_string key in
-  let actual = Hmac.create ~key ~header ~parent_header ~metadata ~content () in
+  let key = Hmac.create key in
+  let actual = Hmac.encode ~key ~header ~parent_header ~metadata ~content () in
   assert_equal ~ctxt ~printer:[%show: string] actual hmac ;
   let open Fixture.ExecuteRequest in
-  let key = Cstruct.of_string key in
-  let actual = Hmac.create ~key ~header ~parent_header ~metadata ~content () in
+  let key = Hmac.create key in
+  let actual = Hmac.encode ~key ~header ~parent_header ~metadata ~content () in
   assert_equal ~ctxt ~printer:[%show: string] actual hmac
 
 (** Return an empty string if no key is given. *)
-let test_create__nokey ctxt =
+let test_encode__nokey ctxt =
   let open Fixture.KernelInfoRequest in
-  let actual = Hmac.create ~header ~parent_header ~metadata ~content () in
+  let actual = Hmac.encode ~header ~parent_header ~metadata ~content () in
   assert_equal ~ctxt ~printer:[%show: string] actual "" ;
   let open Fixture.ExecuteRequest in
-  let actual = Hmac.create ~header ~parent_header ~metadata ~content () in
+  let actual = Hmac.encode ~header ~parent_header ~metadata ~content () in
   assert_equal ~ctxt ~printer:[%show: string] actual ""
 
 (** Success patterns of HMAC validation *)
 let test_validate__success _ =
   let open Fixture.KernelInfoRequest in
-  let key = Cstruct.of_string key in
+  let key = Hmac.create key in
   Hmac.validate ~key ~hmac ~header ~parent_header ~metadata ~content () ;
   let open Fixture.ExecuteRequest in
-  let key = Cstruct.of_string key in
+  let key = Hmac.create key in
   Hmac.validate ~key ~hmac ~header ~parent_header ~metadata ~content ()
 
 (** Raises an exception if validation failed. *)
 let test_validate__failure _ =
   let open Fixture.KernelInfoRequest in
-  let key = Cstruct.of_string key in
+  let key = Hmac.create key in
   assert_raises (Failure "HMAC validation failed")
     (fun () ->
        Hmac.validate ~key ~hmac:"" ~header ~parent_header ~metadata ~content ()) ;
   let open Fixture.ExecuteRequest in
-  let key = Cstruct.of_string key in
+  let key = Hmac.create key in
   assert_raises (Failure "HMAC validation failed")
     (fun () ->
        Hmac.validate ~key ~hmac:"" ~header ~parent_header ~metadata ~content ())
@@ -75,9 +75,9 @@ let test_validate__nokey _ =
 
 let suite =
   "Hmac" >::: [
-    "create" >::: [
-      "normal" >:: test_create__normal;
-      "no key" >:: test_create__nokey;
+    "encode" >::: [
+      "normal" >:: test_encode__normal;
+      "nokey" >:: test_encode__nokey;
     ];
     "validate" >::: [
       "success" >:: test_validate__success;

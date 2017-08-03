@@ -36,7 +36,7 @@ depends: [
   "lwt-zmq" {>= "2.1.0"}
   "yojson"
   "ppx_deriving_yojson"
-  "nocrypto"
+  "cryptokit"
   "ocamlfind" {build & >= "1.5.0"}
   "ocamlbuild" {build}
   "cppo" {build}
