@@ -73,6 +73,7 @@ script:
   # Installer:
   - opam pin add -y jupyter .
   - jupyter kernelspec list | grep ocaml-jupyter # kernel is installed.
+  - jupyter nbextension list | grep 'ocaml-theme/ocaml-theme.*enabled' # nbextension is installed.
   - opam remove jupyter
   - (! (jupyter kernelspec list | grep ocaml-jupyter)) # kernel is uninstalled.
   - (! ocamlfind query jupyter) # package is uninstalled.
