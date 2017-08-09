@@ -60,7 +60,7 @@ end
 module KernelInfoReply =
 struct
   let key = "167ff8c8-fe494afc147b4fa62758ed82"
-  let hmac = "7cd42e8ad6577c8dcd56eebac4f5d516311160df81f0a06d6ea22ec898dd0b94"
+  let hmac = "94ef4fd43f3611069e32d96512b0db3a20aa8be73a435dd2c7458b073e254452"
   let header = "{\"msg_id\":\"3a21737c-0287-30f3-bfa9-12e193dfd00a\",\
                 \"msg_type\":\"kernel_info_reply\",\
                 \"session\":\"A32B9A2038D043F2A0718550AAAFC9DA\",\
@@ -77,7 +77,7 @@ struct
                  \"implemenation\":\"ocaml-jupyter\",\
                  \"implementation_version\":\"5.0.0\",\
                  \"banner\":null,\
-                 \"help_links\":{},\
+                 \"help_links\":[],\
                  \"language_info\":{\
                  \"name\":\"OCaml\",\
                  \"version\":\"4.04.1\",\
@@ -114,7 +114,7 @@ struct
           implemenation = "ocaml-jupyter";
           implementation_version = "5.0.0";
           banner = None;
-          help_links = `Assoc [];
+          help_links = [];
           language = "OCaml";
           language_info =
             {

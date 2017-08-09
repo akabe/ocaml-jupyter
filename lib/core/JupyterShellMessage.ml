@@ -117,13 +117,19 @@ type language_info =
     nbconverter_exporter : string option;
   } [@@deriving yojson { strict = false }]
 
+type help_link =
+  {
+    text : string;
+    url : string;
+  } [@@deriving yojson { strict = false }]
+
 type kernel_info_reply =
   {
     protocol_version : string;
     implemenation : string;
     implementation_version : string;
     banner : string option;
-    help_links : Yojson.Safe.json;
+    help_links : help_link list;
     language_info : language_info;
     language : string;
   } [@@deriving yojson { strict = false }]
@@ -135,7 +141,12 @@ let kernel_info_reply =
     implemenation = "ocaml-jupyter";
     implementation_version = JupyterVersion.kernel_version;
     banner = None;
-    help_links = `Assoc [];
+    help_links = [
+      {
+        text = "ocaml-jupyter";
+        url = "https://akabe.github.io/ocaml-jupyter/";
+      };
+    ];
     language = "OCaml";
     language_info =
       {
