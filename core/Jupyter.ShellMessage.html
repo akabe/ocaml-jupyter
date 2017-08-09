@@ -378,6 +378,27 @@
 
 <pre><span id="VALlanguage_info_to_yojson"><span class="keyword">val</span> language_info_to_yojson</span> : <code class="type"><a href="JupyterShellMessage.html#TYPElanguage_info">language_info</a> -> Yojson.Safe.json</code></pre>
 <pre><span id="VALlanguage_info_of_yojson"><span class="keyword">val</span> language_info_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterShellMessage.html#TYPElanguage_info">language_info</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
+<pre><code><span id="TYPEhelp_link"><span class="keyword">type</span> <code class="type"></code>help_link</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELThelp_link.text">text</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELThelp_link.url">url</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr></table>
+}
+
+
+
+<pre><span id="VALhelp_link_to_yojson"><span class="keyword">val</span> help_link_to_yojson</span> : <code class="type"><a href="JupyterShellMessage.html#TYPEhelp_link">help_link</a> -> Yojson.Safe.json</code></pre>
+<pre><span id="VALhelp_link_of_yojson"><span class="keyword">val</span> help_link_of_yojson</span> : <code class="type">Yojson.Safe.json -><br>       <a href="JupyterShellMessage.html#TYPEhelp_link">help_link</a> Ppx_deriving_yojson_runtime.error_or</code></pre>
 <pre><code><span id="TYPEkernel_info_reply"><span class="keyword">type</span> <code class="type"></code>kernel_info_reply</span> = {</code></pre><table class="typetable">
 <tr>
 <td align="left" valign="top" >
@@ -411,7 +432,7 @@
 <td align="left" valign="top" >
 <code>&nbsp;&nbsp;</code></td>
 <td align="left" valign="top" >
-<code><span id="TYPEELTkernel_info_reply.help_links">help_links</span>&nbsp;: <code class="type">Yojson.Safe.json</code>;</code></td>
+<code><span id="TYPEELTkernel_info_reply.help_links">help_links</span>&nbsp;: <code class="type"><a href="JupyterShellMessage.html#TYPEhelp_link">help_link</a> list</code>;</code></td>
 
 </tr>
 <tr>
