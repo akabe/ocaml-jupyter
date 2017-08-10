@@ -43,16 +43,14 @@ EOF
 function install() {
     local install_kernel=$1
     local datadir=$2
-    local flags=''
+    local install_flags="--name $KERNEL_NAME"
 
     if check_user_mode; then
-        flags+=' --user'
+        install_flags+=" --user"
     fi
 
     if [[ "$install_kernel" == 'true' ]] && type jupyter >/dev/null 2>&1; then
-        jupyter kernelspec install --name "$KERNEL_NAME" $flags "$datadir"
-        jupyter nbextension install $flags ocaml-theme
-        jupyter nbextension enable $flags ocaml-theme/ocaml-theme
+        jupyter kernelspec install $install_flags "$datadir"
     fi
 }
 
