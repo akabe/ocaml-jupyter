@@ -1,6 +1,0 @@
-Type: IPython Notebook Extension
-Compatibility: 4.x 5.x
-Name: OCaml Jupyter Theme
-Description: Improved theme for OCaml Jupyter
-Link: README.md
-Main: ocaml-theme.js
