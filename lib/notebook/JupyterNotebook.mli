@@ -26,9 +26,6 @@ type ctx
 
 type display_id
 
-(** The output channel to send displayed data. *)
-val cellout : out_channel
-
 (** Returns the current cell context. *)
 val cell_context : unit -> ctx
 
@@ -44,19 +41,6 @@ val display :
   ?metadata:Yojson.Safe.json ->
   ?base64:bool ->
   string -> string -> display_id
-
-(** [display_cell ?ctx ?base64 mime] shows data written into [cellout] at [ctx].
-    [mime] is the mime type of the data.
-    @param ctx        default = the current cell.
-    @param display_id default = a fresh ID (since 0.2.0)
-    @param metadata   default = nothing (since 0.2.0)
-    @param base64     default = [false]. *)
-val display_cell :
-  ?ctx:ctx ->
-  ?display_id:display_id ->
-  ?metadata:Yojson.Safe.json ->
-  ?base64:bool ->
-  string -> display_id
 
 (** [clear_output ?ctx ?wait ()] removes displayed elements from [ctx].
     @param ctx   default = the current cell.
