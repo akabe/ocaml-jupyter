@@ -79,16 +79,6 @@ let test_display__update ctxt =
   | xs ->
     assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
 
-let test_display_cell ctxt =
-  match exec ~ctx {|output_string JupyterNotebook.cellout "Hello" ;
-                    JupyterNotebook.display_cell "text"|} with
-  | `Iopub { parent_header = Some ph; content = `Display_data dd; _ } :: _ ->
-    assert_equal ~ctxt ctx.header ph ;
-    assert_equal ~ctxt (`Assoc ["text", `String "Hello"]) dd.data ;
-    assert_equal ~ctxt (`Assoc []) dd.metadata
-  | xs ->
-    assert_failure ("Unexpected sequence: " ^ TestJupyterReplProcess.printer xs)
-
 let test_clear_output ctxt =
   let expected_content =
     `Clear_output JupyterIopubMessage.({ wait = false }) in
@@ -106,6 +96,5 @@ let suite =
       "base64" >:: test_display__base64;
       "update" >:: test_display__update;
     ];
-    "display_cell" >:: test_display_cell;
     "clear_output" >:: test_clear_output;
   ]

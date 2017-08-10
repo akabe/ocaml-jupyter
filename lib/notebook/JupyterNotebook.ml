@@ -47,31 +47,6 @@ let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data
       }) ;
     display_id
 
-let read_as_possible fd =
-  let n = 1024 in
-  let b = Buffer.create n in
-  let bytes = Bytes.create n in
-  let rec aux () =
-    match Unix.select [fd] [] [] 0.0 with
-    | [_], _, _ ->
-      let m = Unix.read fd bytes 0 n in
-      Buffer.add_subbytes b bytes 0 m ;
-      if m = n then aux ()
-    | _ -> ()
-  in
-  aux () ; Buffer.contents b
-
-let cellin, cellout =
-  let cell_r, cell_w = Unix.pipe () in
-  let cellout = Unix.out_channel_of_descr cell_w in
-  set_binary_mode_out cellout true ;
-  (cell_r, cellout)
-
-let display_cell ?ctx ?display_id ?metadata ?base64 mime =
-  flush cellout ;
-  read_as_possible cellin
-  |> display ?ctx ?display_id ?metadata ?base64 mime
-
 let clear_output ?ctx ?(wait = false) () =
   JupyterNotebookUnsafe.send_iopub ?ctx
     Jupyter.IopubMessage.(`Clear_output { wait })
