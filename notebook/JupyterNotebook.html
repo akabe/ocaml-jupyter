@@ -32,10 +32,6 @@ A library for Jupyter notebooks<br>
 <pre><span id="TYPEdisplay_id"><span class="keyword">type</span> <code class="type"></code>display_id</span> </pre>
 
 
-<pre><span id="VALcellout"><span class="keyword">val</span> cellout</span> : <code class="type">Pervasives.out_channel</code></pre><div class="info ">
-The output channel to send displayed data.<br>
-</div>
-
 <pre><span id="VALcell_context"><span class="keyword">val</span> cell_context</span> : <code class="type">unit -> <a href="JupyterNotebook.html#TYPEctx">ctx</a></code></pre><div class="info ">
 Returns the current cell context.<br>
 </div>
@@ -43,15 +39,6 @@ Returns the current cell context.<br>
 <pre><span id="VALdisplay"><span class="keyword">val</span> display</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
 <code class="code">display ?ctx ?base64 mime data</code> shows <code class="code">data</code> at <code class="code">ctx</code>. <code class="code">mime</code> is the mime
     type of <code class="code">data</code>.<br>
-</div>
-<div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
-<div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 0.2.0)</div>
-<div class="param_info"><code class="code">metadata</code> : default = nothing (since 0.2.0)</div>
-<div class="param_info"><code class="code">base64</code> : default = <code class="code">false</code>.</div>
-
-<pre><span id="VALdisplay_cell"><span class="keyword">val</span> display_cell</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
-<code class="code">display_cell ?ctx ?base64 mime</code> shows data written into <code class="code">cellout</code> at <code class="code">ctx</code>.
-    <code class="code">mime</code> is the mime type of the data.<br>
 </div>
 <div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
 <div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 0.2.0)</div>

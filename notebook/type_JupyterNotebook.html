@@ -13,18 +13,12 @@
 <code class="code"><span class="keyword">sig</span><br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;ctx<br>
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;display_id<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cellout&nbsp;:&nbsp;<span class="constructor">Pervasives</span>.out_channel<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cell_context&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.ctx<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;display&nbsp;:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?display_id:<span class="constructor">JupyterNotebook</span>.display_id&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Yojson</span>.<span class="constructor">Safe</span>.json&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.display_id<br>
-&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;display_cell&nbsp;:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?display_id:<span class="constructor">JupyterNotebook</span>.display_id&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Yojson</span>.<span class="constructor">Safe</span>.json&nbsp;<span class="keywordsign">-&gt;</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.display_id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clear_output&nbsp;:&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?wait:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_line&nbsp;:&nbsp;?password:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_line_async&nbsp;:&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?password:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
