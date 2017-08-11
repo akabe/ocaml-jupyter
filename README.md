@@ -3,7 +3,7 @@
 [![Kernel version][version-img]][version] [![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
 
 [version]:      https://github.com/akabe/ocaml-jupyter/releases
-[version-img]:  https://img.shields.io/badge/version-0.1.0-blue.svg
+[version-img]:  https://img.shields.io/badge/version-1.0.0-blue.svg
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
 [protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
@@ -18,6 +18,10 @@ An OCaml kernel for [Jupyter notebook][jupyter].
 This provides an OCaml REPL with a great user interface such as markdown/HTML documentation, LaTeX formula by MathJax, and image embedding.
 
 ![Screenshot](https://akabe.github.io/ocaml-jupyter/images/screenshot.png)
+
+A [Docker image][ocaml-jupyter-datascience] are distributed on DockerHub. It contains OCaml Jupyter and many packages for data science.
+
+[ocaml-jupyter-datascience]: https://github.com/akabe/docker-ocaml-jupyter-datascience
 
 ## Getting started
 
