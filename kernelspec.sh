@@ -1,5 +1,9 @@
 #!/bin/bash -eu
 
+function check_command() {
+    type $1 >/dev/null 2>&1
+}
+
 function check_user_mode() {
     local jupyter=$(type -p jupyter 2>/dev/null)
 
@@ -13,7 +17,7 @@ function check_user_mode() {
 }
 
 function get_ocaml_version() {
-    if type -p opam >/dev/null 2>/dev/null; then
+    if check_command opam; then
         opam config var switch
     else
         ocaml -vnum
@@ -45,18 +49,22 @@ function install() {
     local datadir=$2
     local install_flags="--name $KERNEL_NAME"
 
-    if check_user_mode; then
-        install_flags+=" --user"
-    fi
-
-    if [[ "$install_kernel" == 'true' ]] && type jupyter >/dev/null 2>&1; then
-        jupyter kernelspec install $install_flags "$datadir"
+    if [[ "$install_kernel" == 'true' ]] && check_command jupyter; then
+        if check_user_mode; then
+            jupyter kernelspec install --user $install_flags "$datadir"
+        else
+            sudo jupyter kernelspec install $install_flags "$datadir"
+        fi
     fi
 }
 
 function uninstall() {
-    if type jupyter >/dev/null 2>&1; then
-        jupyter kernelspec remove "$KERNEL_NAME" -f
+    if check_command jupyter; then
+        if check_user_mode; then
+            jupyter kernelspec remove "$KERNEL_NAME" -f
+        else
+            sudo jupyter kernelspec remove "$KERNEL_NAME" -f
+		fi
     fi
 }
 
@@ -71,6 +79,6 @@ case $1 in
         install $2 $3
     ;;
     uninstall )
-		uninstall
+    	uninstall
 	;;
 esac
