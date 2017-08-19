@@ -69,7 +69,7 @@ function uninstall() {
 }
 
 OCAML_VERSION=$(get_ocaml_version | sed 's@[^0-9A-Za-z_\.+-]@_@g')
-KERNEL_NAME="ocaml-jupyter-${OCAML_VERSION}"
+KERNEL_NAME=ocaml-jupyter
 
 case $1 in
     create )

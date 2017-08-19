@@ -91,7 +91,7 @@ $ cat "$(opam config var share)/ocaml-jupyter/kernel.json"
 See `ocaml-jupyter-kernel --help` for details of command-line parameters in `argv`. After you edit the file, re-register the kernel:
 
 ```console
-$ jupyter kernelspec install --name "ocaml-jupyter-$(opam config var switch)" "$(opam config var share)/ocaml-jupyter"
+$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
 [InstallKernelSpec] Removing existing kernelspec in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter-4.04.2
 [InstallKernelSpec] Installed kernelspec ocaml-jupyter-4.04.2 in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter-4.04.2
 ```
