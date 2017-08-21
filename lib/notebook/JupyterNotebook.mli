@@ -32,8 +32,8 @@ val cell_context : unit -> ctx
 (** [display ?ctx ?base64 mime data] shows [data] at [ctx]. [mime] is the mime
     type of [data].
     @param ctx        default = the current cell.
-    @param display_id default = a fresh ID (since 0.2.0)
-    @param metadata   default = nothing (since 0.2.0)
+    @param display_id default = a fresh ID (since 1.0.0)
+    @param metadata   default = nothing (since 1.0.0)
     @param base64     default = [false]. *)
 val display :
   ?ctx:ctx ->
