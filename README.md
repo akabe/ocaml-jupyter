@@ -49,11 +49,23 @@ $ opam pin add jupyter https://github.com/akabe/ocaml-jupyter.git
 
 ### Examples
 
-- [Introduction][nb-intro]: a very simple example for use of OCaml Jupyter and sub-packages.
-- [Get a description of a word from DuckDuckGo API][nb-cohttp-lwt]: request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
+- [Introduction](https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/introduction.ipynb):
+  a very simple example for use of OCaml Jupyter and sub-packages.
+- [Get a description of a word from DuckDuckGo API](https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/word_description_from_DuckDuckGoAPI.ipynb):
+  request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
 
-[nb-intro]: https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/introduction.ipynb
-[nb-cohttp-lwt]: https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/word_description_from_DuckDuckGoAPI.ipynb
+In addition, many examples (e.g, image processing, voice analysis, etc.) are available at
+[docker-ocaml-jupyter-datascience/notebooks](https://github.com/akabe/docker-ocaml-jupyter-datascience/tree/master/notebooks).
+
+These examples are publish in **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
+
+### Code completion
+
+OCaml Jupyter kernel supports [merlin](https://ocaml.github.io/merlin/)-based code completion. Candidates are shown by Tab key like
+
+![Code completion](https://akabe.github.io/ocaml-jupyter/images/completion.png)
+
+The kernel uses [.merlin](https://github.com/ocaml/merlin/wiki/project-configuration) file at a notebook directory for completion.
 
 ### API documentation
 
