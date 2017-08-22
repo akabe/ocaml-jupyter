@@ -3,7 +3,7 @@
 [![Kernel version][version-img]][version] [![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
 
 [version]:      https://github.com/akabe/ocaml-jupyter/releases
-[version-img]:  https://img.shields.io/badge/version-1.0.0-blue.svg
+[version-img]:  https://img.shields.io/badge/version-1.0.1-blue.svg
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
 [protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
