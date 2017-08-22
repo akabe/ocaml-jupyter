@@ -1,6 +1,6 @@
 OASISFormat:            0.4
 Name:                   ocaml-jupyter
-Version:                1.0.0
+Version:                1.0.1
 Synopsis:               An OCaml kernel for Jupyter notebooks
 Authors:                Akinori ABE
 License:                MIT
