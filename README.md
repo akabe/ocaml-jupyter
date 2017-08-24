@@ -61,11 +61,19 @@ These examples are publish in **public domain**, e.g., you can edit, copy, and r
 
 ### Code completion
 
-OCaml Jupyter kernel supports [merlin](https://ocaml.github.io/merlin/)-based code completion. Candidates are shown by Tab key like
+OCaml Jupyter kernel supports [merlin][merlin]-based code completion. TAB key shows candidates as follows.
 
-![Code completion](https://akabe.github.io/ocaml-jupyter/images/completion.png)
+![Code completion][completion-img]
 
-The kernel uses [.merlin](https://github.com/ocaml/merlin/wiki/project-configuration) file at a notebook directory for completion.
+The kernel uses [.merlin][dot-merlin] file at a notebook directory for completion. We strongly recommend to install [jupyter-completion-hint][jupyter-completion-hint] nbextension to display types of identifiers:
+
+![Code compltion with hints][completion-with-hint-img]
+
+[merlin]:                   https://ocaml.github.io/merlin/
+[dot-merlin]:               https://github.com/ocaml/merlin/wiki/project-configuration
+[jupyter-completion-hint]:  https://github.com/akabe/jupyter-completion-hint
+[completion-img]:           https://raw.githubusercontent.com/akabe/ocaml-jupyter/gh-pages/images/completion.png
+[completion-with-hint-img]: https://raw.githubusercontent.com/akabe/ocaml-jupyter/gh-pages/images/completion-with-hint.png
 
 ### API documentation
 
