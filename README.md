@@ -110,7 +110,7 @@ $ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocam
 
 ## Related work
 
-Many Jupyter kernels for functional programming languages are available such as [IHaskell][ihaskell], [Jupyter Scala][jupyter-scala], and [Jupyter Rust][jupyter-rs]. [IOCaml][iocaml] is another OCaml kernel that inspires us, but it seems no longer maintained. OCaml Jupyter kernel differs from IOCaml in
+Many Jupyter kernels for functional programming languages are available such as [IHaskell][ihaskell], [Jupyter Scala][jupyter-scala], and [Jupyter Rust][jupyter-rs]. [IOCaml][iocaml] is another practical OCaml kernel that inspires us, but it seems no longer maintained. OCaml Jupyter kernel differs from IOCaml in
 
 |                        | OCaml Jupyter | IOCaml v0.4.8 |
 | ---------------------- | ------------- | ------------- |
@@ -124,10 +124,15 @@ Many Jupyter kernels for functional programming languages are available such as 
 
 In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.
 
+Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in practice.
+[jupyter-kernel][jupyter-kernel] is a library to write OCaml kernels (*not a kernel*), but OCaml Jupyter kernel does not use this library.
+
 [ihaskell]:      https://github.com/gibiansky/IHaskell
 [jupyter-scala]: https://github.com/alexarchambault/jupyter-scala
 [jupyter-rs]:    https://github.com/pwoolcoc/jupyter-rs
 [iocaml]:        https://github.com/andrewray/iocaml
+[simple_jucaml]: https://github.com/KKostya/simple_jucaml
+[jupyter-kernel]:https://github.com/ocaml-jupyter/jupyter-kernel
 
 ## Contact
 
