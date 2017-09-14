@@ -37,8 +37,9 @@ sig
       control : ShellChannel.t;
       iopub : IopubChannel.t;
       stdin : StdinChannel.t;
-      code : Buffer.t; (* code that have been executed ever *)
+      code : Buffer.t; (* code that have been executed ever (for merlin completion) *)
 
+      execution_result : (Jupyter.ShellMessage.status * string option) Lwt_mvar.t;
       mutable execution_count : int;
       mutable current_parent : ShellChannel.input option;
     }
