@@ -44,8 +44,9 @@ struct
       control : ShellChannel.t;
       iopub : IopubChannel.t;
       stdin : StdinChannel.t;
-      code : Buffer.t; (* code that have been executed ever *)
+      code : Buffer.t; (* code that have been executed ever (for merlin completion) *)
 
+      execution_result : (Jupyter.ShellMessage.status * string option) Lwt_mvar.t;
       mutable execution_count : int;
       mutable current_parent : ShellChannel.input option;
     }
@@ -70,6 +71,7 @@ struct
     in
     {
       merlin; repl; shell; control; iopub; stdin;
+      execution_result = Lwt_mvar.create_empty ();
       execution_count = 0;
       current_parent = None;
       code = Buffer.create 256;
@@ -86,16 +88,17 @@ struct
 
   (** {2 IOPUB utility} *)
 
-  let send_iopub server content =
-    match server.current_parent with
-    | Some parent -> IopubChannel.reply server.iopub ~parent content
-    | None -> Lwt.return ()
+  let send_iopub ?parent server content =
+    match parent, server.current_parent with
+    | Some parent, _
+    | None, Some parent -> IopubChannel.reply server.iopub ~parent content
+    | None, None -> Lwt.return ()
 
   let send_iopub_stream server ~name text =
     send_iopub server IoC.(`Stream { name; text; })
 
-  let send_iopub_status server execution_state =
-    send_iopub server IoC.(`Status { execution_state; })
+  let send_iopub_status ?parent server execution_state =
+    send_iopub ?parent server IoC.(`Status { execution_state; })
 
   let send_iopub_exec_input server code =
     let execution_count = server.execution_count in
@@ -117,14 +120,25 @@ struct
 
   (** {2 Execute request} *)
 
+  let append_code server = function
+    | None -> ()
+    | Some code ->
+      Buffer.add_string server.code code ;
+      Buffer.add_string server.code " ;; "
+
   let execute_request ~parent server (body : ShC.execute_request) =
     server.execution_count <- succ server.execution_count ;
     server.current_parent <- Some parent ;
+    let execution_count = server.execution_count in
     let code = body.ShC.code in
     let%lwt () = send_iopub_status server `Busy in
     let%lwt () = send_iopub_exec_input server code in
     let filename = sprintf "[%d]" server.execution_count in
-    Repl.run ~ctx:parent ~filename server.repl code
+    let%lwt () = Repl.run ~ctx:parent ~filename server.repl code in (* Start execution *)
+    let%lwt (status, code_opt) = Lwt_mvar.take server.execution_result in (* Wait execution is done *)
+    let%lwt () = send_iopub_status ~parent server `Idle in
+    ShC.(`Execute_reply { execution_count; status; })
+    |> ShellChannel.reply server.shell ~parent
 
   (** {2 Kernel info request} *)
 
@@ -173,23 +187,6 @@ struct
 
   (** {2 Main routine} *)
 
-  let append_code server = function
-    | None -> ()
-    | Some code ->
-      Buffer.add_string server.code code ;
-      Buffer.add_string server.code " ;; "
-
-  let send_execute_reply server status =
-    let%lwt () = send_iopub_status server `Idle in
-    match server.current_parent with
-    | None -> Lwt.return_unit
-    | Some parent ->
-      ShC.(`Execute_reply {
-          execution_count = server.execution_count;
-          status;
-        })
-      |> ShellChannel.reply server.shell ~parent
-
   (** a thread capturing stdout and stderr from a REPL. *)
   let propagate_repl_to_iopub server =
     let strm = Repl.stream server.repl in
@@ -221,8 +218,7 @@ struct
         let%lwt () = send_iopub_exec_error server "Interrupted." in
         loop `Abort
       | Some (`Prompt code_opt) ->
-        let%lwt () = send_execute_reply server status in
-        append_code server code_opt ;
+        let%lwt () = Lwt_mvar.put server.execution_result (status, code_opt) in
         loop `Ok (* Reset the current status to OK *)
     in
     loop `Ok
