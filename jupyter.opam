@@ -8,7 +8,7 @@ authors: [
   "Akinori ABE"
 ]
 license: "MIT"
-homepage: "https://github.com/akabe/ocaml-jupyter"
+homepage: "https://akabe.github.io/ocaml-jupyter/"
 bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
 dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
 
@@ -29,18 +29,19 @@ remove: [
 depends: [
   "base-threads"
   "base-unix"
-  "uuidm"
-  "base64"
-  "lwt"
-  "stdint" {< "0.4.0"}
+  "uuidm" {>= "0.9.6"}
+  "base64" {>= "2.1.2"}
+  "lwt" {>= "3.0.0"}
+  "stdint" {>= "0.4.2"}
   "zmq" {>= "4.0-8"}
   "lwt-zmq" {>= "2.1.0"}
-  "yojson"
-  "ppx_deriving_yojson"
-  "cryptokit"
+  "yojson" {>= "1.3.3"}
+  "ppx_deriving_yojson" {>= "3.0"}
+  "cryptokit" {>= "1.12"}
   "ocamlfind" {build & >= "1.5.0"}
   "ocamlbuild" {build}
-  "cppo" {build}
+  "cppo" {build & >= "1.6.0"}
+  "cppo_ocamlbuild" {build & >= "1.6.0"}
 ]
 depopts: [
   "merlin"
