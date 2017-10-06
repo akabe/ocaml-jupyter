@@ -64,6 +64,27 @@ In addition, many examples (e.g, image processing, voice analysis, etc.) are ava
 
 These examples are publish in **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
 
+### NBConvert
+
+OCaml notebooks can be converted to HTML, markdown, LaTeX, `.ml` files, etc. by `jupyter nbconvert` command.
+For example, a `.ipynb` file is converted into a `.html` file as follows:
+
+```console
+$ jupyter nbconvert --to html notebooks/introduction.ipynb
+[NbConvertApp] Converting notebook notebooks/introduction.ipynb to html
+[NbConvertApp] Writing 463004 bytes to notebooks/introduction.html
+```
+
+For exporting `.ml` files, we recommend [Jupyter-NBConvert-OCaml][Jupyter-NBConvert-OCaml]. It outputs `.ml` files with markdown cells as comments. After installation of Jupyter-NBConvert-OCaml, you can use `--to ocaml` option to export a `.ml` file:
+
+```console
+$ jupyter nbconvert --to ocaml notebooks/introduction.ipynb
+[NbConvertApp] Converting notebook notebooks/introduction.ipynb to ocaml
+[NbConvertApp] Writing 2271 bytes to notebooks/introduction.ml
+```
+
+[Jupyter-NBConvert-OCaml]: https://github.com/Naereen/Jupyter-NBConvert-OCaml
+
 ### Code completion
 
 OCaml Jupyter kernel supports [merlin](https://ocaml.github.io/merlin/)-based code completion. Candidates are shown by Tab key like
