@@ -61,6 +61,32 @@ val display_file :
     available. *)
 val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
 
+(** {2 Printf} *)
+
+(** The formatter for displaying data on notebooks. *)
+val formatter : Format.formatter
+
+(** Same as {!Format.printf}, but output on {!JupyterNotebook.formatter} *)
+val printf : ('a, Format.formatter, unit) format -> 'a
+
+(** [display_formatter ?ctx ?base64 mime] shows data written in
+    {!JupyterNotebook.formatter} at [ctx].
+    [mime] is the mime type of the data.
+
+    {!JupyterNotebook.formatter} is flushed and data in the formatter
+    is cleaned by calling this function.
+
+    @param ctx        default = the current cell.
+    @param display_id default = a fresh ID (since 1.0.0)
+    @param metadata   default = nothing (since 1.0.0)
+    @param base64     default = [false]. *)
+val display_formatter :
+  ?ctx:ctx ->
+  ?display_id:display_id ->
+  ?metadata:Yojson.Safe.json ->
+  ?base64:bool ->
+  string -> display_id
+
 (** {2 User input} *)
 
 (** [read_line ?password prompt] requests user's input.

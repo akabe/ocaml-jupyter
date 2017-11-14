@@ -63,6 +63,21 @@ let cell_context () =
   | None -> failwith "JupyterNotebook has no execution context"
   | Some ctx -> ctx
 
+(** {2 Printf} *)
+
+let formatter_buf = Buffer.create 128
+let formatter = Format.formatter_of_buffer formatter_buf
+
+let printf fmt = Format.fprintf formatter fmt
+
+let display_formatter ?ctx ?display_id ?metadata ?base64 mime =
+  Format.pp_print_flush formatter () ;
+  let data = Buffer.contents formatter_buf in
+  Buffer.clear formatter_buf ;
+  display ?ctx ?display_id ?metadata ?base64 mime data
+
+(** {2 User input} *)
+
 let read_line = JupyterNotebookStdin.read_line
 
 let read_line_async = JupyterNotebookStdin.read_line_async
