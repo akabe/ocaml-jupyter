@@ -42,6 +42,19 @@ val display :
   ?base64:bool ->
   string -> string -> display_id
 
+(** [display_file ?ctx ?base64 mime filename] shows data in the file of path
+    [filename] at [ctx]. [mime] is the mime type of the data.
+    @param ctx        default = the current cell.
+    @param display_id default = a fresh ID (since 1.0.0)
+    @param metadata   default = nothing (since 1.0.0)
+    @param base64     default = [false]. *)
+val display_file :
+  ?ctx:ctx ->
+  ?display_id:display_id ->
+  ?metadata:Yojson.Safe.json ->
+  ?base64:bool ->
+  string -> string -> display_id
+
 (** [clear_output ?ctx ?wait ()] removes displayed elements from [ctx].
     @param ctx   default = the current cell.
     @param wait  default = [false]. Wait to clear the output until new output is

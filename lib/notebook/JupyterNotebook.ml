@@ -47,6 +47,13 @@ let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data
       }) ;
     display_id
 
+let display_file ?ctx ?display_id ?metadata ?base64 mime filename =
+  let ic = open_in_bin filename in
+  let n = in_channel_length ic in
+  let s = really_input_string ic n in
+  close_in ic ;
+  display ?ctx ?display_id ?metadata ?base64 mime s
+
 let clear_output ?ctx ?(wait = false) () =
   JupyterNotebookUnsafe.send_iopub ?ctx
     Jupyter.IopubMessage.(`Clear_output { wait })
