@@ -49,6 +49,7 @@ Returns the current cell context.<br>
 <pre><span id="VALdisplay_file"><span class="keyword">val</span> display_file</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
 <code class="code">display_file ?ctx ?base64 mime filename</code> shows data in the file of path
     <code class="code">filename</code> at <code class="code">ctx</code>. <code class="code">mime</code> is the mime type of the data.<br>
+<b>Since</b> 1.1.0<br>
 </div>
 <div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
 <div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 1.0.0)</div>
@@ -66,10 +67,12 @@ Returns the current cell context.<br>
 
 <pre><span id="VALformatter"><span class="keyword">val</span> formatter</span> : <code class="type">Format.formatter</code></pre><div class="info ">
 The formatter for displaying data on notebooks.<br>
+<b>Since</b> 1.1.0<br>
 </div>
 
 <pre><span id="VALprintf"><span class="keyword">val</span> printf</span> : <code class="type">('a, Format.formatter, unit) Pervasives.format -> 'a</code></pre><div class="info ">
-Same as <code class="code">Format.printf</code>, but output on <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a><br>
+Same as <code class="code">Format.printf</code>, but output on <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a>.<br>
+<b>Since</b> 1.1.0<br>
 </div>
 
 <pre><span id="VALdisplay_formatter"><span class="keyword">val</span> display_formatter</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
@@ -80,6 +83,7 @@ Same as <code class="code">Format.printf</code>, but output on <a href="JupyterN
 
     <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a> is flushed and data in the formatter
     is cleaned by calling this function.<br>
+<b>Since</b> 1.1.0<br>
 </div>
 <div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
 <div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 1.0.0)</div>
