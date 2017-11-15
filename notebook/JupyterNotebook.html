@@ -11,7 +11,8 @@
 <link title="Index of values" rel=Appendix href="index_values.html">
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="JupyterNotebook" rel="Chapter" href="JupyterNotebook.html">
-<link title="JupyterNotebookCommManager" rel="Chapter" href="JupyterNotebookCommManager.html"><link title="User input" rel="Section" href="#2_Userinput">
+<link title="JupyterNotebookCommManager" rel="Chapter" href="JupyterNotebookCommManager.html"><link title="Printf" rel="Section" href="#2_Printf">
+<link title="User input" rel="Section" href="#2_Userinput">
 <link title="User-defined communication" rel="Section" href="#2_Userdefinedcommunication">
 <title>JupyterNotebook</title>
 </head>
@@ -45,12 +46,45 @@ Returns the current cell context.<br>
 <div class="param_info"><code class="code">metadata</code> : default = nothing (since 1.0.0)</div>
 <div class="param_info"><code class="code">base64</code> : default = <code class="code">false</code>.</div>
 
+<pre><span id="VALdisplay_file"><span class="keyword">val</span> display_file</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
+<code class="code">display_file ?ctx ?base64 mime filename</code> shows data in the file of path
+    <code class="code">filename</code> at <code class="code">ctx</code>. <code class="code">mime</code> is the mime type of the data.<br>
+</div>
+<div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
+<div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 1.0.0)</div>
+<div class="param_info"><code class="code">metadata</code> : default = nothing (since 1.0.0)</div>
+<div class="param_info"><code class="code">base64</code> : default = <code class="code">false</code>.</div>
+
 <pre><span id="VALclear_output"><span class="keyword">val</span> clear_output</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -> ?wait:bool -> unit -> unit</code></pre><div class="info ">
 <code class="code">clear_output ?ctx ?wait ()</code> removes displayed elements from <code class="code">ctx</code>.<br>
 </div>
 <div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
 <div class="param_info"><code class="code">wait</code> : default = <code class="code">false</code>. Wait to clear the output until new output is
     available.</div>
+<br>
+<h2 id="2_Printf">Printf</h2><br>
+
+<pre><span id="VALformatter"><span class="keyword">val</span> formatter</span> : <code class="type">Format.formatter</code></pre><div class="info ">
+The formatter for displaying data on notebooks.<br>
+</div>
+
+<pre><span id="VALprintf"><span class="keyword">val</span> printf</span> : <code class="type">('a, Format.formatter, unit) Pervasives.format -> 'a</code></pre><div class="info ">
+Same as <code class="code">Format.printf</code>, but output on <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a><br>
+</div>
+
+<pre><span id="VALdisplay_formatter"><span class="keyword">val</span> display_formatter</span> : <code class="type">?ctx:<a href="JupyterNotebook.html#TYPEctx">ctx</a> -><br>       ?display_id:<a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a> -><br>       ?metadata:Yojson.Safe.json -><br>       ?base64:bool -> string -> <a href="JupyterNotebook.html#TYPEdisplay_id">display_id</a></code></pre><div class="info ">
+<code class="code">display_formatter ?ctx ?base64 mime</code> shows data written in
+    <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a> at <code class="code">ctx</code>.
+    <code class="code">mime</code> is the mime type of the data.
+<p>
+
+    <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a> is flushed and data in the formatter
+    is cleaned by calling this function.<br>
+</div>
+<div class="param_info"><code class="code">ctx</code> : default = the current cell.</div>
+<div class="param_info"><code class="code">display_id</code> : default = a fresh ID (since 1.0.0)</div>
+<div class="param_info"><code class="code">metadata</code> : default = nothing (since 1.0.0)</div>
+<div class="param_info"><code class="code">base64</code> : default = <code class="code">false</code>.</div>
 <br>
 <h2 id="2_Userinput">User input</h2><br>
 

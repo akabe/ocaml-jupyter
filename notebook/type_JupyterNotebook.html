@@ -19,7 +19,19 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?display_id:<span class="constructor">JupyterNotebook</span>.display_id&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Yojson</span>.<span class="constructor">Safe</span>.json&nbsp;<span class="keywordsign">-&gt;</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.display_id<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;display_file&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?display_id:<span class="constructor">JupyterNotebook</span>.display_id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Yojson</span>.<span class="constructor">Safe</span>.json&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.display_id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clear_output&nbsp;:&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?wait:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;formatter&nbsp;:&nbsp;<span class="constructor">Format</span>.formatter<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;printf&nbsp;:&nbsp;(<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Format</span>.formatter,&nbsp;unit)&nbsp;<span class="constructor">Pervasives</span>.format&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;display_formatter&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;?ctx:<span class="constructor">JupyterNotebook</span>.ctx&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?display_id:<span class="constructor">JupyterNotebook</span>.display_id&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?metadata:<span class="constructor">Yojson</span>.<span class="constructor">Safe</span>.json&nbsp;<span class="keywordsign">-&gt;</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;?base64:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">JupyterNotebook</span>.display_id<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_line&nbsp;:&nbsp;?password:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string<br>
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;read_line_async&nbsp;:&nbsp;(string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?password:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
 &nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">CommManager</span>&nbsp;=&nbsp;<span class="constructor">JupyterNotebookCommManager</span><br>

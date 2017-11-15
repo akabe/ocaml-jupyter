@@ -51,6 +51,30 @@ Send an open message to Jupyter.
 <code class="code">display ?ctx ?base64 mime data</code> shows <code class="code">data</code> at <code class="code">ctx</code>.
 </div>
 </td></tr>
+<tr><td><a href="JupyterNotebook.html#VALdisplay_file">display_file</a> [<a href="JupyterNotebook.html">JupyterNotebook</a>]</td>
+<td><div class="info">
+<code class="code">display_file ?ctx ?base64 mime filename</code> shows data in the file of path
+    <code class="code">filename</code> at <code class="code">ctx</code>.
+</div>
+</td></tr>
+<tr><td><a href="JupyterNotebook.html#VALdisplay_formatter">display_formatter</a> [<a href="JupyterNotebook.html">JupyterNotebook</a>]</td>
+<td><div class="info">
+<code class="code">display_formatter ?ctx ?base64 mime</code> shows data written in
+    <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a> at <code class="code">ctx</code>.
+</div>
+</td></tr>
+<tr><td align="left"><br>F</td></tr>
+<tr><td><a href="JupyterNotebook.html#VALformatter">formatter</a> [<a href="JupyterNotebook.html">JupyterNotebook</a>]</td>
+<td><div class="info">
+The formatter for displaying data on notebooks.
+</div>
+</td></tr>
+<tr><td align="left"><br>P</td></tr>
+<tr><td><a href="JupyterNotebook.html#VALprintf">printf</a> [<a href="JupyterNotebook.html">JupyterNotebook</a>]</td>
+<td><div class="info">
+Same as <code class="code">Format.printf</code>, but output on <a href="JupyterNotebook.html#VALformatter"><code class="code">JupyterNotebook.formatter</code></a>
+</div>
+</td></tr>
 <tr><td align="left"><br>R</td></tr>
 <tr><td><a href="JupyterNotebook.html#VALread_line">read_line</a> [<a href="JupyterNotebook.html">JupyterNotebook</a>]</td>
 <td><div class="info">
