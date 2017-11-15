@@ -47,6 +47,13 @@ let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data
       }) ;
     display_id
 
+let display_file ?ctx ?display_id ?metadata ?base64 mime filename =
+  let ic = open_in_bin filename in
+  let n = in_channel_length ic in
+  let s = really_input_string ic n in
+  close_in ic ;
+  display ?ctx ?display_id ?metadata ?base64 mime s
+
 let clear_output ?ctx ?(wait = false) () =
   JupyterNotebookUnsafe.send_iopub ?ctx
     Jupyter.IopubMessage.(`Clear_output { wait })
@@ -55,6 +62,21 @@ let cell_context () =
   match !JupyterNotebookUnsafe.context with
   | None -> failwith "JupyterNotebook has no execution context"
   | Some ctx -> ctx
+
+(** {2 Printf} *)
+
+let formatter_buf = Buffer.create 128
+let formatter = Format.formatter_of_buffer formatter_buf
+
+let printf fmt = Format.fprintf formatter fmt
+
+let display_formatter ?ctx ?display_id ?metadata ?base64 mime =
+  Format.pp_print_flush formatter () ;
+  let data = Buffer.contents formatter_buf in
+  Buffer.clear formatter_buf ;
+  display ?ctx ?display_id ?metadata ?base64 mime data
+
+(** {2 User input} *)
 
 let read_line = JupyterNotebookStdin.read_line
 
