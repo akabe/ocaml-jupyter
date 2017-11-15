@@ -47,7 +47,8 @@ val display :
     @param ctx        default = the current cell.
     @param display_id default = a fresh ID (since 1.0.0)
     @param metadata   default = nothing (since 1.0.0)
-    @param base64     default = [false]. *)
+    @param base64     default = [false].
+    @since 1.1.0 *)
 val display_file :
   ?ctx:ctx ->
   ?display_id:display_id ->
@@ -63,10 +64,12 @@ val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
 
 (** {2 Printf} *)
 
-(** The formatter for displaying data on notebooks. *)
+(** The formatter for displaying data on notebooks.
+    @since 1.1.0 *)
 val formatter : Format.formatter
 
-(** Same as {!Format.printf}, but output on {!JupyterNotebook.formatter} *)
+(** Same as {!Format.printf}, but output on {!JupyterNotebook.formatter}.
+    @since 1.1.0 *)
 val printf : ('a, Format.formatter, unit) format -> 'a
 
 (** [display_formatter ?ctx ?base64 mime] shows data written in
@@ -79,7 +82,8 @@ val printf : ('a, Format.formatter, unit) format -> 'a
     @param ctx        default = the current cell.
     @param display_id default = a fresh ID (since 1.0.0)
     @param metadata   default = nothing (since 1.0.0)
-    @param base64     default = [false]. *)
+    @param base64     default = [false].
+    @since 1.1.0 *)
 val display_formatter :
   ?ctx:ctx ->
   ?display_id:display_id ->
