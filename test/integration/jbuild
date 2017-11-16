@@ -1,0 +1,25 @@
+;; This performs integration tests.
+;; The test suites require installation of `jupyter' and `jupyter-archimedes' packages.
+
+(jbuild_version 1)
+
+(executables
+ ((names      (runtest))
+  (preprocess (pps (ppx_deriving_yojson)))
+  (libraries  (jupyter
+               unix
+               ppx_deriving.runtime))
+  (flags      ((:include ${ROOT}/config/ocaml_flags.sexp)
+               (:include ${ROOT}/config/ocaml_test_flags.sexp)))))
+
+(alias
+ ((name   runtest)
+  (deps   (runtest.exe
+           suite/ppx.ml
+           suite/jupyter-notebook.ml
+           suite/jupyter-archimedes.ml))
+  (action (chdir ${ROOT}/test/integration
+                 (run ${<}
+                      suite/ppx.ml
+                      suite/jupyter-notebook.ml
+                      suite/jupyter-archimedes.ml)))))

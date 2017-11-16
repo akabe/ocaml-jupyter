@@ -25,7 +25,7 @@ function get_ocaml_version() {
 }
 
 function create() {
-    local bindir=$1
+    local bindir=$(opam config var bin)
 
     cat <<EOF
 {
@@ -45,11 +45,15 @@ EOF
 }
 
 function install() {
-    local install_kernel=$1
-    local datadir=$2
+    local datadir="$(opam config var share)/ocaml-jupyter"
     local install_flags="--name $KERNEL_NAME"
 
-    if [[ "$install_kernel" == 'true' ]] && check_command jupyter; then
+    if check_command jupyter; then
+        if ! [ -f "$datadir/kernel.json" ]; then
+            mkdir -p "$datadir"
+            create > "$datadir/kernel.json"
+        fi
+
         if check_user_mode; then
             jupyter kernelspec install --user $install_flags "$datadir"
         else
@@ -60,11 +64,15 @@ function install() {
 
 function uninstall() {
     if check_command jupyter; then
-        if check_user_mode; then
-            jupyter kernelspec remove "$KERNEL_NAME" -f
+        if jupyter kernelspec list | grep "$KERNEL_NAME" >/dev/null; then
+            if check_user_mode; then
+                jupyter kernelspec remove "$KERNEL_NAME" -f
+            else
+                sudo jupyter kernelspec remove "$KERNEL_NAME" -f
+		    fi
         else
-            sudo jupyter kernelspec remove "$KERNEL_NAME" -f
-		fi
+            echo "[ERROR] kernelspec $KERNEL_NAME is not install"
+        fi
     fi
 }
 
@@ -72,11 +80,8 @@ OCAML_VERSION=$(get_ocaml_version | sed 's@[^0-9A-Za-z_\.+-]@_@g')
 KERNEL_NAME=ocaml-jupyter
 
 case $1 in
-    create )
-        create $2
-    ;;
     install )
-        install $2 $3
+        install
     ;;
     uninstall )
     	uninstall

@@ -1,27 +1,4 @@
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
-*.annot
-*.cmt
-*.cmti
-
-# ocamlbuild working directory
+# jbuilder generated files
 _build/
-*.docdir
-
-# ocamlbuild targets
-*.byte
-*.native
-
-# oasis generated files
-setup.data
-setup.log
-
-# artifacts
-src/kernel.json
+.merlin
+*.install

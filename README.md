@@ -26,6 +26,7 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 ``` console
 $ pip install jupyter
 $ opam install jupyter
+$ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
 ```
 
 which will automatically register the kernel to Jupyter if `jupyter` command is found.
@@ -97,13 +98,16 @@ The kernel uses [.merlin](https://github.com/ocaml/merlin/wiki/project-configura
 
 OCaml Jupyter includes some sub-packages:
 
-- [jupyter][jupyter-core]: definitions of Jupyter protocol. This package is internally used. You don't need it directly.
-- [jupyter.notebook][jupyter-notebook]: a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
-- `jupyter.archimedes`: Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides no interface (`opam install cairo2 archimedes` is required.)
+- [jupyter][jupyter-core] is a core library of OCaml Jupyter. This package is internally used. You don't need it directly.
+- [jupyter.notebook][jupyter-notebook] is a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
+- [jupyter.comm][jupyter-comm] is a library for communication between OCaml notebooks and Jupyter/Web frontend.
+- [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
 
-[jupyter-core]:     https://akabe.github.io/ocaml-jupyter/core/index.html
-[jupyter-notebook]: https://akabe.github.io/ocaml-jupyter/notebook/index.html
-[archimedes]:       http://archimedes.forge.ocamlcore.org/
+[jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/index.html
+[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/index.html
+[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/index.html
+[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter.archimedes/index.html
+[archimedes]:         http://archimedes.forge.ocamlcore.org/
 
 ### Customize kernel parameters
 
@@ -134,7 +138,7 @@ $ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocam
 
 ## Docker image
 
-A ready-to-use Docker image [akabe/ocaml-jupyter-datascience][ocaml-jupyter-datascience] are available on DockerHub.
+A ready-to-use Docker image [akabe/ocaml-jupyter-datascience][ocaml-jupyter-datascience] is available on DockerHub.
 It contains OCaml Jupyter and many packages for data science.
 
 ```console
