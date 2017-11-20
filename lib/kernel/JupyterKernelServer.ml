@@ -156,6 +156,26 @@ struct
 
   let string_of_complete_entry entry = entry.JupyterKernelMerlin.name
 
+  let hint_of_complete_entry entry =
+    let left = match entry.JupyterKernelMerlin.kind with
+      | `Value -> "V"
+      | `Variant -> "C"
+      | `Constructor -> "C"
+      | `Label -> "V"
+      | `Module -> "M"
+      | `Sig -> "S"
+      | `Type -> "T"
+      | `Method -> "M"
+      | `Method_call -> "#"
+      | `Exn -> "E"
+      | `Class -> "C" in
+    let right = entry.JupyterKernelMerlin.desc in
+    let hint = `Assoc [
+        "hint_left", `String left;
+        "hint_right", `String right;
+      ] in
+    (entry.JupyterKernelMerlin.name, hint)
+
   let complete_request ~parent server shell body =
     let open JupyterKernelMerlin in
     let context = Buffer.contents server.code in
@@ -170,11 +190,11 @@ struct
         }
       | Result.Ok { entries; cursor_start; cursor_end; } -> (* non-empty candidates *)
         let matches = List.map string_of_complete_entry entries in
+        let metadata : Yojson.Safe.json = `Assoc (List.map hint_of_complete_entry entries) in
         ShC.{
-          status = `Ok; matches;
+          status = `Ok; matches; metadata;
           cursor_start = Some cursor_start;
           cursor_end = Some cursor_end;
-          metadata = `Assoc [];
         }
       | Result.Error j -> (* merlin returns an error *)
         Log.info "Merlin Error: %s" (Yojson.Safe.to_string j) ;
