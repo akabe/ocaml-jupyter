@@ -1,4 +1,5 @@
 #use "topfind" ;;
+Topfind.log := ignore ;;
 #require "yojson,base64,uuidm" ;;
 #directory "../jupyter/src/core" ;;
 #directory "../jupyter/src/notebook" ;;

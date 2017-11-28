@@ -41,19 +41,12 @@ let define_connection ~jupyterin ~jupyterout ~context =
   Evaluation.setvalue "$jupyterout" (Unix.out_channel_of_descr jupyterout) ;
   Evaluation.setvalue "$jupyterctx" context
 
-let override_system_params () =
-  (* [Sys.interactive] must be initialized before loading [.ocamlinit]. *)
-  ignore (Evaluation.eval ~count:0 ~send:ignore "Sys.interactive := false")
-
 let create_child_process
     ?preload ?init_file ?error_ctx_size
     ~ctrlin ~ctrlout ~jupyterin
   =
   let context = ref None in
-  let preinit () =
-    define_connection ~jupyterin ~jupyterout:ctrlout ~context ;
-    override_system_params ()
-  in
+  let preinit () = define_connection ~jupyterin ~jupyterout:ctrlout ~context in
   Evaluation.init ?preload ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in
   let ctrlout = Unix.out_channel_of_descr ctrlout in

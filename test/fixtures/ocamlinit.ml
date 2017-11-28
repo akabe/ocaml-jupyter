@@ -4,3 +4,4 @@ let () =
 ;;
 
 #use "topfind" ;;
+Topfind.log := ignore ;;
