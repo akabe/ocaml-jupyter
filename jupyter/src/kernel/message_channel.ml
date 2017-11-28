@@ -69,7 +69,7 @@ struct
     match aux [] str_lst with
     | ids, hmac :: header :: parent_header :: metadata :: content :: buffers ->
       let open Jupyter.Message in
-      debug
+      info
         "RECV: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
         hmac header parent_header content metadata ;
       Hmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
@@ -106,7 +106,7 @@ struct
       Hmac.encode ?key:ch.key
         ~header ~parent_header ~metadata:resp.metadata ~content ()
     in
-    debug
+    info
       "SEND: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
       hmac header parent_header content resp.metadata ;
     [
