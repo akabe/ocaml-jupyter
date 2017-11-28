@@ -3,7 +3,4 @@ let () =
   with Not_found -> ()
 ;;
 
-(* verbose output by interactive mode  *)
-(* Sys.interactive := true ;; *)
-
 #use "topfind" ;;

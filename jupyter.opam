@@ -1,6 +1,4 @@
 opam-version: "1.2"
-name: "jupyter"
-version: "dev"
 maintainer: [
   "Akinori ABE <aabe.65535@gmail.com>"
 ]
@@ -14,17 +12,14 @@ dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
 
 available: [ ocaml-version >= "4.02.0" ]
 build: [
-  [ "ocaml" "setup.ml" "-configure"
-            "--prefix" prefix
-            "--enable-archimedes" {cairo2:installed & archimedes:installed} ]
-  [ "ocaml" "setup.ml" "-build" ]
+  [ "jbuilder" "subst" ] {pinned}
+  [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
 install: [
-  [ "ocaml" "setup.ml" "-install" ]
+  [ "./kernelspec.sh" "install" ]
 ]
 remove: [
-  [ "sh" "-c" "cd %{share}%/ocaml-jupyter ; ocaml setup.ml -uninstall" ]
-  [ "rm" "-rf" "%{share}%/ocaml-jupyter" ]
+  [ "./kernelspec.sh" "uninstall" ]
 ]
 depends: [
   "base-threads"
@@ -39,14 +34,10 @@ depends: [
   "ppx_deriving_yojson" {>= "3.0"}
   "cryptokit" {>= "1.12"}
   "ocamlfind" {build & >= "1.5.0"}
-  "ocamlbuild" {build}
-  "cppo" {build & >= "1.6.0"}
-  "cppo_ocamlbuild" {build & >= "1.6.0"}
+  "jbuilder" {build & >= "1.0+beta14"}
 ]
 depopts: [
   "merlin"
-  "cairo2"
-  "archimedes"
 ]
 conflicts: [
   "merlin" {< "3.0.0"}

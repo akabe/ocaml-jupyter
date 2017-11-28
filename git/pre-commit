@@ -2,7 +2,7 @@
 
 exit_code=0
 
-for fname in $(find lib src test -type f | grep '.*\.\(ml\|mli\)$'); do
+for fname in $(find jupyter jupyter-archimedes test -type f | grep '.*\.\(ml\|mli\)$'); do
 	if [[ "$(echo $fname | grep cppo)" == '' ]]; then
 		hash0=$(cat "$fname")
 		hash1=$(ocp-indent "$fname")

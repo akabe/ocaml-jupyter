@@ -1,0 +1,32 @@
+(jbuild_version 1)
+
+;;
+;; This configure script performs:
+;; - generation of common ocaml flags (especially -ppx options of ppx_deriving_yojson for jbuilder)
+;;
+
+(executables
+ ((names       (configure))
+  (libraries   (unix))
+  (flags       (:standard
+                -w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58
+                -safe-string -strict-sequence -strict-formats
+                -short-paths))))
+
+(rule
+ ((targets (ocaml_flags.sexp))
+  (deps    (configure.exe))
+  (action  (run ${<} -o ${@}
+                -ppx ppx_deriving_yojson
+                -ppx lwt.ppx
+                -ocamlfind ${bin:ocamlfind}
+                -ocaml-flag "-w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58"
+                -ocaml-flag "-safe-string -strict-sequence -strict-formats"
+                -ocaml-flag "-short-paths"))))
+
+(rule
+ ((targets (ocaml_test_flags.sexp))
+  (deps    (configure.exe))
+  (action  (run ${<} -o ${@}
+                -ppx ppx_deriving.show
+                -ocamlfind ${bin:ocamlfind}))))

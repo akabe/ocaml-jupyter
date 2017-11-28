@@ -1,0 +1,25 @@
+(jbuild_version 1)
+
+(library
+ ((name        jupyter_kernel)
+  (synopsis    "A library for Jupyter kernel client")
+  (modes       (byte))
+  (modules     (Jupyter_kernel
+                Client
+                Message_channel
+                Zmq_channel
+                Channel_intf
+                Connection_info
+                Hmac))
+  (flags       ((:include ${ROOT}/config/ocaml_flags.sexp)))
+  (preprocess  (pps (lwt.ppx ppx_deriving_yojson)))
+  (libraries   (jupyter
+                jupyter_repl
+                jupyter_completor
+                jupyter_log
+                lwt
+                lwt.unix
+                yojson
+                lwt-zmq
+                cryptokit
+                ppx_deriving_yojson.runtime))))
