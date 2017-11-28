@@ -128,15 +128,11 @@ struct
     let code = body.exec_code in
     let%lwt () = send_iopub_status client IOPUB_BUSY in
     let%lwt () = send_iopub_exec_input client code in
-    let%lwt status = Repl.eval ~ctx:parent ~count client.repl code in
-    let%lwt () = send_iopub_status ~parent client IOPUB_IDLE in
-    begin
-      match status with
+    let%lwt () =
+      Repl.eval ~ctx:parent ~count client.repl code >|= function
       | SHELL_OK -> Completor.add_context client.completor code
-      | _ -> ()
-    end ;
-    SHELL_EXEC_REP { exec_count = count; exec_status = status; }
-    |> ShellChannel.reply client.shell ~parent
+      | _ -> () in
+    send_iopub_status ~parent client IOPUB_IDLE
 
   (** {2 Complete request} *)
 
@@ -165,6 +161,23 @@ struct
         }
     in
     ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply)
+
+  (** [is_complete code] checks whether OCaml program [code] can be immediately
+      evaluated, or not. The check is sometimes wrong due to simpleness, e.g.,
+      [is_complete "let x = \" ;;"] is [true] while it causes syntax error. *)
+  let is_complete =
+    let is_cmpl = Str.regexp ";;[ \t]*$" in
+    fun code ->
+      try ignore (Str.search_forward is_cmpl code 0) ; true
+      with Not_found -> false
+
+  let is_complete_request ~parent shell req =
+    let status, indent =
+      if is_complete req.is_cmpl_code
+      then ("complete", None) else ("incomplete", Some "")
+    in
+    SHELL_IS_COMPLETE_REP { is_cmpl_status = status; is_cmpl_indent = indent; }
+    |> ShellChannel.reply shell ~parent
 
   (** {2 Kernel info request} *)
 
@@ -207,7 +220,7 @@ struct
     loop ()
 
   let start_kernel client shell =
-    let rec reply parent = function
+    let rec reply parent = match parent.content with
       | SHELL_SHUTDOWN_REQ body -> shutdown_request ~parent shell body
       | SHELL_KERNEL_INFO_REQ -> kernel_info_request ~parent shell >>= loop
       | SHELL_EXEC_REQ body -> execute_request ~parent client body >>= loop
@@ -222,9 +235,15 @@ struct
       | SHELL_CONNECT_REQ -> (* Deprecated since v5.1 *)
         error "Unsupported request" ;
         loop ()
+      (* Following messages are required by jupyter-console, not jupyter notebook. *)
+      | SHELL_HISTORY_REQ _ -> (* Returns an empty response *)
+        SHELL_HISTORY_REP { history = [] }
+        |> ShellChannel.reply shell ~parent >>= loop
+      | SHELL_IS_COMPLETE_REQ body ->
+        is_complete_request shell ~parent body >>= loop
     and loop () =
       let%lwt req = ShellChannel.recv shell in
-      reply req req.content
+      reply req
     in
     loop ()
 

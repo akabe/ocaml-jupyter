@@ -80,6 +80,39 @@ type complete_reply =
     cmpl_status : status Json.enum [@key "status"];
   } [@@deriving yojson { strict = false }]
 
+(** {2 History} *)
+
+type history_request =
+  {
+    hist_output : bool [@key "output"];
+    hist_raw : bool [@key "raw"];
+    hist_access_type : string [@key "hist_access_type"];
+    hist_session : int option [@key "session"] [@default None];
+    hist_start : int option [@key "start"] [@default None];
+    hist_stop : int option [@key "stop"] [@default None];
+    hist_n : int [@key "n"];
+    hist_pattern : string option [@key "pattern"] [@default None];
+    hist_unique : bool [@key "unique"] [@default false];
+  } [@@deriving yojson { strict = false }]
+
+type history_reply =
+  {
+    history : (int option * int * string) list;
+  } [@@deriving yojson { strict = false }]
+
+(** {2 Code completeness} *)
+
+type is_complete_request =
+  {
+    is_cmpl_code : string [@key "code"];
+  } [@@deriving yojson { strict = false }]
+
+type is_complete_reply =
+  {
+    is_cmpl_status : string [@key "status"];
+    is_cmpl_indent : string option [@key "indent"] [@default None];
+  } [@@deriving yojson { strict = false }]
+
 (** {2 Connect} *)
 
 type connect_reply =
@@ -177,6 +210,8 @@ type request =
   | SHELL_EXEC_REQ of exec_request [@name "execute_request"]
   | SHELL_INSPECT_REQ of inspect_request [@name "inspect_request"]
   | SHELL_COMPLETE_REQ of complete_request [@name "complete_request"]
+  | SHELL_HISTORY_REQ of history_request [@name "history_request"]
+  | SHELL_IS_COMPLETE_REQ of is_complete_request [@name "is_complete_request"]
   | SHELL_CONNECT_REQ [@name "connect_request"]
   | SHELL_COMM_INFO_REQ of comm_info_request [@name "comm_info_request"]
   | SHELL_SHUTDOWN_REQ of shutdown [@name "shutdown_request"]
@@ -192,6 +227,8 @@ type reply =
   | SHELL_EXEC_REP of exec_reply [@name "execute_reply"]
   | SHELL_INSPECT_REP of inspect_reply [@name "inspect_reply"]
   | SHELL_COMPLETE_REP of complete_reply [@name "complete_reply"]
+  | SHELL_HISTORY_REP of history_reply [@name "history_reply"]
+  | SHELL_IS_COMPLETE_REP of is_complete_reply [@name "is_complete_reply"]
   | SHELL_CONNECT_REP of connect_reply [@name "connect_reply"]
   | SHELL_COMM_INFO_REP of comm_info_reply [@name "comm_info_reply"]
   | SHELL_SHUTDOWN_REP of shutdown [@name "shutdown_reply"]
