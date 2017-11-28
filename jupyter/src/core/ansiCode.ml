@@ -27,10 +27,6 @@ let bold = "\x1b[1m"
 let faint = "\x1b[2m"
 let italic = "\x1b[3m"
 let underline = "\x1b[4m"
-let bold_off = "\x1b[21m"
-let faint_off = "\x1b[22m"
-let italic_off = "\x1b[23m"
-let underline_off = "\x1b[24m"
 
 (** Foreground colors *)
 module FG =

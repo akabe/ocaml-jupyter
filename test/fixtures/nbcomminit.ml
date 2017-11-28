@@ -1,4 +1,5 @@
 #use "topfind" ;;
+Topfind.log := ignore ;;
 #thread ;;
 #require "yojson,base64,uuidm,ppx_deriving.runtime,ppx_deriving_yojson.runtime" ;;
 #directory "../jupyter/src/core" ;;

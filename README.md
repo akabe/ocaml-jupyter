@@ -106,7 +106,7 @@ OCaml Jupyter includes some sub-packages:
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/index.html
 [jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/index.html
 [jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/index.html
-[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter.archimedes/index.html
+[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/index.html
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
 ### Customize kernel parameters

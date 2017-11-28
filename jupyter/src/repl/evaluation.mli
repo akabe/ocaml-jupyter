@@ -44,5 +44,6 @@ val iopub_interrupt : unit -> Jupyter.Iopub.reply
 (** {2 Execution} *)
 
 val eval :
+  ?error_ctx_size:int ->
   send:(Jupyter.Iopub.reply -> unit) ->
   count:int -> string -> Jupyter.Shell.status

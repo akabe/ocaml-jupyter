@@ -46,7 +46,8 @@ let () =
   let repl =
     Jupyter_repl.Process.create
       ~preload:!Jupyter_args.preload_objs
-      ~init_file:!Jupyter_args.init_file () in
+      ~init_file:!Jupyter_args.init_file
+      ~error_ctx_size:!Jupyter_args.error_ctx_size () in
   let completor =
     Jupyter_completor.Merlin.create
       ~bin_path:!Jupyter_args.merlin
