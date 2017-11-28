@@ -45,7 +45,10 @@ let override_system_params () =
   (* [Sys.interactive] must be initialized before loading [.ocamlinit]. *)
   ignore (Evaluation.eval ~count:0 ~send:ignore "Sys.interactive := false")
 
-let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
+let create_child_process
+    ?preload ?init_file ?error_ctx_size
+    ~ctrlin ~ctrlout ~jupyterin
+  =
   let context = ref None in
   let preinit () =
     define_connection ~jupyterin ~jupyterout:ctrlout ~context ;
@@ -67,7 +70,7 @@ let create_child_process ?preload ?init_file ~ctrlin ~ctrlout ~jupyterin =
       | REPL_QUIT -> exit 0 (* control channel is closed. *)
       | REPL_CODE (ctx', count, code) ->
         context := Some ctx' ;
-        Evaluation.eval ~count ~send:(send_iopub ~ctx:ctx') code
+        Evaluation.eval ?error_ctx_size ~count ~send:(send_iopub ~ctx:ctx') code
         |> Shell.execute_reply ~count
         |> send_shell ~ctx:ctx' ;
         main_loop (Some (ctx', count))
@@ -129,7 +132,7 @@ let recv_stdout_thread ~push ~ctx ~name ic =
         | Iopub.IOPUB_STDOUT -> notice "STDOUT>> %s@." line
         | Iopub.IOPUB_STDERR -> notice "STDERR>> %s@." line)
 
-let create ?preload ?init_file () =
+let create ?preload ?init_file ?error_ctx_size () =
   let c_jupyterin, p_jupyterin = Unix.pipe () in
   let c_ctrlin, p_ctrlin = Unix.pipe () in
   let p_ctrlout, c_ctrlout = Unix.pipe () in
@@ -147,7 +150,7 @@ let create ?preload ?init_file () =
     Unix.close c_stdout ;
     Unix.close c_stderr ;
     create_child_process
-      ?preload ?init_file
+      ?preload ?init_file ?error_ctx_size
       ~ctrlin:c_ctrlin ~ctrlout:c_ctrlout ~jupyterin:c_jupyterin
   | pid ->
     Unix.close c_jupyterin ;

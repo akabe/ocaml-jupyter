@@ -32,4 +32,6 @@ val merlin : string ref
 
 val dot_merlin : string ref
 
+val error_ctx_size : int ref
+
 val parse : unit -> unit

@@ -22,6 +22,7 @@
 
 (** Error report for OCaml REPL *)
 
-(** [get_message exn] converts an error [exn] into a human-readable
-    message. *)
-val to_string_hum : exn -> string
+(** [get_message ~ctx_size exn] converts an error [exn] into a human-readable
+    message.
+    @param ctx_size  the number of leading/trailing lines to be printed. *)
+val to_string_hum : ctx_size:int -> exn -> string

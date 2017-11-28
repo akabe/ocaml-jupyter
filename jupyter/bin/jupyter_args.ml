@@ -34,6 +34,8 @@ let merlin = ref "ocamlmerlin"
 
 let dot_merlin = ref "./.merlin"
 
+let error_ctx_size = ref 1
+
 let set_verbosity level_str =
   match Lwt_log.level_of_string level_str with
   | Some level -> Jupyter_log.set_level level
@@ -61,6 +63,9 @@ let parse () =
       "--version",
       Set version,
       "show the version number";
+      "--error-ctx",
+      Set_int error_ctx_size,
+      "<num> the number of context lines in error messages";
     ]
   in
   let doc = "An OCaml kernel for Jupyter (IPython) notebook" in

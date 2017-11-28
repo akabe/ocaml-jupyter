@@ -90,7 +90,7 @@ let eval_phrase ~filename phrase =
   Buffer.clear buffer ;
   (is_ok, message)
 
-let eval ~send ~count code =
+let eval ?(error_ctx_size = 1) ~send ~count code =
   let filename = sprintf "[%d]" count in
   let rec loop status = function
     | [] -> status
@@ -114,6 +114,6 @@ let eval ~send ~count code =
     send (iopub_interrupt ()) ;
     Shell.SHELL_ABORT
   | exn ->
-    let msg = AnsiCode.FG.red ^ Error.to_string_hum exn ^ AnsiCode.reset in
+    let msg = Error.to_string_hum ~ctx_size:error_ctx_size exn in
     send (Iopub.error ~value:"compile_error" [msg]) ;
     Shell.SHELL_ERROR
