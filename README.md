@@ -1,9 +1,7 @@
 # OCaml Jupyter
 
-[![Kernel version][version-img]][version] [![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
+[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
 
-[version]:      https://github.com/akabe/ocaml-jupyter/releases
-[version-img]:  https://img.shields.io/badge/version-1.1.0-blue.svg
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
 [protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
@@ -29,20 +27,18 @@ $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
 ```
 
-which will automatically register the kernel to Jupyter if `jupyter` command is found.
-Otherwise (i.e., the command is not found in `$PATH`, or you have not installed Jupyter yet)
-you need to manually install the kernel:
+which will automatically add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
+
+```console
+$ jupyter notebook
+```
+
+If you have not installed Jupyter yet (or `jupyter` command was not found in `$PATH`), you need to manually register the kernel:
 
 ```console
 $ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
 [InstallKernelSpec] Removing existing kernelspec in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter
 [InstallKernelSpec] Installed kernelspec ocaml-jupyter-4.04.2 in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter
-```
-
-After installation, you can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
-
-```console
-$ jupyter notebook
 ```
 
 ### Development version
@@ -103,10 +99,10 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter.comm][jupyter-comm] is a library for communication between OCaml notebooks and Jupyter/Web frontend.
 - [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
 
-[jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/index.html
-[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/index.html
-[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/index.html
-[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/index.html
+[jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
+[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/
+[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/
+[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
 ### Customize kernel parameters
@@ -199,3 +195,11 @@ We welcome your patch!
 3. Create a new branch and commit your changes.
 4. `git push` the commits into your (forked) repository.
 5. Pull request to `master` of this repository from the branch you pushed.
+
+Environment variable `LWT_LOG` controls a log level of OCaml Jupyter kernel.
+The following setting verbosely outputs log messages. They might help your debug.
+
+```console
+$ export LWT_LOG='* -> debug'
+$ jupyter notebook
+```
