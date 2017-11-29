@@ -169,7 +169,10 @@ struct
           cmpl_matches = List.map (fun c -> c.Completor.cmpl_name) cands;
         }
     in
-    ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply)
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () =
+      ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply) in
+    send_iopub_status ~parent client IOPUB_IDLE
 
   (** [is_complete code] checks whether OCaml program [code] can be immediately
       evaluated, or not. The check is sometimes wrong due to simpleness, e.g.,
