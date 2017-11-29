@@ -113,8 +113,8 @@ struct
   let send_iopub_status ?parent client kernel_state =
     send_iopub ?parent client (IOPUB_STATUS { kernel_state })
 
-  let send_iopub_exec_input client code =
-    send_iopub client (IOPUB_EXECUTE_INPUT {
+  let send_iopub_exec_input ?parent client code =
+    send_iopub ?parent client (IOPUB_EXECUTE_INPUT {
         exin_code = code;
         exin_count = client.execution_count;
       })
@@ -137,8 +137,8 @@ struct
     client.current_parent <- Some parent ;
     let count = client.execution_count in
     let code = body.exec_code in
-    let%lwt () = send_iopub_status client IOPUB_BUSY in
-    let%lwt () = send_iopub_exec_input client code in
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () = send_iopub_exec_input ~parent client code in
     let%lwt () =
       Repl.eval ~ctx:parent ~count client.repl code >|= function
       | SHELL_OK -> Completor.add_context client.completor code
