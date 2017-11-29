@@ -17,6 +17,7 @@
                 jupyter_repl
                 jupyter_completor
                 jupyter_log
+                str
                 lwt
                 lwt.unix
                 yojson

@@ -195,7 +195,7 @@ let close repl =
 let heartbeat repl =
   let open Unix in
   match waitpid [WNOHANG; WUNTRACED] repl.pid with
-  | 0, _ -> info "REPL is healthy"
+  | 0, _ -> debug "REPL is healthy"
   | _, WEXITED i -> failwith (sprintf "Exited status %d" i)
   | _, WSIGNALED i -> failwith (sprintf "Killed by signal %d" i)
   | _, WSTOPPED i -> failwith (sprintf "Stopped by signal %d" i)
