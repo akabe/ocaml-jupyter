@@ -121,9 +121,12 @@ struct
 
   (** {2 Request handling} *)
 
-  let handle_kernel_info_request ~parent shell =
-    SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
-    |> ShellChannel.reply shell ~parent
+  let handle_kernel_info_request ~parent client shell =
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () =
+      SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
+      |> ShellChannel.reply shell ~parent in
+    send_iopub_status ~parent client IOPUB_IDLE
 
   let handle_shutdown_request ~parent shell body =
     SHELL_SHUTDOWN_REP body
@@ -222,7 +225,7 @@ struct
       | SHELL_SHUTDOWN_REQ body ->
         handle_shutdown_request ~parent shell body (* Don't continue loop *)
       | SHELL_KERNEL_INFO_REQ ->
-        handle_kernel_info_request ~parent shell >>= loop
+        handle_kernel_info_request ~parent client shell >>= loop
       | SHELL_EXEC_REQ body ->
         handle_execute_request ~parent client body >>= loop
       | SHELL_COMPLETE_REQ body ->
