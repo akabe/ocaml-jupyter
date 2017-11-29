@@ -119,9 +119,17 @@ struct
         exin_count = client.execution_count;
       })
 
-  (** {2 Execute request} *)
+  (** {2 Request handling} *)
 
-  let execute_request ~parent client (body : Shell.exec_request) =
+  let handle_kernel_info_request ~parent shell =
+    SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
+    |> ShellChannel.reply shell ~parent
+
+  let handle_shutdown_request ~parent shell body =
+    SHELL_SHUTDOWN_REP body
+    |> ShellChannel.reply shell ~parent
+
+  let handle_execute_request ~parent client body =
     client.execution_count <- succ client.execution_count ;
     client.current_parent <- Some parent ;
     let count = client.execution_count in
@@ -134,9 +142,7 @@ struct
       | _ -> () in
     send_iopub_status ~parent client IOPUB_IDLE
 
-  (** {2 Complete request} *)
-
-  let complete_request ~parent client shell body =
+  let handle_complete_request ~parent client shell body =
     let%lwt raw_reply =
       Completor.complete
         client.completor body.cmpl_code ~pos:body.cmpl_pos in
@@ -171,7 +177,7 @@ struct
       try ignore (Str.search_forward is_cmpl code 0) ; true
       with Not_found -> false
 
-  let is_complete_request ~parent shell req =
+  let handle_is_complete_request ~parent shell req =
     let status, indent =
       if is_complete req.is_cmpl_code
       then ("complete", None) else ("incomplete", Some "")
@@ -179,16 +185,8 @@ struct
     SHELL_IS_COMPLETE_REP { is_cmpl_status = status; is_cmpl_indent = indent; }
     |> ShellChannel.reply shell ~parent
 
-  (** {2 Kernel info request} *)
-
-  let kernel_info_request ~parent shell =
-    SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
-    |> ShellChannel.reply shell ~parent
-
-  (** {2 Shutdown request} *)
-
-  let shutdown_request ~parent shell body =
-    SHELL_SHUTDOWN_REP body
+  let handle_history_request ~parent shell =
+    SHELL_HISTORY_REP { history = [] } (* Returns an empty response *)
     |> ShellChannel.reply shell ~parent
 
   (** {2 Main routine} *)
@@ -221,26 +219,29 @@ struct
 
   let start_kernel client shell =
     let rec reply parent = match parent.content with
-      | SHELL_SHUTDOWN_REQ body -> shutdown_request ~parent shell body
-      | SHELL_KERNEL_INFO_REQ -> kernel_info_request ~parent shell >>= loop
-      | SHELL_EXEC_REQ body -> execute_request ~parent client body >>= loop
-      | SHELL_COMM_OPEN _
-      | SHELL_COMM_MSG _
-      | SHELL_COMM_CLOSE _
-      | SHELL_COMM_INFO_REQ _ ->
-        Repl.send client.repl (SHELL_REQ parent) >>= loop (* propagete to REPL *)
+      | SHELL_SHUTDOWN_REQ body ->
+        handle_shutdown_request ~parent shell body (* Don't continue loop *)
+      | SHELL_KERNEL_INFO_REQ ->
+        handle_kernel_info_request ~parent shell >>= loop
+      | SHELL_EXEC_REQ body ->
+        handle_execute_request ~parent client body >>= loop
       | SHELL_COMPLETE_REQ body ->
-        complete_request ~parent client shell body >>= loop
+        handle_complete_request ~parent client shell body >>= loop
       | SHELL_INSPECT_REQ _
       | SHELL_CONNECT_REQ -> (* Deprecated since v5.1 *)
         error "Unsupported request" ;
         loop ()
       (* Following messages are required by jupyter-console, not jupyter notebook. *)
-      | SHELL_HISTORY_REQ _ -> (* Returns an empty response *)
-        SHELL_HISTORY_REP { history = [] }
-        |> ShellChannel.reply shell ~parent >>= loop
+      | SHELL_HISTORY_REQ _ ->
+        handle_history_request shell ~parent >>= loop
       | SHELL_IS_COMPLETE_REQ body ->
-        is_complete_request shell ~parent body >>= loop
+        handle_is_complete_request shell ~parent body >>= loop
+      (* Propagate to REPL process *)
+      | SHELL_COMM_OPEN _
+      | SHELL_COMM_MSG _
+      | SHELL_COMM_CLOSE _
+      | SHELL_COMM_INFO_REQ _ ->
+        Repl.send client.repl (SHELL_REQ parent) >>= loop
     and loop () =
       let%lwt req = ShellChannel.recv shell in
       reply req
@@ -254,5 +255,6 @@ struct
       start_kernel client client.shell;
       start_kernel client client.control;
       heartbeat client;
-    ]
+    ] >|= fun () ->
+    notice "OCaml kernel main loop is exited."
 end
