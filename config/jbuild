@@ -1,17 +1,16 @@
 (jbuild_version 1)
 
-;;
-;; This configure script performs:
-;; - generation of common ocaml flags (especially -ppx options of ppx_deriving_yojson for jbuilder)
-;;
-
 (executables
- ((names       (configure))
-  (libraries   (unix))
+ ((names       (configure kernelspec))
+  (libraries   (unix yojson))
   (flags       (:standard
                 -w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58
                 -safe-string -strict-sequence -strict-formats
                 -short-paths))))
+
+;;
+;; Common OCaml flags: ocaml_flags.sexp, ocaml_test_flags.sexp
+;;
 
 (rule
  ((targets (ocaml_flags.sexp))
@@ -30,3 +29,17 @@
   (action  (run ${<} -o ${@}
                 -ppx ppx_deriving.show
                 -ocamlfind ${bin:ocamlfind}))))
+
+;;
+;; kernelspec: kernel.json
+;;
+
+(rule
+ ((targets (kernel.json))
+  (deps    (kernelspec.exe))
+  (action  (run ${<} -o ${@} -bindir ${bindir}))))
+
+(install
+ ((section share)
+  (package jupyter)
+  (files   (kernel.json))))

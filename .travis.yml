@@ -71,14 +71,13 @@ script:
   - ocamlfind query jupyter.notebook
   - ocamlfind query jupyter.comm
   - ocamlfind query jupyter-archimedes
-  - jupyter kernelspec list | grep ocaml-jupyter # kernel is installed.
   # unit and integration tests
   - echo '#use "topfind" ;;' > $HOME/.ocamlinit # required for integration tests
+  - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
   - jbuilder runtest
   # uninstallation
   - opam remove jupyter jupyter-archimedes --verbose
   - (! ocamlfind query jupyter)
-  - (! (jupyter kernelspec list | grep ocaml-jupyter)) # kernel is uninstalled.
 
 after_success: |
   curl -sL https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/update_gh-pages_jbuilder.sh | sh -xeu
