@@ -113,17 +113,20 @@ struct
   let send_iopub_status ?parent client kernel_state =
     send_iopub ?parent client (IOPUB_STATUS { kernel_state })
 
-  let send_iopub_exec_input client code =
-    send_iopub client (IOPUB_EXECUTE_INPUT {
+  let send_iopub_exec_input ?parent client code =
+    send_iopub ?parent client (IOPUB_EXECUTE_INPUT {
         exin_code = code;
         exin_count = client.execution_count;
       })
 
   (** {2 Request handling} *)
 
-  let handle_kernel_info_request ~parent shell =
-    SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
-    |> ShellChannel.reply shell ~parent
+  let handle_kernel_info_request ~parent client shell =
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () =
+      SHELL_KERNEL_INFO_REP Shell.kernel_info_reply
+      |> ShellChannel.reply shell ~parent in
+    send_iopub_status ~parent client IOPUB_IDLE
 
   let handle_shutdown_request ~parent shell body =
     SHELL_SHUTDOWN_REP body
@@ -134,8 +137,8 @@ struct
     client.current_parent <- Some parent ;
     let count = client.execution_count in
     let code = body.exec_code in
-    let%lwt () = send_iopub_status client IOPUB_BUSY in
-    let%lwt () = send_iopub_exec_input client code in
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () = send_iopub_exec_input ~parent client code in
     let%lwt () =
       Repl.eval ~ctx:parent ~count client.repl code >|= function
       | SHELL_OK -> Completor.add_context client.completor code
@@ -166,7 +169,10 @@ struct
           cmpl_matches = List.map (fun c -> c.Completor.cmpl_name) cands;
         }
     in
-    ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply)
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () =
+      ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply) in
+    send_iopub_status ~parent client IOPUB_IDLE
 
   (** [is_complete code] checks whether OCaml program [code] can be immediately
       evaluated, or not. The check is sometimes wrong due to simpleness, e.g.,
@@ -222,7 +228,7 @@ struct
       | SHELL_SHUTDOWN_REQ body ->
         handle_shutdown_request ~parent shell body (* Don't continue loop *)
       | SHELL_KERNEL_INFO_REQ ->
-        handle_kernel_info_request ~parent shell >>= loop
+        handle_kernel_info_request ~parent client shell >>= loop
       | SHELL_EXEC_REQ body ->
         handle_execute_request ~parent client body >>= loop
       | SHELL_COMPLETE_REQ body ->
