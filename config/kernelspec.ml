@@ -28,13 +28,21 @@ let main ~output ~bindir ~home =
   |> Yojson.Safe.pretty_to_channel oc ;
   close_out oc
 
+let read_command cmd =
+  let ic = Unix.open_process_in cmd in
+  let rec aux acc = match input_line ic with
+    | exception End_of_file -> List.rev acc
+    | line -> aux (line :: acc)
+  in
+  let lines = aux [] in
+  match Unix.close_process_in ic with
+  | Unix.WEXITED 0 -> lines
+  | _ -> failwith cmd
+
 let () =
-  let output = ref "" in
-  let bindir = ref "" in
   let home = Sys.getenv "HOME" in
-  let specs = Arg.[
-      "-o", Set_string output, "Output path";
-      "-bindir", Set_string bindir, "Path to executable files";
-    ] in
-  Arg.parse specs failwith "Discover PPX flags" ;
-  main ~output:!output ~bindir:!bindir ~home
+  let bindir = match read_command "opam config var bin" with
+    | [bindir] -> bindir
+    | msgs -> failwith (sprintf "[opam config var bin] %s@."
+                          (String.concat "\n" msgs)) in
+  main ~output:"kernel.json" ~bindir ~home
