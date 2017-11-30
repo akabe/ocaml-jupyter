@@ -15,12 +15,6 @@ build: [
   [ "jbuilder" "subst" ] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
 ]
-install: [
-  [ "./kernelspec.sh" "install" ]
-]
-remove: [
-  [ "./kernelspec.sh" "uninstall" ]
-]
 depends: [
   "base-threads"
   "base-unix"
@@ -44,11 +38,8 @@ conflicts: [
 ]
 
 post-messages: [
-  "If Jupyter is installed, ocaml-jupyter kernel is already available."
-  "Otherwise you setup Jupyter and the OCaml kernel as follows:"
+  "Please run for registration of ocaml-jupyter kernel:"
   ""
-  "$ pip install jupyter"
-  "$ jupyter kernelspec install --name ocaml-jupyter \\
-    %{share}%/ocaml-jupyter"
+  "$ jupyter kernelspec install [--user] --name ocaml-jupyter %{share}%/ocaml-jupyter"
   {success}
 ]

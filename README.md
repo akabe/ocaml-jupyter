@@ -25,20 +25,13 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 $ pip install jupyter
 $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
+$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
 ```
 
-which will automatically add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
+which will add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
 
 ```console
 $ jupyter notebook
-```
-
-If you have not installed Jupyter yet (or `jupyter` command was not found in `$PATH`), you need to manually register the kernel:
-
-```console
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
-[InstallKernelSpec] Removing existing kernelspec in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter
-[InstallKernelSpec] Installed kernelspec ocaml-jupyter-4.04.2 in /home/USERNAME/.local/share/jupyter/kernels/ocaml-jupyter
 ```
 
 ### Development version
