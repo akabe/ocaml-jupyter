@@ -22,7 +22,7 @@
 
 open Format
 
-let name = "ocaml-jupyer"
+let name = "ocaml-jupyter"
 
 let logger =
   Lwt_log.channel
