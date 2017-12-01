@@ -73,7 +73,7 @@ script:
   - ocamlfind query jupyter-archimedes
   # unit and integration tests
   - echo '#use "topfind" ;;' > $HOME/.ocamlinit # required for integration tests
-  - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/ocaml-jupyter"
+  - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
   - jbuilder runtest
   # uninstallation
   - opam remove jupyter jupyter-archimedes --verbose

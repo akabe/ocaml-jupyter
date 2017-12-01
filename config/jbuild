@@ -37,7 +37,7 @@
 (rule
  ((targets (kernel.json))
   (deps    (kernelspec.exe))
-  (action  (run ${<} -o ${@} -bindir ${bindir}))))
+  (action  (run ${<}))))
 
 (install
  ((section share)
