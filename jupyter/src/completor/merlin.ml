@@ -187,7 +187,7 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
   let prefix = String.sub code cursor_start len in
   info "completion prefix = %S (%d--%d)" prefix cursor_start cursor_end ;
   let args = [
-    "-position"; sprintf "%d:%d" (cursor_start + offset) (cursor_end + offset);
+    "-position"; string_of_int (cursor_end + offset);
     "-prefix"; prefix;
     "-doc"; string_of_bool doc;
     "-types"; string_of_bool types;

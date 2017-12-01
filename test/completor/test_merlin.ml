@@ -94,6 +94,18 @@ let complete ?doc ?types merlin ~pos code =
 let test_complete ctxt =
   let require ?msg x y = assert_equal ~ctxt ~printer:[%show: reply] ?msg x y in
   let merlin = Merlin.create () in
+  let code = "List" in
+  let expected = Merlin.{
+      cmpl_start = 0; cmpl_end = 4;
+      cmpl_candidates = [
+        { cmpl_name = "List"; cmpl_kind = CMPL_MODULE;
+          cmpl_type = ""; cmpl_doc = ""; };
+        { cmpl_name = "ListLabels"; cmpl_kind = CMPL_MODULE;
+          cmpl_type = ""; cmpl_doc = ""; };
+      ];
+    } in
+  let actual = complete merlin code ~pos:4 in
+  require expected actual ~msg:"at the first of code" ;
   let code = "let _ = List.ma " in
   let expected = Merlin.{
       cmpl_start = 13; cmpl_end = 15;
