@@ -174,6 +174,48 @@ struct
       ShellChannel.reply shell ~parent (SHELL_COMPLETE_REP shell_reply) in
     send_iopub_status ~parent client IOPUB_IDLE
 
+  let handle_inspect_request ~parent client shell body =
+    let format c =
+      let kind = match c.Completor.cmpl_kind with
+        | Completor.CMPL_VALUE -> "Value"
+        | Completor.CMPL_VARIANT -> "Variant"
+        | Completor.CMPL_CONSTR -> "Constructor"
+        | Completor.CMPL_LABEL -> "Label"
+        | Completor.CMPL_MODULE -> "Module"
+        | Completor.CMPL_SIG -> "Signature"
+        | Completor.CMPL_TYPE -> "Type"
+        | Completor.CMPL_METHOD
+        | Completor.CMPL_METHOD_CALL -> "Method"
+        | Completor.CMPL_EXN -> "Exception"
+        | Completor.CMPL_CLASS -> "Class" in
+      let left_len = 11 in
+      let doc = String.trim c.Completor.cmpl_doc in (* remove extra spaces *)
+      sprintf "%s%s: %*s%s\n\
+               %sType:        %s%s\n\
+               %sDocstring:   %s%s"
+        AnsiCode.FG.red kind left_len AnsiCode.FG.default c.Completor.cmpl_name
+        AnsiCode.FG.red AnsiCode.FG.default c.Completor.cmpl_type
+        AnsiCode.FG.red AnsiCode.FG.default doc
+    in
+    let%lwt raw_reply =
+      Completor.complete
+        ~doc:true ~types:true
+        client.completor body.insp_code ~pos:body.insp_pos in
+    let shell_reply =
+      let data = List.map format raw_reply.Completor.cmpl_candidates
+                 |> String.concat "\n\n" in
+      {
+        insp_status = SHELL_OK;
+        insp_found = (raw_reply.Completor.cmpl_candidates <> []);
+        insp_data = `Assoc ["text/plain", `String data];
+        insp_metadata = `Assoc [];
+      }
+    in
+    let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
+    let%lwt () =
+      ShellChannel.reply shell ~parent (SHELL_INSPECT_REP shell_reply) in
+    send_iopub_status ~parent client IOPUB_IDLE
+
   (** [is_complete code] checks whether OCaml program [code] can be immediately
       evaluated, or not. The check is sometimes wrong due to simpleness, e.g.,
       [is_complete "let x = \" ;;"] is [true] while it causes syntax error. *)
@@ -233,9 +275,10 @@ struct
         handle_execute_request ~parent client body >>= loop
       | SHELL_COMPLETE_REQ body ->
         handle_complete_request ~parent client shell body >>= loop
-      | SHELL_INSPECT_REQ _
-      | SHELL_CONNECT_REQ -> (* Deprecated since v5.1 *)
-        error "Unsupported request" ;
+      | SHELL_INSPECT_REQ body ->
+        handle_inspect_request ~parent client shell body >>= loop
+      | SHELL_CONNECT_REQ ->
+        error "Unsupported request: connect_request (deprected since protocol v5.1)" ;
         loop ()
       (* Following messages are required by jupyter-console, not jupyter notebook. *)
       | SHELL_HISTORY_REQ _ ->
