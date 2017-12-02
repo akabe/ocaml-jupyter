@@ -83,6 +83,12 @@ OCaml Jupyter kernel supports [merlin](https://ocaml.github.io/merlin/)-based co
 
 The kernel uses [.merlin](https://github.com/ocaml/merlin/wiki/project-configuration) file at a notebook directory for completion.
 
+### Inspection
+
+_Inspection_ in Jupyter is also achieved by merlin. You can see documentation and type of an identifier by Shift+Tab key like
+
+![Inspection](https://akabe.github.io/ocaml-jupyter/images/inspect.png)
+
 ### API documentation
 
 OCaml Jupyter includes some sub-packages:
@@ -159,7 +165,7 @@ Many Jupyter kernels for functional programming languages are available such as 
 | OCaml PPX support      | Yes           | No            |
 | Session key support    | Yes           | No            |
 | Code completion        | Yes           | Yes           |
-| Introspection          | No            | Yes           |
+| Introspection          | Yes           | Yes           |
 | User-defined messages  | Yes           | No            |
 | Stdin                  | Yes           | No            |
 
