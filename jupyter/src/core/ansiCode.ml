@@ -39,4 +39,5 @@ struct
   let magenta = "\x1b[35m"
   let cyan = "\x1b[36m"
   let white = "\x1b[37m"
+  let default = "\x1b[39m"
 end
