@@ -71,10 +71,13 @@ script:
   - ocamlfind query jupyter.notebook
   - ocamlfind query jupyter.comm
   - ocamlfind query jupyter-archimedes
-  # unit and integration tests
-  - echo '#use "topfind" ;;' > $HOME/.ocamlinit # required for integration tests
-  - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
+  # unit tests
   - jbuilder runtest
+  # integration tests
+  - echo '#use "topfind" ;;' > $HOME/.ocamlinit
+  - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
+  - jbuilder build test/integration/runtest.exe
+  - ./_build/default/test/integration/runtest.exe test/integration/suite/*.ml
   # uninstallation
   - opam remove jupyter jupyter-archimedes --verbose
   - (! ocamlfind query jupyter)

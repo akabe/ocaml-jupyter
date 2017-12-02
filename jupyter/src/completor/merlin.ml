@@ -51,19 +51,19 @@ let call merlin command flags printer =
   let mode = if merlin.server then "server" else "single" in
   let args = merlin.bin_path :: mode :: command
              :: "-dot-merlin" :: merlin.dot_merlin :: flags in
-  [%to_yojson: string list] args
-  |> Yojson.Safe.to_string
-  |> info "Merlin command: %s" ;
+  info "Merlin command: %s" (String.concat " " args) ;
   let proc = Lwt_process.open_process ("ocamlmerlin", Array.of_list args) in
   let%lwt () = printer proc#stdin in
   let%lwt () = Lwt_io.flush proc#stdin in
   let%lwt () = Lwt_io.close proc#stdin in
   match%lwt Lwt_io.read_line proc#stdout with
-  | exception End_of_file -> failwith "merlin crashed or not found ocamlmerlin"
+  | exception End_of_file ->
+    warning "merlin crashed or not found ocamlmerlin" ;
+    Lwt.return_none
   | str ->
     let%lwt _ = proc#close in
     debug "Merlin returns: %s" str ;
-    Lwt.return str
+    Lwt.return_some str
 
 (** {2 Top-level merlin replies} *)
 
@@ -83,8 +83,8 @@ type 'a merlin_reply_body =
 [@@deriving of_yojson { strict = false }]
 
 let parse_merlin_reply ~of_yojson str =
-  let failwith_json msg json =
-    failwith (sprintf "%s: %s" msg (Yojson.Safe.pretty_to_string json))
+  let error_json msg json =
+    error "%s: %s" msg (Yojson.Safe.pretty_to_string json)
   in
   let reply = Yojson.Safe.from_string str
               |> [%of_yojson: Yojson.Safe.json merlin_reply_body]
@@ -93,10 +93,10 @@ let parse_merlin_reply ~of_yojson str =
   |> merlin_reply_of_yojson of_yojson
   |> Jupyter.Json.or_die
   |> function
-  | RETURN ret -> ret
-  | FAILURE j -> failwith_json "Merlin failure" j
-  | ERROR j -> failwith_json "Merlin error" j
-  | EXN j -> failwith_json "Merlin exception" j
+  | RETURN ret -> Some ret
+  | FAILURE j -> error_json "Merlin failure" j ; None
+  | ERROR j -> error_json "Merlin error" j ; None
+  | EXN j -> error_json "Merlin exception" j ; None
 
 (** {2 Detection of identifiers} *)
 
@@ -118,7 +118,13 @@ let occurrences ~pos merlin code =
   let args = ["-identifier-at"; string_of_int pos] in
   let printer oc = Lwt_io.write oc code in
   call merlin "occurrences" args printer
-  >|= parse_merlin_reply ~of_yojson:[%of_yojson: ident_reply list]
+  >|= function
+  | None -> []
+  | Some s ->
+    parse_merlin_reply ~of_yojson:[%of_yojson: ident_reply list] s
+    |> function
+    | None -> []
+    | Some replies -> replies
 
 let abs_position code pos =
   let n = String.length code in
@@ -181,7 +187,7 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
   let prefix = String.sub code cursor_start len in
   info "completion prefix = %S (%d--%d)" prefix cursor_start cursor_end ;
   let args = [
-    "-position"; sprintf "%d:%d" (cursor_start + offset) (cursor_end + offset);
+    "-position"; string_of_int (cursor_end + offset);
     "-prefix"; prefix;
     "-doc"; string_of_bool doc;
     "-types"; string_of_bool types;
@@ -190,11 +196,16 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
     let%lwt () = Lwt_io.write oc context in
     Lwt_io.write oc code in
   call merlin "complete-prefix" args printer
-  >|= parse_merlin_reply ~of_yojson:[%of_yojson: reply]
-  >|= fun reply ->
-  { reply with
-    cmpl_start = rfind_cursor_start code cursor_end;
-    cmpl_end = cursor_end; }
+  >|= function
+  | None -> empty
+  | Some s ->
+    parse_merlin_reply ~of_yojson:[%of_yojson: reply] s
+    |> function
+    | None -> empty
+    | Some reply ->
+      { reply with
+        cmpl_start = rfind_cursor_start code cursor_end;
+        cmpl_end = cursor_end; }
 
 let complete ?(doc = false) ?(types = false) ~pos merlin code =
   match%lwt occurrences merlin ~pos code with

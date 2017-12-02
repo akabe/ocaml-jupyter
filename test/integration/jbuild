@@ -11,15 +11,3 @@
                ppx_deriving.runtime))
   (flags      ((:include ${ROOT}/config/ocaml_flags.sexp)
                (:include ${ROOT}/config/ocaml_test_flags.sexp)))))
-
-(alias
- ((name   runtest)
-  (deps   (runtest.exe
-           suite/ppx.ml
-           suite/jupyter-notebook.ml
-           suite/jupyter-archimedes.ml))
-  (action (chdir ${ROOT}/test/integration
-                 (run ${<}
-                      suite/ppx.ml
-                      suite/jupyter-notebook.ml
-                      suite/jupyter-archimedes.ml)))))
