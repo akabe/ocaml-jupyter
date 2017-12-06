@@ -41,12 +41,22 @@ let define_connection ~jupyterin ~jupyterout ~context =
   Evaluation.setvalue "$jupyterout" (Unix.out_channel_of_descr jupyterout) ;
   Evaluation.setvalue "$jupyterctx" context
 
+let override_sys_params () =
+  (* [Sys.interactive] should be [true] for preventing from loading
+     ocamltoplevel.cma inside the OCaml toploop (Issue#78).
+     See https://github.com/ocaml/ocaml/blob/4.05.0/toplevel/toploop.ml#L467-L469 *)
+  Evaluation.eval ~count:0 ~send:ignore "Sys.interactive := true"
+  |> ignore
+
 let create_child_process
     ?preload ?init_file ?error_ctx_size
     ~ctrlin ~ctrlout ~jupyterin
   =
   let context = ref None in
-  let preinit () = define_connection ~jupyterin ~jupyterout:ctrlout ~context in
+  let preinit () =
+    define_connection ~jupyterin ~jupyterout:ctrlout ~context ;
+    override_sys_params ()
+  in
   Evaluation.init ?preload ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in
   let ctrlout = Unix.out_channel_of_descr ctrlout in
