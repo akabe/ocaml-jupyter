@@ -87,7 +87,7 @@ let test__capture_stderr ctxt =
 let test__sys_interactive ctxt =
   let actual = eval "!Sys.interactive" |> map_content in
   let expected = [
-    Iopub (iopub_success ~count:0 "- : bool = false\n");
+    Iopub (iopub_success ~count:0 "- : bool = true\n");
     Shell (execute_reply ~count:0 SHELL_OK);
   ] in
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual

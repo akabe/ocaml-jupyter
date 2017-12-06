@@ -23,6 +23,7 @@
 open Format
 open Jupyter
 open Jupyter.Message
+open Jupyter.Iopub
 open Jupyter_repl
 
 let default_ctx =
@@ -48,6 +49,25 @@ let default_ctx =
 
 let lwt_ignore _ = Lwt.return_unit
 
+let is_topfind_log = function
+  | IOPUB_REP { content = IOPUB_STREAM {
+      stream_name = IOPUB_STDOUT; stream_text;
+    }; _ } ->
+    begin
+      match stream_text with
+      | "Findlib has been successfully loaded. Additional directives:\n"
+      | "  #require \"package\";;      to load a package\n"
+      | "  #list;;                   to list the available packages\n"
+      | "  #camlp4o;;                to load camlp4 (standard syntax)\n"
+      | "  #camlp4r;;                to load camlp4 (revised syntax)\n"
+      | "  #predicates \"p,q,...\";;   to set these predicates\n"
+      | "  Topfind.reset();;         to force that packages will be reloaded\n"
+      | "  #thread;;                 to enable threads\n"
+      | "\n" -> true
+      | _ -> false
+    end
+  | _ -> false
+
 let eval
     ?(ctx = default_ctx)
     ?(post_exec = lwt_ignore)
@@ -61,3 +81,4 @@ let eval
     let%lwt () = Process.close repl in
     Lwt_stream.to_list strm
   end
+  |> List.filter (fun msg -> not (is_topfind_log msg))
