@@ -122,8 +122,8 @@ let recv_stdout_thread ~push ~ctx ~name ic =
         push (Some (Message.IOPUB_REP msg))
       | None ->
         match name with
-        | Iopub.IOPUB_STDOUT -> notice "STDOUT>> %s@." line
-        | Iopub.IOPUB_STDERR -> notice "STDERR>> %s@." line)
+        | Iopub.IOPUB_STDOUT -> notice "STDOUT>> %s" line
+        | Iopub.IOPUB_STDERR -> notice "STDERR>> %s" line)
 
 let create ?preload ?init_file ?error_ctx_size () =
   let c_jupyterin, p_jupyterin = Unix.pipe () in
