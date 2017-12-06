@@ -40,6 +40,17 @@ let prepare () =
   !Toploop.toplevel_startup_hook () ;
   Topdirs.dir_cd (Sys.getcwd ()) (* required for side-effect initialization in Topdirs *)
 
+let replace_out_phrase () =
+  let re = Str.regexp ".*ocamltoplevel\\.cma.*" in
+  let old_out_phrase = !Oprint.out_phrase in
+  let print_out_phrase ppf = function
+    (* Ignore the exception raised at ocaml/toplevel/toploop.ml *)
+    | Outcometree.Ophr_exception (Invalid_argument msg, _)
+      when Str.string_match re msg 0 -> ()
+    | ophr -> old_out_phrase ppf ophr
+  in
+  Oprint.out_phrase := print_out_phrase
+
 let init_toploop () =
   try
     Toploop.initialize_toplevel_env ()
@@ -59,6 +70,7 @@ let init ?(preload = ["stdlib.cma"]) ?(preinit = ignore) ?init_file () =
   Clflags.debug := true ;
   Location.formatter_for_warnings := ppf ;
   Sys.catch_break true ;
+  replace_out_phrase () ;
   readenv ppf ;
   prepare () ;
   init_toploop () ;

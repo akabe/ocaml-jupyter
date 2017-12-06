@@ -13,6 +13,7 @@
   (preprocess  (pps (lwt.ppx)))
   (libraries   (jupyter
                 jupyter_log
+                str
                 lwt
                 lwt.unix
                 compiler-libs.common
