@@ -15,4 +15,4 @@
                 Version))
   (flags       ((:include ${ROOT}/config/ocaml_flags.sexp)))
   (preprocess  (pps (ppx_deriving_yojson)))
-  (libraries   (uuidm ppx_deriving_yojson.runtime))))
+  (libraries   (unix uuidm ppx_deriving_yojson.runtime))))
