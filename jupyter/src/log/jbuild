@@ -6,4 +6,4 @@
   (modules     (Jupyter_log))
   (flags       ((:include ${ROOT}/config/ocaml_flags.sexp)))
   (preprocess  (pps (lwt.ppx)))
-  (libraries   (lwt))))
+  (libraries   (lwt lwt.unix))))
