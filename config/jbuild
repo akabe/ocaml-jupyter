@@ -17,7 +17,7 @@
   (deps    (configure.exe))
   (action  (run ${<} -o ${@}
                 -ppx ppx_deriving_yojson
-                -ppx lwt.ppx
+                -ppx lwt_ppx
                 -ocamlfind ${bin:ocamlfind}
                 -ocaml-flag "-w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58"
                 -ocaml-flag "-safe-string -strict-sequence -strict-formats"
