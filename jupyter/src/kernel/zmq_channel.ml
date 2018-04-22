@@ -33,7 +33,7 @@ type output = string list
 let create ~ctx ~kind addr =
   let socket = ZMQ.Socket.create ctx kind in
   ZMQ.Socket.bind socket addr ;
-  info "Open ZMQ socket to %s" addr ;
+  info (fun pp -> pp "Open ZMQ socket to %s" addr) ;
   C (Lwt_zmq.Socket.of_socket socket)
 
 let recv (C socket) = Lwt_zmq.Socket.recv_all socket

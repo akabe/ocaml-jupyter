@@ -20,19 +20,14 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-val name : string
-(** The name of logger *)
+val set_level : string -> unit
 
-val set_level : Lwt_log.level -> unit
+val debug : ('a, unit Lwt.t) Logs.msgf -> unit
 
-val debug : ('a, Format.formatter, unit) format -> 'a
+val info : ('a, unit Lwt.t) Logs.msgf -> unit
 
-val info : ('a, Format.formatter, unit) format -> 'a
+val app : ('a, unit Lwt.t) Logs.msgf -> unit
 
-val notice : ('a, Format.formatter, unit) format -> 'a
+val warn : ('a, unit Lwt.t) Logs.msgf -> unit
 
-val warning : ('a, Format.formatter, unit) format -> 'a
-
-val error : ('a, Format.formatter, unit) format -> 'a
-
-val fatal : ('a, Format.formatter, unit) format -> 'a
+val error : ('a, unit Lwt.t) Logs.msgf -> unit

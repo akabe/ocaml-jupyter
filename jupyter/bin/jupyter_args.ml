@@ -36,11 +36,6 @@ let dot_merlin = ref "./.merlin"
 
 let error_ctx_size = ref 1
 
-let set_verbosity level_str =
-  match Lwt_log.level_of_string level_str with
-  | Some level -> Jupyter_log.set_level level
-  | None -> failwith ("Unrecognized log level: " ^ level_str)
-
 let parse () =
   let open Arg in
   let specs =
@@ -58,7 +53,7 @@ let parse () =
       Set_string dot_merlin,
       "<file> path of .merlin";
       "--verbosity",
-      Symbol (["debug"; "info"; "warning"; "error"; "fatal"], set_verbosity),
+      Symbol (["debug"; "info"; "warning"; "error"; "app"], Jupyter_log.set_level),
       "set log level";
       "--version",
       Set version,
