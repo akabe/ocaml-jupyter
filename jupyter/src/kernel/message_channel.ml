@@ -69,9 +69,9 @@ struct
     match aux [] str_lst with
     | ids, hmac :: header :: parent_header :: metadata :: content :: buffers ->
       let open Jupyter.Message in
-      info
-        "RECV: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
-        hmac header parent_header content metadata ;
+      info (fun pp ->
+          pp "RECV: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
+            hmac header parent_header content metadata) ;
       Hmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
       let header = header_of_string header in
       let content = Yojson.Safe.from_string content
@@ -106,9 +106,9 @@ struct
       Hmac.encode ?key:ch.key
         ~header ~parent_header ~metadata:resp.metadata ~content ()
     in
-    info
-      "SEND: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
-      hmac header parent_header content resp.metadata ;
+    info (fun pp ->
+        pp "SEND: HMAC=%s; header=%s; parent=%s; content=%s; metadata=%s"
+          hmac header parent_header content resp.metadata) ;
     [
       resp.zmq_ids;
       [

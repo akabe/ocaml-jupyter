@@ -51,18 +51,18 @@ let call merlin command flags printer =
   let mode = if merlin.server then "server" else "single" in
   let args = merlin.bin_path :: mode :: command
              :: "-dot-merlin" :: merlin.dot_merlin :: flags in
-  info "Merlin command: %s" (String.concat " " args) ;
+  info (fun pp -> pp "Merlin command: %s" (String.concat " " args)) ;
   let proc = Lwt_process.open_process ("ocamlmerlin", Array.of_list args) in
   let%lwt () = printer proc#stdin in
   let%lwt () = Lwt_io.flush proc#stdin in
   let%lwt () = Lwt_io.close proc#stdin in
   match%lwt Lwt_io.read_line proc#stdout with
   | exception End_of_file ->
-    warning "merlin crashed or not found ocamlmerlin" ;
+    warn (fun pp -> pp "merlin crashed or not found ocamlmerlin") ;
     Lwt.return_none
   | str ->
     let%lwt _ = proc#close in
-    debug "Merlin returns: %s" str ;
+    debug (fun pp -> pp "Merlin returns: %s" str) ;
     Lwt.return_some str
 
 (** {2 Top-level merlin replies} *)
@@ -84,7 +84,7 @@ type 'a merlin_reply_body =
 
 let parse_merlin_reply ~of_yojson str =
   let error_json msg json =
-    error "%s: %s" msg (Yojson.Safe.pretty_to_string json)
+    error (fun pp -> pp "%s: %s" msg (Yojson.Safe.pretty_to_string json))
   in
   let reply = Yojson.Safe.from_string str
               |> [%of_yojson: Yojson.Safe.json merlin_reply_body]
@@ -185,7 +185,7 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
   let offset = String.length context in
   let len = cursor_end - cursor_start in
   let prefix = String.sub code cursor_start len in
-  info "completion prefix = %S (%d--%d)" prefix cursor_start cursor_end ;
+  info (fun pp -> pp "completion prefix = %S (%d--%d)" prefix cursor_start cursor_end) ;
   let args = [
     "-position"; string_of_int (cursor_end + offset);
     "-prefix"; prefix;
@@ -210,7 +210,7 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
 let complete ?(doc = false) ?(types = false) ~pos merlin code =
   match%lwt occurrences merlin ~pos code with
   | [] ->
-    warning "not found completion prefix at %d" pos ;
+    warn (fun pp -> pp "not found completion prefix at %d" pos) ;
     Lwt.return empty
   | range :: _ ->
     complete_range
