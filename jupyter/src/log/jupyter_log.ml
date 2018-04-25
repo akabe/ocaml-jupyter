@@ -20,6 +20,15 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
+let kasprintf k fmt = (* defined for compatibility with OCaml 4.02 *)
+  let b = Buffer.create 16 in
+  Format.kfprintf
+    (fun ppf ->
+       Format.pp_print_flush ppf () ;
+       k (Buffer.contents b))
+    (Format.formatter_of_buffer b)
+    fmt
+
 let reporter =
   let report _ level ~over k msgf =
     let with_timestamp ?header ?tags:_ fmt =
@@ -30,7 +39,7 @@ let reporter =
       in
       let open Unix in
       let t = localtime @@ time () in
-      Format.kasprintf k'
+      kasprintf k'
         ("%04d-%02d-%02dT%02d:%02d:%02d %a " ^^ fmt)
         (t.tm_year + 1900) (t.tm_mon + 1) t.tm_mday
         t.tm_hour t.tm_min t.tm_sec
