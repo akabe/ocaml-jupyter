@@ -190,10 +190,11 @@ Open [Issue](https://github.com/akabe/ocaml-jupyter/issues) for any questions, b
 We welcome your patch!
 
 1. Fork this repository and clone your repository.
-2. `ln -sf $PWD/git/pre-commit $PWD/.git/hooks/pre-commit`
-3. Create a new branch and commit your changes.
-4. `git push` the commits into your (forked) repository.
-5. Pull request to `master` of this repository from the branch you pushed.
+1. `ln -sf $PWD/git/pre-commit $PWD/.git/hooks/pre-commit`
+1. `opam install ocp-indent` for code format (in the git pre-commit hook)
+1. Create a new branch and commit your changes.
+1. `git push` the commits into your (forked) repository.
+1. Pull request to `master` of this repository from the branch you pushed.
 
 Environment variable `LWT_LOG` controls a log level of OCaml Jupyter kernel.
 The following setting verbosely outputs log messages. They might help your debug.
