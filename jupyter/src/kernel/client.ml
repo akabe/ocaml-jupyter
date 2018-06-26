@@ -278,7 +278,8 @@ struct
       | SHELL_INSPECT_REQ body ->
         handle_inspect_request ~parent client shell body >>= loop
       | SHELL_CONNECT_REQ ->
-        error "Unsupported request: connect_request (deprected since protocol v5.1)" ;
+        error (fun pp -> pp "Unsupported request: connect_request \
+                             (deprected since protocol v5.1)") ;
         loop ()
       (* Following messages are required by jupyter-console, not jupyter notebook. *)
       | SHELL_HISTORY_REQ _ ->
@@ -305,5 +306,5 @@ struct
       start_kernel client client.control;
       heartbeat client;
     ] >|= fun () ->
-    notice "OCaml kernel main loop is exited."
+    app (fun pp -> pp "OCaml kernel main loop is exited.")
 end

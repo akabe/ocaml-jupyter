@@ -45,7 +45,7 @@ let from_file fname =
   if not (Sys.file_exists fname)
   then failwith ("No such file or director: " ^ fname) ;
   let json = Yojson.Safe.from_file ~fname fname in
-  info "Load connection info: %s" (Yojson.Safe.to_string json) ;
+  info (fun pp -> pp "Load connection info: %s" (Yojson.Safe.to_string json)) ;
   match [%of_yojson: t] json with
   | Result.Error msg -> Yojson.json_error msg
   | Result.Ok info when info.key = Some "" -> { info with key = None }

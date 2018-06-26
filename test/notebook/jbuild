@@ -3,7 +3,7 @@
 (executables
  ((names      (test_notebook))
   (modes      (byte))
-  (preprocess (pps (lwt.ppx ppx_deriving.show)))
+  (preprocess (pps (lwt_ppx ppx_deriving.show)))
   (libraries  (jupyter
                jupyter_repl
                jupyter_notebook

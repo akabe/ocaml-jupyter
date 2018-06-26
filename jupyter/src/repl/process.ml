@@ -132,8 +132,8 @@ let recv_stdout_thread ~push ~ctx ~name ic =
         push (Some (Message.IOPUB_REP msg))
       | None ->
         match name with
-        | Iopub.IOPUB_STDOUT -> notice "STDOUT>> %s" line
-        | Iopub.IOPUB_STDERR -> notice "STDERR>> %s" line)
+        | Iopub.IOPUB_STDOUT -> app (fun pp -> pp "STDOUT>> %s" line)
+        | Iopub.IOPUB_STDERR -> app (fun pp -> pp "STDERR>> %s" line))
 
 let create ?preload ?init_file ?error_ctx_size () =
   let c_jupyterin, p_jupyterin = Unix.pipe () in
@@ -205,7 +205,7 @@ let close repl =
 let heartbeat repl =
   let open Unix in
   match waitpid [WNOHANG; WUNTRACED] repl.pid with
-  | 0, _ -> debug "REPL is healthy"
+  | 0, _ -> debug (fun pp -> pp "REPL is healthy")
   | _, WEXITED i -> failwith (sprintf "Exited status %d" i)
   | _, WSIGNALED i -> failwith (sprintf "Killed by signal %d" i)
   | _, WSTOPPED i -> failwith (sprintf "Stopped by signal %d" i)
