@@ -7,6 +7,7 @@ cache:
     - $HOME/.mine
     - $HOME/.opam
     - $HOME/.local
+    - $HOME/.pyenv
     - $HOME/Library/Caches/Homebrew
 
 addons:
@@ -27,6 +28,7 @@ env:
     - OPAM_PREFIX=$HOME/.mine
     - PATH=$PATH:$OPAM_PREFIX/bin:$HOME/.local/bin
     - PYTHONUSERBASE=$HOME/.local
+    - PYTHONVERSION=3.6.1
 
 matrix:
   include:
@@ -50,12 +52,24 @@ matrix:
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.07.0+trunk
 
 before_script:
-  - if which brew; then brew update && brew upgrade && brew install m4 rsync aspcud libffi zeromq cairo; fi
-  - pip install --user ipython==5.4.1 jupyter
+  - eval "$(pyenv init -)"
+  - pyenv install --list
+  # for Mac OS X
+  - |
+    if which brew; then
+      brew update &&
+      brew unlink python &&
+      brew install m4 aspcud rsync libffi zeromq cairo
+    fi
+  # Install Python 3 and Jupyter
+  - pyenv install -s $PYTHONVERSION
+  - pyenv global $PYTHONVERSION
+  - pip install ipython==5.4.1 jupyter
+  # Install OPAM and packages required for CI
   - curl -L https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/install_opam.sh | sh -xeu
   - eval $(opam config env)
   - opam install -y ocamlfind ocaml-migrate-parsetree 'merlin>=3.0.0' ocp-indent camlp4 'ounit>=2.0.0' core
-  - opam remove jupyter
+  - opam remove jupyter # remove ocaml-jupyter package in cache (if it exists)
 
 script:
   # lint and code-format checks:
