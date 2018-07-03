@@ -10,7 +10,7 @@
                 Error
                 Compat))
   (flags       ((:include ${ROOT}/config/ocaml_flags.sexp)))
-  (preprocess  (pps (lwt.ppx)))
+  (preprocess  (pps (lwt_ppx)))
   (libraries   (jupyter
                 jupyter_log
                 str

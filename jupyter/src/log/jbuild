@@ -5,5 +5,5 @@
   (synopsis    "A logging library for OCaml Jupyter kernel")
   (modules     (Jupyter_log))
   (flags       ((:include ${ROOT}/config/ocaml_flags.sexp)))
-  (preprocess  (pps (lwt.ppx)))
-  (libraries   (lwt lwt.unix))))
+  (preprocess  (pps (lwt_ppx)))
+  (libraries   (lwt lwt.unix logs logs.lwt))))

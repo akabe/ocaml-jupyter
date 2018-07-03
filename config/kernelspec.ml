@@ -21,6 +21,8 @@ let main ~output ~bindir ~home =
       `String (Filename.concat home ".ocamlinit");
       `String "--merlin";
       `String (Filename.concat bindir "ocamlmerlin");
+      `String "--verbosity";
+      `String "app";
       `String "--connection-file";
       `String "{connection_file}";
     ];
