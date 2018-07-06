@@ -196,10 +196,10 @@ We welcome your patch!
 1. `git push` the commits into your (forked) repository.
 1. Pull request to `master` of this repository from the branch you pushed.
 
-Environment variable `OCAML_JUPYTER_LOG` controls a log level of OCaml Jupyter kernel.
+Environment variable `LWT_LOG` controls a log level of OCaml Jupyter kernel.
 The following setting verbosely outputs log messages. They might help your debug.
 
 ```console
-$ export OCAML_JUPYTER_LOG='debug'
+$ export LWT_LOG='* -> debug'
 $ jupyter notebook
 ```
