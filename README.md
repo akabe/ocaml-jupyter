@@ -99,8 +99,8 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
 
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
-[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/
-[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/
+[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_notebook/
+[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_comm/
 [jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
@@ -196,10 +196,10 @@ We welcome your patch!
 1. `git push` the commits into your (forked) repository.
 1. Pull request to `master` of this repository from the branch you pushed.
 
-Environment variable `LWT_LOG` controls a log level of OCaml Jupyter kernel.
+Environment variable `OCAML_JUPYTER_LOG` controls a log level of OCaml Jupyter kernel.
 The following setting verbosely outputs log messages. They might help your debug.
 
 ```console
-$ export LWT_LOG='* -> debug'
+$ export OCAML_JUPYTER_LOG='debug'
 $ jupyter notebook
 ```
