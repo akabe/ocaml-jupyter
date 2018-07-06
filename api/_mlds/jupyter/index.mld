@@ -1,9 +1,0 @@
-{1 Library jupyter}
-The entry point of this library is the module:
-{!module-Jupyter}.
-{1 Library jupyter.comm}
-The entry point of this library is the module:
-{!module-Jupyter_comm}.
-{1 Library jupyter.notebook}
-The entry point of this library is the module:
-{!module-Jupyter_notebook}.
