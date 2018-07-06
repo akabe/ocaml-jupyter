@@ -99,8 +99,8 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
 
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
-[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter.notebook/
-[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter.comm/
+[jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_notebook/
+[jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_comm/
 [jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
