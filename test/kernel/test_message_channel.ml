@@ -50,7 +50,7 @@ let test_recv ctxt =
           "<IDS|MSG>"; hmac; header; parent_header; metadata; content;
         ] @ buffers
     end) in
-  let channel = Channel.create ~key ~ctx ~kind:ZMQ.Socket.rep "" in
+  let channel = Channel.create ~key ~ctx ~kind:Zmq.Socket.rep "" in
   let actual = Lwt_main.run @@ Channel.recv channel in
   assert_equal ~ctxt ~printer:(fun msg ->
       [%to_yojson: Jupyter.Shell.request Jupyter.Message.t] msg
@@ -71,7 +71,7 @@ let test_send ctxt =
         | _ ->
           assert_failure "Unmatched response"
     end) in
-  let channel = Channel.create ~key ~ctx ~kind:ZMQ.Socket.rep "" in
+  let channel = Channel.create ~key ~ctx ~kind:Zmq.Socket.rep "" in
   Lwt_main.run @@ Channel.send channel message
 
 let suite =

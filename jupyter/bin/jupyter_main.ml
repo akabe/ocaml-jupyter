@@ -54,7 +54,7 @@ let () =
       ~dot_merlin:!Jupyter_args.dot_merlin () in
   (* Start a kernel server. *)
   let conn_info = Connection_info.from_file !Jupyter_args.connection_file in
-  let ctx = ZMQ.Context.create () in
+  let ctx = Zmq.Context.create () in
   let client = Client.create ~completor ~repl ~ctx conn_info in
   let client_thread = Client.start client in
   Sys.catch_break true ; (* Catch `Interrupt' signal *)
@@ -69,4 +69,4 @@ let () =
       main ()
   in
   main () ;
-  ZMQ.Context.terminate ctx
+  Zmq.Context.terminate ctx

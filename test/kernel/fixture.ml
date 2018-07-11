@@ -24,7 +24,7 @@ open Jupyter.Shell
 open Jupyter.Iopub
 open Jupyter.Message
 
-let ctx = ZMQ.Context.create ()
+let ctx = Zmq.Context.create ()
 
 module KernelInfoRequest =
 struct

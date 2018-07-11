@@ -21,6 +21,6 @@
                 lwt
                 lwt.unix
                 yojson
-                lwt-zmq
+                zmq-lwt
                 cryptokit
                 ppx_deriving_yojson.runtime))))

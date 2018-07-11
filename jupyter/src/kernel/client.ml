@@ -57,23 +57,23 @@ struct
     let key = info.Connection_info.key in
     let shell =
       Connection_info.(make_address info info.shell_port)
-      |> ShellChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
+      |> ShellChannel.create ?key ~ctx ~kind:Zmq.Socket.router
     in
     let control =
       Connection_info.(make_address info info.control_port)
-      |> ShellChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
+      |> ShellChannel.create ?key ~ctx ~kind:Zmq.Socket.router
     in
     let iopub =
       Connection_info.(make_address info info.iopub_port)
-      |> IopubChannel.create ?key ~ctx ~kind:ZMQ.Socket.pub
+      |> IopubChannel.create ?key ~ctx ~kind:Zmq.Socket.pub
     in
     let stdin =
       Connection_info.(make_address info info.stdin_port)
-      |> StdinChannel.create ?key ~ctx ~kind:ZMQ.Socket.router
+      |> StdinChannel.create ?key ~ctx ~kind:Zmq.Socket.router
     in
     let heartbeat =
       Connection_info.(make_address info info.hb_port)
-      |> HeartbeatChannel.create ~ctx ~kind:ZMQ.Socket.rep
+      |> HeartbeatChannel.create ~ctx ~kind:Zmq.Socket.rep
     in
     {
       completor; repl; shell; control; iopub; stdin; heartbeat;
