@@ -25,23 +25,20 @@
 open Lwt.Infix
 open Jupyter_log
 
-type t = C : _ Lwt_zmq.Socket.t -> t
+type t = C : _ Zmq_lwt.Socket.t -> t
 
 type input = string list
 type output = string list
 
 let create ~ctx ~kind addr =
-  let socket = ZMQ.Socket.create ctx kind in
-  ZMQ.Socket.bind socket addr ;
+  let socket = Zmq.Socket.create ctx kind in
+  Zmq.Socket.bind socket addr ;
   info (fun pp -> pp "Open ZMQ socket to %s" addr) ;
-  C (Lwt_zmq.Socket.of_socket socket)
+  C (Zmq_lwt.Socket.of_socket socket)
 
-let recv (C socket) = Lwt_zmq.Socket.recv_all socket
+let recv (C socket) = Zmq_lwt.Socket.recv_all socket
 
 let send (C socket) strs =
-  Lwt_zmq.Socket.send_all socket strs
+  Zmq_lwt.Socket.send_all socket strs
 
-let close (C socket) =
-  Lwt_zmq.Socket.to_socket socket
-  |> ZMQ.Socket.close
-  |> Lwt.return
+let close (C socket) = Zmq_lwt.Socket.close socket

@@ -48,7 +48,7 @@ sig
   val create :
     completor:Completor.t ->
     repl:Repl.t ->
-    ctx:ZMQ.Context.t ->
+    ctx:Zmq.Context.t ->
     Connection_info.t -> t
 
   (** Close connection to Jupyter. *)

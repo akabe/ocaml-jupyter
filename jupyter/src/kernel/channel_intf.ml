@@ -41,7 +41,7 @@ sig
     with type input = string list
      and type output = string list
 
-  val create : ctx:ZMQ.Context.t -> kind:'a ZMQ.Socket.kind -> string -> t
+  val create : ctx:Zmq.Context.t -> kind:'a Zmq.Socket.kind -> string -> t
 end
 
 module type Message =
@@ -59,8 +59,8 @@ sig
       @param kind  ZeroMQ socket type. *)
   val create :
     ?key:string ->
-    ctx:ZMQ.Context.t ->
-    kind:'a ZMQ.Socket.kind ->
+    ctx:Zmq.Context.t ->
+    kind:'a Zmq.Socket.kind ->
     string -> t
 
   (** [reply ?time ~parent channel content] sends a message including [content]
