@@ -10,7 +10,7 @@ homepage: "https://akabe.github.io/ocaml-jupyter/"
 bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
 dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
 
-available: [ ocaml-version >= "4.02.0" ]
+available: [ ocaml-version >= "4.03.0" ]
 build: [
   [ "jbuilder" "subst" ] {pinned}
   [ "jbuilder" "build" "-p" name "-j" jobs ]
