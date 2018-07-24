@@ -36,12 +36,14 @@ let dot_merlin = ref "./.merlin"
 
 let error_ctx_size = ref 1
 
+let set_level_from_env () =
+  try
+    let lev = Sys.getenv "OCAML_JUPYTER_LOG" in
+    if lev <> "" then Jupyter_log.set_level lev
+  with Not_found -> ()
+
 let parse () =
   let open Arg in
-  begin (* Set LOGLEVEL from the environment variable *)
-    try Jupyter_log.set_level (Sys.getenv "OCAML_JUPYTER_LOG")
-    with Not_found -> ()
-  end ;
   let specs =
     align [
       "--connection-file",
@@ -69,6 +71,8 @@ let parse () =
   in
   let doc = "An OCaml kernel for Jupyter (IPython) notebook" in
   parse specs (fun obj -> preload_objs := obj :: !preload_objs) doc ;
+  set_level_from_env () ;
+  Format.printf "connection_file =%s@." !connection_file;
   if !version then begin
     print_endline Jupyter.Version.version ;
     exit 0
