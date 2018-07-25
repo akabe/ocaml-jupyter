@@ -40,7 +40,11 @@ type t =
     context : Buffer.t;
   }
 
-let create ?(server = true) ?(bin_path = "ocamlmerlin") ?(dot_merlin = "./.merlin") () =
+let create ?(server = true) ?(bin_path = "ocamlmerlin") ?(dot_merlin = ".merlin") () =
+  let dot_merlin =
+    if Filename.is_relative dot_merlin
+    then Filename.concat (Sys.getcwd ()) dot_merlin (* relative path *)
+    else dot_merlin in (* absolute path *)
   { server; bin_path; dot_merlin; context = Buffer.create 16; }
 
 let add_context merlin code =
