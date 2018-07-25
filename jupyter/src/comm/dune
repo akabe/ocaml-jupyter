@@ -1,0 +1,15 @@
+(library
+ (name        jupyter_comm)
+ (public_name jupyter.comm)
+ (synopsis    "A library for communication between Jupyter and notebooks")
+ (modes       byte)
+ (modules     Jupyter_comm
+              Router
+              Manager
+              Stdin)
+ (flags       (:standard
+               -thread
+               (:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (preprocess  (pps ppx_deriving_yojson))
+ (libraries   jupyter
+              jupyter.notebook))

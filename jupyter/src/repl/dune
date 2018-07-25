@@ -1,0 +1,23 @@
+(library
+ (name        jupyter_repl)
+ (synopsis    "A backend module of OCaml REPL for Jupyter")
+ (modes       byte)
+ (modules     Jupyter_repl
+              Process
+              Evaluation
+              Error
+              Compat)
+ (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (preprocess  (pps lwt_ppx))
+ (libraries   jupyter
+              jupyter_log
+              str
+              lwt
+              lwt.unix
+              compiler-libs.common
+              compiler-libs.toplevel))
+
+(rule
+ (targets compat.ml)
+ (deps    compat.cppo.ml)
+ (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))

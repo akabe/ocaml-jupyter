@@ -33,8 +33,6 @@ env:
 matrix:
   include:
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.03.0
-    - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
     - os: linux
       env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
@@ -88,15 +86,15 @@ script:
   - ocamlfind query jupyter.comm
   - ocamlfind query jupyter-archimedes
   # unit tests
-  - jbuilder runtest
+  - dune runtest
   # integration tests
   - echo '#use "topfind" ;;' > $HOME/.ocamlinit
   - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
-  - jbuilder build test/integration/runtest.exe
+  - dune build test/integration/runtest.exe
   - ./_build/default/test/integration/runtest.exe test/integration/suite/*.ml
   # uninstallation
   - opam remove jupyter jupyter-archimedes --verbose
   - (! ocamlfind query jupyter)
 
 after_success: |
-  curl -sL https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/update_gh-pages_jbuilder.sh | sh -xeu
+  curl -sL https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/update_gh-pages_dune.sh | sh -xeu
