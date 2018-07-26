@@ -1,0 +1,10 @@
+(library
+ (name        jupyter_archimedes)
+ (public_name jupyter-archimedes)
+ (synopsis    "Jupyter backend for Archimedes")
+ (modes       byte)
+ (modules     Jupyter_archimedes)
+ (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (preprocess  (pps ppx_deriving_yojson))
+ (libraries   jupyter.notebook
+              archimedes.cairo))

@@ -1,0 +1,15 @@
+(executables
+ (names      test_kernel)
+ (modes      byte)
+ (preprocess (pps lwt_ppx ppx_deriving.show))
+ (libraries  jupyter
+             jupyter_kernel
+             oUnit
+             ppx_deriving.runtime)
+ (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp)
+              (:include %{workspace_root}/config/ocaml_test_flags.sexp))))
+
+(alias
+ (name   runtest)
+ (deps   test_kernel.bc)
+ (action (chdir %{workspace_root}/test (run %{deps} -runner sequential))))

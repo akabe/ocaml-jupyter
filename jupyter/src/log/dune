@@ -1,0 +1,7 @@
+(library
+ (name        jupyter_log)
+ (synopsis    "A logging library for OCaml Jupyter kernel")
+ (modules     Jupyter_log)
+ (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (preprocess  (pps lwt_ppx))
+ (libraries   lwt lwt.unix logs logs.lwt))

@@ -1,0 +1,14 @@
+(library
+ (name        jupyter_completor)
+ (synopsis    "A completion library for Jupyter")
+ (modules     Jupyter_completor
+              Merlin
+              Intf)
+ (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (preprocess  (pps lwt_ppx))
+ (libraries   jupyter
+              jupyter_log
+              lwt
+              lwt.unix
+              yojson
+              ppx_deriving_yojson.runtime))
