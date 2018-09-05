@@ -176,22 +176,22 @@ type reply =
 
 let empty = { cmpl_candidates = []; cmpl_start = 0; cmpl_end = 0; }
 
-let rfind_cursor_start s cursor_end =
-  let rec rfind i =
-    if i <= 0 then 0 else match s.[i] with
-      | '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' | '\'' | '`' -> rfind (pred i)
-      | _ -> min (succ i) cursor_end
-  in
-  rfind (pred cursor_end)
+let rec rfind_prefix_start s = function
+  | 0 -> 0
+  | pos ->
+    match s.[pos - 1] with
+    | '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' | '\'' | '`' | '.' -> rfind_prefix_start s (pos - 1)
+    | _ -> pos
 
-let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
+let complete ?(doc = false) ?(types = false) ~pos merlin code =
   let context = Buffer.contents merlin.context in
   let offset = String.length context in
-  let len = cursor_end - cursor_start in
-  let prefix = String.sub code cursor_start len in
-  info (fun pp -> pp "completion prefix = %S (%d--%d)" prefix cursor_start cursor_end) ;
+  let prefix_start = rfind_prefix_start code pos in
+  let prefix_length = pos - prefix_start in
+  let prefix = String.sub code prefix_start prefix_length in
+  info (fun pp -> pp "completion prefix = %S (%d--%d)" prefix prefix_start pos) ;
   let args = [
-    "-position"; string_of_int (cursor_end + offset);
+    "-position"; string_of_int (offset + pos);
     "-prefix"; prefix;
     "-doc"; string_of_bool doc;
     "-types"; string_of_bool types;
@@ -208,16 +208,9 @@ let complete_range ~doc ~types ~cursor_start ~cursor_end merlin code =
     | None -> empty
     | Some reply ->
       { reply with
-        cmpl_start = rfind_cursor_start code cursor_end;
-        cmpl_end = cursor_end; }
-
-let complete ?(doc = false) ?(types = false) ~pos merlin code =
-  match%lwt occurrences merlin ~pos code with
-  | [] ->
-    warn (fun pp -> pp "not found completion prefix at %d" pos) ;
-    Lwt.return empty
-  | range :: _ ->
-    complete_range
-      merlin code ~doc ~types
-      ~cursor_start:(abs_position code range.id_start)
-      ~cursor_end:(abs_position code range.id_end)
+        cmpl_start =
+          begin match String.rindex_from_opt prefix (prefix_length - 1) '.' with
+          | Some pos -> prefix_start + pos + 1
+          | None -> prefix_start
+          end;
+        cmpl_end = pos; }
