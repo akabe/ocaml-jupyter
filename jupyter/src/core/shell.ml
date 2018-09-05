@@ -74,8 +74,8 @@ type complete_request =
 type complete_reply =
   {
     cmpl_matches : string list [@key "matches"];
-    cmpl_start : int option [@key "cursor_start"];
-    cmpl_end : int option [@key "cursor_end"];
+    cmpl_start : int [@key "cursor_start"];
+    cmpl_end : int [@key "cursor_end"];
     cmpl_metadata : Yojson.Safe.json [@key "metadata"];
     cmpl_status : status Json.enum [@key "status"];
   } [@@deriving yojson { strict = false }]
