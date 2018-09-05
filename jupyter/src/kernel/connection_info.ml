@@ -36,14 +36,13 @@ type t =
     hb_port : int;
     ip : string;
     key : string option [@default None];
-    kernel_name : string;
     signature_scheme : string;
     transport : string;
-  } [@@deriving yojson]
+  } [@@deriving yojson { strict = false }]
 
 let from_file fname =
   if not (Sys.file_exists fname)
-  then failwith ("No such file or director: " ^ fname) ;
+  then failwith ("No such file or directory: " ^ fname) ;
   let json = Yojson.Safe.from_file ~fname fname in
   info (fun pp -> pp "Load connection info: %s" (Yojson.Safe.to_string json)) ;
   match [%of_yojson: t] json with
