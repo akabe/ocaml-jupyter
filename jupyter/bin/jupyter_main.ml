@@ -64,9 +64,13 @@ let () =
         let%lwt () = client_thread in
         Client.close client
       end
-    with Sys.Break ->
+    with
+    | Sys.Break ->
       Jupyter_repl.Process.interrupt repl ;
       main ()
+    | e ->
+      Zmq.Context.terminate ctx;
+      raise e
   in
   main () ;
   Zmq.Context.terminate ctx
