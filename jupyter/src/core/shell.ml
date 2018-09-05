@@ -36,8 +36,8 @@ type exec_request =
     exec_silent : bool [@key "silent"];
     exec_store_history : bool [@key "store_history"];
     exec_user_expr : Yojson.Safe.json [@key "user_expressions"];
-    exec_allow_stdin : bool [@key "allow_stdin"];
-    exec_stop_on_error : bool [@key "stop_on_error"];
+    exec_allow_stdin : bool [@key "allow_stdin"] [@default true];
+    exec_stop_on_error : bool [@key "stop_on_error"] [@default false];
   } [@@deriving yojson { strict = false }]
 
 type exec_reply =
