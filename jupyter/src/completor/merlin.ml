@@ -183,6 +183,13 @@ let rec rfind_prefix_start s = function
     | '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' | '\'' | '`' | '.' -> rfind_prefix_start s (pos - 1)
     | _ -> pos
 
+let rec find_cmpl_end s pos =
+  if pos < String.length s then
+    match s.[pos] with
+    | '0'..'9' | 'a'..'z' | 'A'..'Z' | '_' | '\'' | '`' | '.' -> find_cmpl_end s (pos + 1)
+    | _ -> pos
+  else pos
+
 let complete ?(doc = false) ?(types = false) ~pos merlin code =
   let context = Buffer.contents merlin.context in
   let offset = String.length context in
@@ -213,4 +220,4 @@ let complete ?(doc = false) ?(types = false) ~pos merlin code =
             | pos -> prefix_start + pos + 1
             | exception Not_found -> prefix_start
           end;
-        cmpl_end = pos; }
+        cmpl_end = find_cmpl_end code pos; }
