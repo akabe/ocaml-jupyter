@@ -146,28 +146,17 @@ struct
     send_iopub_status ~parent client IOPUB_IDLE
 
   let handle_complete_request ~parent client shell body =
-    let%lwt raw_reply =
+    let%lwt Completor.{cmpl_candidates; cmpl_start; cmpl_end} =
       Completor.complete
         client.completor body.cmpl_code ~pos:body.cmpl_pos in
     let shell_reply =
-      match raw_reply with
-      | { Completor.cmpl_candidates = []; _ } -> (* No candidates *)
-        {
-          cmpl_status = SHELL_OK;
-          cmpl_metadata = `Assoc [];
-          cmpl_start = None;
-          cmpl_end = None;
-          cmpl_matches = [];
-        }
-      | { Completor.cmpl_candidates = cands;
-          Completor.cmpl_start; Completor.cmpl_end; } ->
-        {
-          cmpl_status = SHELL_OK;
-          cmpl_metadata = `Assoc [];
-          cmpl_start = Some cmpl_start;
-          cmpl_end = Some cmpl_end;
-          cmpl_matches = List.map (fun c -> c.Completor.cmpl_name) cands;
-        }
+      {
+        cmpl_status = SHELL_OK;
+        cmpl_metadata = `Assoc [];
+        cmpl_start = cmpl_start;
+        cmpl_end = cmpl_end;
+        cmpl_matches = List.map (fun c -> c.Completor.cmpl_name) cmpl_candidates;
+      }
     in
     let%lwt () = send_iopub_status ~parent client IOPUB_BUSY in
     let%lwt () =

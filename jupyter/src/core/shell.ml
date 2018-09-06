@@ -36,8 +36,8 @@ type exec_request =
     exec_silent : bool [@key "silent"];
     exec_store_history : bool [@key "store_history"];
     exec_user_expr : Yojson.Safe.json [@key "user_expressions"];
-    exec_allow_stdin : bool [@key "allow_stdin"];
-    exec_stop_on_error : bool [@key "stop_on_error"];
+    exec_allow_stdin : bool [@key "allow_stdin"] [@default true];
+    exec_stop_on_error : bool [@key "stop_on_error"] [@default false];
   } [@@deriving yojson { strict = false }]
 
 type exec_reply =
@@ -74,8 +74,8 @@ type complete_request =
 type complete_reply =
   {
     cmpl_matches : string list [@key "matches"];
-    cmpl_start : int option [@key "cursor_start"];
-    cmpl_end : int option [@key "cursor_end"];
+    cmpl_start : int [@key "cursor_start"];
+    cmpl_end : int [@key "cursor_end"];
     cmpl_metadata : Yojson.Safe.json [@key "metadata"];
     cmpl_status : status Json.enum [@key "status"];
   } [@@deriving yojson { strict = false }]
