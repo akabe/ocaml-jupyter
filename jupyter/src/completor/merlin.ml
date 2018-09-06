@@ -209,8 +209,8 @@ let complete ?(doc = false) ?(types = false) ~pos merlin code =
     | Some reply ->
       { reply with
         cmpl_start =
-          begin match String.rindex_from_opt prefix (prefix_length - 1) '.' with
-          | Some pos -> prefix_start + pos + 1
-          | None -> prefix_start
+          begin match String.rindex_from prefix (prefix_length - 1) '.' with
+            | pos -> prefix_start + pos + 1
+            | exception Not_found -> prefix_start
           end;
         cmpl_end = pos; }
