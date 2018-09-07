@@ -136,8 +136,12 @@ let test__exception ctxt =
   let msg =
     if Sys.ocaml_version <= "4.02.3"
     then "\x1b[31mException: Failure \"FAIL\".\n\x1b[0m"
-    else "\x1b[31mException: Failure \"FAIL\".\n\
+    else if Sys.ocaml_version <= "4.06.1"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at file \"pervasives.ml\", line 32, characters 22-33\n\
+          Called from file \"toplevel/toploop.ml\", line 180, characters 17-56\n\x1b[0m"
+    else "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at file \"stdlib.ml\", line 33, characters 22-33\n\
           Called from file \"toplevel/toploop.ml\", line 180, characters 17-56\n\x1b[0m"
   in
   let expected = [error ~value:"runtime_error" [msg]] in
