@@ -123,10 +123,37 @@ let test_complete ctxt =
     } in
   let actual = complete merlin ~types:true code ~pos:15 in
   require expected actual ~msg:"at the last of identifier" ;
-  let actual = complete merlin ~types:true code ~pos:13 in
+  let expected = Merlin.{
+      cmpl_start = 13; cmpl_end = 15;
+      cmpl_candidates = [
+        { cmpl_name = "map"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "('a -> 'b) -> 'a list -> 'b list";
+          cmpl_doc = ""; };
+        { cmpl_name = "map2"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list";
+          cmpl_doc = ""; };
+        { cmpl_name = "mapi"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "(int -> 'a -> 'b) -> 'a list -> 'b list";
+          cmpl_doc = ""; };
+        { cmpl_name = "mem"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "'a -> 'a list -> bool";
+          cmpl_doc = ""; };
+        { cmpl_name = "mem_assoc"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "'a -> ('a * 'b) list -> bool";
+          cmpl_doc = ""; };
+        { cmpl_name = "mem_assq"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "'a -> ('a * 'b) list -> bool";
+          cmpl_doc = ""; };
+        { cmpl_name = "memq"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "'a -> 'a list -> bool";
+          cmpl_doc = ""; };
+        { cmpl_name = "merge"; cmpl_kind = CMPL_VALUE;
+          cmpl_type = "('a -> 'a -> int) -> 'a list -> 'a list -> 'a list";
+          cmpl_doc = ""; };
+      ];
+    } in
+  let actual = complete merlin ~types:true code ~pos:14 in
   require expected actual ~msg:"at the middle point of identifier" ;
-  let actual = complete merlin ~types:true code ~pos:8 in
-  require expected actual ~msg:"at the head of identifier" ;
   let code = "module M = Comp " in
   let expected = Merlin.{
       cmpl_start = 11; cmpl_end = 15;
@@ -135,7 +162,7 @@ let test_complete ctxt =
           cmpl_type = ""; cmpl_doc = ""; };
       ];
     } in
-  let actual = complete merlin code ~pos:11 in
+  let actual = complete merlin code ~pos:15 in
   require expected actual ~msg:"module" ;
   Merlin.add_context merlin "#load \"unix.cma\"" ;
   let code = "let _ = Unix.std " in
@@ -152,9 +179,9 @@ let test_complete ctxt =
     } in
   let actual = complete merlin code ~types:true ~pos:16 in
   require expected actual ~msg:"context" ;
-  let code = "let _ = Unix.EIN " in
+  let code = "let _ = Unix.EINP " in
   let expected = Merlin.{
-      cmpl_start = 13; cmpl_end = 16;
+      cmpl_start = 13; cmpl_end = 17;
       cmpl_candidates = [
         { cmpl_name = "EINPROGRESS"; cmpl_kind = CMPL_CONSTR;
           cmpl_type = "Unix.error"; cmpl_doc = ""; };
@@ -164,7 +191,7 @@ let test_complete ctxt =
           cmpl_type = "Unix.error"; cmpl_doc = ""; };
       ];
     } in
-  let actual = complete merlin code ~types:true ~pos:11 in
+  let actual = complete merlin code ~types:true ~pos:16 in
   require expected actual ~msg:"variant constructor"
 
 let suite =
