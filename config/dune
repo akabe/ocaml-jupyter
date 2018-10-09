@@ -33,11 +33,11 @@
 ;;
 
 (rule
- (targets kernel.json)
+ (targets kernel.json kernel.sh)
  (deps    kernelspec.exe)
  (action  (run %{deps})))
 
 (install
  (section share)
  (package jupyter)
- (files   kernel.json))
+ (files   kernel.json kernel.sh))
