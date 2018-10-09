@@ -189,8 +189,6 @@ Many Jupyter kernels for functional programming languages are available such as 
 | User-defined messages  | Yes           | No            |
 | Stdin                  | Yes           | No            |
 
-In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.
-
 Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in practice.
 [jupyter-kernel][jupyter-kernel] is a library to write OCaml kernels (*not a kernel*), but OCaml Jupyter kernel does not use this library.
 
