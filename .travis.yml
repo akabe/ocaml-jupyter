@@ -26,6 +26,7 @@ addons:
 env:
   global:
     - OPAM_PREFIX=$HOME/.mine
+    - OPAM_INIT_FLAGS='--disable-sandboxing'
     - PATH=$PATH:$OPAM_PREFIX/bin:$HOME/.local/bin
     - PYTHONUSERBASE=$HOME/.local
     - PYTHONVERSION=3.6.1
@@ -33,23 +34,23 @@ env:
 matrix:
   include:
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.04.2
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.04.2
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.05.0
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.05.0
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.06.0 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.07.0
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.07.0
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.08.0+trunk
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.08.0+trunk
     - os: osx
       osx_image: xcode9
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.06.0
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.06.0
   allow_failures:
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.07.0
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.07.0
     - os: linux
-      env: OPAM_VERSION=1.2.2 OCAML_VERSION=4.08.0+trunk
+      env: OPAM_VERSION=2.0.0 OCAML_VERSION=4.08.0+trunk
 
 before_script:
   - eval "$(pyenv init -)"
@@ -67,7 +68,7 @@ before_script:
   - pip install ipython==5.4.1 jupyter
   # Install OPAM and packages required for CI
   - curl -L https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/install_opam.sh | sh -xeu
-  - eval $(opam config env)
+  - eval $(opam env)
   - opam install -y ocamlfind 'merlin>=3.0.0' ocp-indent 'ounit>=2.0.0'
   - opam remove jupyter # remove ocaml-jupyter package in cache (if it exists)
 
