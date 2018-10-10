@@ -104,6 +104,25 @@ OCaml Jupyter includes some sub-packages:
 [jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
+### Registration of multiple kernels
+
+You can add kernels of different versions of OCaml as different names like:
+
+```console
+$ opam switch create 4.06.0
+$ jupyter kernelspec install --name ocaml-jupyter-4.06.0 "$(opam config var share)/jupyter"
+$ opam switch create 4.07.1
+$ jupyter kernelspec install --name ocaml-jupyter-4.07.1 "$(opam config var share)/jupyter"
+```
+
+`OCaml 4.06.0` and `OCaml 4.07.1` are displayed on Jupyter.
+If you want to prepare kernels for each `opam-switch` environment,
+the following command is useful:
+
+```shell
+jupyter kernelspec install --name ocaml-jupyter-$(opam config var switch) "$(opam config var share)/jupyter"
+```
+
 ### Customize kernel parameters
 
 A kernelspec JSON is saved at the following path:
@@ -114,7 +133,8 @@ $ cat "$(opam config var share)/jupyter/kernel.json"
   "display_name": "OCaml 4.04.2",
   "language": "OCaml",
   "argv": [
-    "/home/USERNAME/.opam/4.04.2/bin/ocaml-jupyter-kernel",
+    "/bin/sh",
+    "/home/USERNAME/.opam/4.04.2/share/jupyter/kernel.sh",
     "--init",
     "/home/USERNAME/.ocamlinit",
     "--verbosity",
@@ -168,8 +188,6 @@ Many Jupyter kernels for functional programming languages are available such as 
 | Introspection          | Yes           | Yes           |
 | User-defined messages  | Yes           | No            |
 | Stdin                  | Yes           | No            |
-
-In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.
 
 Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in practice.
 [jupyter-kernel][jupyter-kernel] is a library to write OCaml kernels (*not a kernel*), but OCaml Jupyter kernel does not use this library.
