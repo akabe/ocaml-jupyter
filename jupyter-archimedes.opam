@@ -1,4 +1,4 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: [
   "Akinori ABE <aabe.65535@gmail.com>"
 ]
@@ -8,16 +8,16 @@ authors: [
 license: "MIT"
 homepage: "https://akabe.github.io/ocaml-jupyter/"
 bug-reports: "https://github.com/akabe/ocaml-jupyter/issues"
-dev-repo: "https://github.com/akabe/ocaml-jupyter.git"
+dev-repo: "git+https://github.com/akabe/ocaml-jupyter.git"
 
-available: [ ocaml-version >= "4.04.0" ]
 build: [
   [ "dune" "subst" ] {pinned}
   [ "dune" "build" "-p" name "-j" jobs ]
 ]
 depends: [
+  "ocaml" {>= "4.04.0"}
   "dune" {build & >= "1.0.0"}
   "jupyter"
-  "cairo2"
+  "cairo2" {< "0.6"}
   "archimedes"
 ]
