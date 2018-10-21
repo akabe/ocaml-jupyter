@@ -62,7 +62,7 @@ end
 module KernelInfoReply =
 struct
   let key = "167ff8c8-fe494afc147b4fa62758ed82"
-  let hmac = "4f187c5d31957a8574ba7d3199926014abd46c4e970a74cc8d62cfb559a48b54"
+  let hmac = "cb3ad6e9e1f39949e212eccf45c216361d64452c39f81bea8e5bef18edcd5569"
   let header = "{\"msg_id\":\"3a21737c-0287-30f3-bfa9-12e193dfd00a\",\
                 \"msg_type\":\"kernel_info_reply\",\
                 \"session\":\"A32B9A2038D043F2A0718550AAAFC9DA\",\
@@ -78,7 +78,7 @@ struct
   let content = "{\"protocol_version\":\"5.2\",\
                  \"implementation\":\"ocaml-jupyter\",\
                  \"implementation_version\":\"5.0.0\",\
-                 \"banner\":null,\
+                 \"banner\":\"This is banner text.\",\
                  \"help_links\":[],\
                  \"language_info\":{\
                  \"name\":\"OCaml\",\
@@ -115,7 +115,7 @@ struct
           kernel_prot_ver = "5.2";
           kernel_impl = "ocaml-jupyter";
           kernel_impl_ver = "5.0.0";
-          kernel_banner = None;
+          kernel_banner = "This is banner text.";
           kernel_help_links = [];
           kernel_lang = "OCaml";
           kernel_lang_info =
