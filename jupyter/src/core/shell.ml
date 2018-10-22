@@ -179,18 +179,24 @@ type kernel_info_reply =
     kernel_prot_ver : string [@key "protocol_version"]; (** protocol version *)
     kernel_impl : string [@key "implementation"];
     kernel_impl_ver : string [@key "implementation_version"];
-    kernel_banner : string option [@key "banner"];
+    kernel_banner : string [@key "banner"];
     kernel_help_links : help_link list [@key "help_links"];
     kernel_lang_info : language_info [@key "language_info"];
     kernel_lang : string [@key "language"];
   } [@@deriving yojson { strict = false }]
 
 let kernel_info_reply =
+  let banner =
+    Format.sprintf
+      "OCaml version %s / ocaml-jupyter version %s"
+      Sys.ocaml_version
+      Version.version
+  in
   {
     kernel_prot_ver = Version.protocol_version;
     kernel_impl = "ocaml-jupyter";
     kernel_impl_ver = Version.version;
-    kernel_banner = None;
+    kernel_banner = banner;
     kernel_help_links = help_links;
     kernel_lang = "OCaml";
     kernel_lang_info = language_info;
