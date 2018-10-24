@@ -73,7 +73,11 @@ let eval
     ?(post_exec = lwt_ignore)
     ?init_file ?(count = 0) code
   =
-  let repl = Process.create ?init_file () in
+  begin match init_file with
+    | None -> ()
+    | Some s -> Clflags.init_file := Some s
+  end ;
+  let repl = Process.create () in
   let strm = Process.stream repl in
   Lwt_main.run begin
     let%lwt _ = Process.eval ~ctx ~count repl code in
