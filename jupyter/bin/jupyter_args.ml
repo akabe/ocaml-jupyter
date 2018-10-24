@@ -22,13 +22,7 @@
 
 (** Command-line arguments *)
 
-let version = ref false
-
 let connection_file = ref ""
-
-let init_file = ref "~/.ocamlinit"
-
-let preload_objs = ref ["stdlib.cma"]
 
 let merlin = ref "ocamlmerlin"
 
@@ -44,14 +38,13 @@ let set_level_from_env () =
 
 let parse () =
   let open Arg in
-  let specs =
-    align [
+  let specs = align [
       "--connection-file",
       Set_string connection_file,
       "<file> connection information to Jupyter";
       "--init",
-      Set_string init_file,
-      "<file> load a file instead of ~/.ocamlinit";
+      String (fun s -> Clflags.init_file := Some s),
+      "<file> An alias of -init"; (* for compatibility with ocaml-jupyter v2.3.5 or below *)
       "--merlin",
       Set_string merlin,
       "<file> path of ocamlmerlin";
@@ -61,19 +54,13 @@ let parse () =
       "--verbosity",
       Symbol (["debug"; "info"; "warning"; "error"; "app"], Jupyter_log.set_level),
       "set log level";
-      "--version",
-      Set version,
-      "show the version number";
       "--error-ctx",
       Set_int error_ctx_size,
       "<num> the number of context lines in error messages";
-    ]
-  in
-  let doc = "An OCaml kernel for Jupyter (IPython) notebook" in
-  parse specs (fun obj -> preload_objs := obj :: !preload_objs) doc ;
-  set_level_from_env () ;
-  Format.printf "connection_file =%s@." !connection_file;
-  if !version then begin
-    print_endline Jupyter.Version.version ;
-    exit 0
-  end
+    ] in
+  Jupyter_repl.Caml_args.parse
+    Format.err_formatter
+    ~usage:"Usage: ocaml-jupyter-kernel <options> <object-files> [script-file [arguments]]\n\
+            options are:"
+    ~specs ;
+  set_level_from_env ()

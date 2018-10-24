@@ -23,11 +23,9 @@
 (** Top-level loop of OCaml code evaluation *)
 
 (** Globally initialize the OCaml REPL on the current process.
-    @param preload    [.cma] files to be loaded.
     @param preinit    function called before reading [.ocamlinit].
-    @param init_file  path to [.ocamlinit]. *)
+    @param init_file  path to [.ocamlinit].. *)
 val init :
-  ?preload:string list ->
   ?preinit:(unit -> unit) ->
   ?init_file:string ->
   unit -> unit

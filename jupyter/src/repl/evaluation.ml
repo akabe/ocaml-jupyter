@@ -30,16 +30,6 @@ let ppf = formatter_of_buffer buffer
 
 (** {2 Initialization} *)
 
-let readenv ppf =
-  let open Compenv in
-  readenv ppf Before_args ;
-  readenv ppf Before_link
-
-let prepare () =
-  Toploop.set_paths() ;
-  !Toploop.toplevel_startup_hook () ;
-  Topdirs.dir_cd (Sys.getcwd ()) (* required for side-effect initialization in Topdirs *)
-
 let replace_out_phrase () =
   let re = Str.regexp ".*ocamltoplevel\\.cma.*" in
   let old_out_phrase = !Oprint.out_phrase in
@@ -58,25 +48,20 @@ let init_toploop () =
     Location.report_exception ppf exn ;
     exit 2
 
-let load_ocamlinit = function
-  | None -> ()
-  | Some path ->
-    if Sys.file_exists path
-    then ignore (Toploop.use_silently std_formatter path)
-    else eprintf "Init file not found: \"%s\".@." path
-
-let init ?(preload = ["stdlib.cma"]) ?(preinit = ignore) ?init_file () =
+let init ?(preinit = ignore) ?init_file () =
   let ppf = Format.err_formatter in
   Clflags.debug := true ;
   Location.formatter_for_warnings := ppf ;
   Sys.catch_break true ;
   replace_out_phrase () ;
-  readenv ppf ;
-  prepare () ;
+  Compenv.readenv ppf Compenv.Before_link ;
+  if not (Caml_args.prepare ppf) then exit 2 ;
   init_toploop () ;
-  List.iter (Topdirs.dir_load ppf) preload ;
   preinit () ;
-  load_ocamlinit init_file
+  begin match init_file with
+    | None -> ()
+    | Some path -> ignore (Toploop.use_silently Format.std_formatter path)
+  end
 
 let setvalue name value = Toploop.setvalue name (Obj.repr value)
 

@@ -48,16 +48,13 @@ let override_sys_params () =
   Evaluation.eval ~count:0 ~send:ignore "Sys.interactive := true"
   |> ignore
 
-let create_child_process
-    ?preload ?init_file ?error_ctx_size
-    ~ctrlin ~ctrlout ~jupyterin
-  =
+let create_child_process ?init_file ?error_ctx_size ~ctrlin ~ctrlout ~jupyterin =
   let context = ref None in
   let preinit () =
     define_connection ~jupyterin ~jupyterout:ctrlout ~context ;
     override_sys_params ()
   in
-  Evaluation.init ?preload ~preinit ?init_file () ;
+  Evaluation.init ~preinit ?init_file () ;
   let ctrlin = Unix.in_channel_of_descr ctrlin in
   let ctrlout = Unix.out_channel_of_descr ctrlout in
   let send (reply : Message.reply) =
@@ -135,7 +132,7 @@ let recv_stdout_thread ~push ~ctx ~name ic =
         | Iopub.IOPUB_STDOUT -> app (fun pp -> pp "STDOUT>> %s" line)
         | Iopub.IOPUB_STDERR -> app (fun pp -> pp "STDERR>> %s" line))
 
-let create ?preload ?init_file ?error_ctx_size () =
+let create ?init_file ?error_ctx_size () =
   let c_jupyterin, p_jupyterin = Unix.pipe () in
   let c_ctrlin, p_ctrlin = Unix.pipe () in
   let p_ctrlout, c_ctrlout = Unix.pipe () in
@@ -153,7 +150,7 @@ let create ?preload ?init_file ?error_ctx_size () =
     Unix.close c_stdout ;
     Unix.close c_stderr ;
     create_child_process
-      ?preload ?init_file ?error_ctx_size
+      ?init_file ?error_ctx_size
       ~ctrlin:c_ctrlin ~ctrlout:c_ctrlout ~jupyterin:c_jupyterin
   | pid ->
     Unix.close c_jupyterin ;
