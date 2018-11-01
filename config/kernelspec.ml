@@ -18,7 +18,7 @@ let write_kernelspec_json ~output ~bindir ~sharedir ~switch ~home =
     "argv", `List [
       `String "/bin/sh";
       `String (Filename.(concat sharedir (concat "jupyter" "kernel.sh")));
-      `String "--init";
+      `String "-init";
       `String (Filename.concat home ".ocamlinit");
       `String "--merlin";
       `String (Filename.concat bindir "ocamlmerlin");
