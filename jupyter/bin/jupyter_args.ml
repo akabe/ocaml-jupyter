@@ -41,22 +41,22 @@ let parse () =
   let specs = align [
       "--connection-file",
       Set_string connection_file,
-      "<file> connection information to Jupyter";
+      "<file> Connection information to Jupyter";
       "--init",
       String (fun s -> Clflags.init_file := Some s),
       "<file> An alias of -init"; (* for compatibility with ocaml-jupyter v2.3.5 or below *)
       "--merlin",
       Set_string merlin,
-      "<file> path of ocamlmerlin";
+      "<file> Path to ocamlmerlin";
       "--dot-merlin",
       Set_string dot_merlin,
-      "<file> path of .merlin";
+      "<file> Path to .merlin";
       "--verbosity",
       Symbol (["debug"; "info"; "warning"; "error"; "app"], Jupyter_log.set_level),
-      "set log level";
+      "Set log level";
       "--error-ctx",
       Set_int error_ctx_size,
-      "<num> the number of context lines in error messages";
+      "<num> The number of context lines in error messages";
     ] in
   Jupyter_repl.Caml_args.parse
     Format.err_formatter
