@@ -5,6 +5,7 @@
  (modules     Jupyter_repl
               Process
               Evaluation
+              Caml_args
               Error
               Compat)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
@@ -20,4 +21,9 @@
 (rule
  (targets compat.ml)
  (deps    compat.cppo.ml)
+ (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))
+
+(rule
+ (targets caml_args.ml)
+ (deps    caml_args.cppo.ml)
  (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))

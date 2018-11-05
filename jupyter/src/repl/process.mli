@@ -25,15 +25,9 @@
 type t
 
 (** Creates an OCaml REPL process.
-
-    @param preload         a list of pre-loaded [.cma] files.
     @param init_file       read a given file instead of [.ocamlinit].
     @param error_ctx_size  the number of context lines in error messages. *)
-val create :
-  ?preload:string list ->
-  ?init_file:string ->
-  ?error_ctx_size:int ->
-  unit -> t
+val create : ?init_file:string -> ?error_ctx_size:int -> unit -> t
 
 val close : t -> unit Lwt.t
 

@@ -38,15 +38,14 @@ module Client =
 
 let () =
   Printexc.record_backtrace true ;
-  let () = Jupyter_args.parse () in
+  Jupyter_args.parse () ;
   (* Fork OCaml REPL before starting a server!
      A few Lwt_unix functions (such as Lwt_unix.getservbyname, getaddrinfo)
      sometimes never returns on a REPL due to use of Lwt at the caller side of
      Toploop (compiler-libs). *)
   let repl =
     Jupyter_repl.Process.create
-      ~preload:!Jupyter_args.preload_objs
-      ~init_file:!Jupyter_args.init_file
+      ?init_file:(Jupyter_repl.Caml_args.get_ocamlinit_path ())
       ~error_ctx_size:!Jupyter_args.error_ctx_size () in
   let completor =
     Jupyter_completor.Merlin.create

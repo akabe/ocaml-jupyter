@@ -26,4 +26,6 @@ module Process = Jupyter_repl__Process
 
 module Evaluation = Jupyter_repl__Evaluation
 
+module Caml_args = Jupyter_repl__Caml_args
+
 module Error = Jupyter_repl__Error

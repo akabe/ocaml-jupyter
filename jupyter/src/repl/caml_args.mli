@@ -20,14 +20,13 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Command-line arguments *)
+(** Command-line parameters for OCaml REPL *)
 
-val connection_file : string ref
+val prepare : Format.formatter -> bool
 
-val merlin : string ref
+val parse :
+  Format.formatter ->
+  usage:string ->
+  specs:(string * Arg.spec * string) list -> unit
 
-val dot_merlin : string ref
-
-val error_ctx_size : int ref
-
-val parse : unit -> unit
+val get_ocamlinit_path : unit -> string option
