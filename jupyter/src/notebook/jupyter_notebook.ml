@@ -30,7 +30,7 @@ type display_id = string
 (** {2 Display} *)
 
 let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data =
-  let data = if base64 then B64.encode data else data in
+  let data = if base64 then Base64.encode_exn data else data in
   let send content = Unsafe.send_iopub ?ctx content in
   match display_id with
   | None ->
