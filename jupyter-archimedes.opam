@@ -1,4 +1,6 @@
 opam-version: "2.0"
+synopsis: "A Jupyter-friendly 2D plotting library based on Archimedes"
+description: "This package added a Jupyter backend for Archimedes, a 2D plotting library written in OCaml. You can plot and embed figures on Jupyter."
 maintainer: [
   "Akinori ABE <aabe.65535@gmail.com>"
 ]
