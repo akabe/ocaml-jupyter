@@ -24,8 +24,8 @@
 
 type status =
   | SHELL_OK    [@name "ok"]
-  | SHELL_ERROR [@name "error"]
-  | SHELL_ABORT [@name "abort"]
+      | SHELL_ERROR [@name "error"]
+      | SHELL_ABORT [@name "abort"]
 [@@deriving yojson]
 
 (** {2 Execution requests and replies} *)
@@ -213,31 +213,31 @@ type shutdown =
 
 type request =
   | SHELL_KERNEL_INFO_REQ [@name "kernel_info_request"]
-  | SHELL_EXEC_REQ of exec_request [@name "execute_request"]
-  | SHELL_INSPECT_REQ of inspect_request [@name "inspect_request"]
-  | SHELL_COMPLETE_REQ of complete_request [@name "complete_request"]
-  | SHELL_HISTORY_REQ of history_request [@name "history_request"]
-  | SHELL_IS_COMPLETE_REQ of is_complete_request [@name "is_complete_request"]
-  | SHELL_CONNECT_REQ [@name "connect_request"]
-  | SHELL_COMM_INFO_REQ of comm_info_request [@name "comm_info_request"]
-  | SHELL_SHUTDOWN_REQ of shutdown [@name "shutdown_request"]
-  | SHELL_COMM_OPEN of Comm.t [@name "comm_open"]
-  | SHELL_COMM_MSG of Comm.t [@name "comm_msg"]
-  | SHELL_COMM_CLOSE of Comm.t [@name "comm_close"]
+      | SHELL_EXEC_REQ of exec_request [@name "execute_request"]
+        | SHELL_INSPECT_REQ of inspect_request [@name "inspect_request"]
+        | SHELL_COMPLETE_REQ of complete_request [@name "complete_request"]
+        | SHELL_HISTORY_REQ of history_request [@name "history_request"]
+        | SHELL_IS_COMPLETE_REQ of is_complete_request [@name "is_complete_request"]
+        | SHELL_CONNECT_REQ [@name "connect_request"]
+        | SHELL_COMM_INFO_REQ of comm_info_request [@name "comm_info_request"]
+        | SHELL_SHUTDOWN_REQ of shutdown [@name "shutdown_request"]
+        | SHELL_COMM_OPEN of Comm.t [@name "comm_open"]
+        | SHELL_COMM_MSG of Comm.t [@name "comm_msg"]
+        | SHELL_COMM_CLOSE of Comm.t [@name "comm_close"]
 [@@deriving yojson { strict = false }]
 
 (** {2 Reply} *)
 
 type reply =
   | SHELL_KERNEL_INFO_REP of kernel_info_reply [@name "kernel_info_reply"]
-  | SHELL_EXEC_REP of exec_reply [@name "execute_reply"]
-  | SHELL_INSPECT_REP of inspect_reply [@name "inspect_reply"]
-  | SHELL_COMPLETE_REP of complete_reply [@name "complete_reply"]
-  | SHELL_HISTORY_REP of history_reply [@name "history_reply"]
-  | SHELL_IS_COMPLETE_REP of is_complete_reply [@name "is_complete_reply"]
-  | SHELL_CONNECT_REP of connect_reply [@name "connect_reply"]
-  | SHELL_COMM_INFO_REP of comm_info_reply [@name "comm_info_reply"]
-  | SHELL_SHUTDOWN_REP of shutdown [@name "shutdown_reply"]
+        | SHELL_EXEC_REP of exec_reply [@name "execute_reply"]
+        | SHELL_INSPECT_REP of inspect_reply [@name "inspect_reply"]
+        | SHELL_COMPLETE_REP of complete_reply [@name "complete_reply"]
+        | SHELL_HISTORY_REP of history_reply [@name "history_reply"]
+        | SHELL_IS_COMPLETE_REP of is_complete_reply [@name "is_complete_reply"]
+        | SHELL_CONNECT_REP of connect_reply [@name "connect_reply"]
+        | SHELL_COMM_INFO_REP of comm_info_reply [@name "comm_info_reply"]
+        | SHELL_SHUTDOWN_REP of shutdown [@name "shutdown_reply"]
 [@@deriving yojson { strict = false }]
 
 let execute_reply ~count status =
