@@ -43,9 +43,6 @@ matrix:
       env: OPAM_VERSION=2.0.3 OCAML_VERSION=4.07.1
     - os: linux
       env: OPAM_VERSION=2.0.3 OCAML_VERSION=4.08.0+trunk
-    - os: osx
-      osx_image: xcode9
-      env: OPAM_VERSION=2.0.3 OCAML_VERSION=4.06.1
   allow_failures:
     - os: linux
       env: OPAM_VERSION=2.0.3 OCAML_VERSION=4.08.0+trunk
