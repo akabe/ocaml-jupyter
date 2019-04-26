@@ -4,11 +4,11 @@
 
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
-[protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
+[protocol]:     https://jupyter-client.readthedocs.io/en/stable/messaging.html
 [protocol-img]: https://img.shields.io/badge/Jupyter%20protocol-5.2-blue.svg
 [travis]:       https://travis-ci.org/akabe/ocaml-jupyter
 [travis-img]:   https://img.shields.io/travis/akabe/ocaml-jupyter/master.svg?label=travis
-[jupyter]:      http://jupyter.org/
+[jupyter]:      https://jupyter.org/
 [opam]:         https://opam.ocaml.org/
 
 An OCaml kernel for [Jupyter notebook][jupyter].
@@ -37,10 +37,10 @@ $ jupyter notebook
 If you get an error related to `archimedes.cairo` during installation of `jupyter-archimedes`,
 manually install `cairo2` before `archimedes`:
 
-```
-opam install "cairo2<0.6"
-opam reinstall archimedes
-opem install jupyter-archimedes
+```console
+$ opam install "cairo2<0.6"
+$ opam reinstall archimedes
+$ opam install jupyter-archimedes
 ```
 
 ### Development version
@@ -61,11 +61,11 @@ $ opam pin add jupyter https://github.com/akabe/ocaml-jupyter.git
 In addition, many examples (e.g, image processing, voice analysis, etc.) are available at
 [docker-ocaml-jupyter-datascience/notebooks](https://github.com/akabe/docker-ocaml-jupyter-datascience/tree/master/notebooks).
 
-These examples are publish in **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
+These examples are placed in the **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
 
 ### NBConvert
 
-OCaml notebooks can be converted to HTML, markdown, LaTeX, `.ml` files, etc. by `jupyter nbconvert` command.
+OCaml notebooks can be converted to HTML, Markdown, LaTeX, `.ml` files, etc. using the `jupyter nbconvert` command.
 For example, a `.ipynb` file is converted into a `.html` file as follows:
 
 ```console
@@ -74,7 +74,7 @@ $ jupyter nbconvert --to html notebooks/introduction.ipynb
 [NbConvertApp] Writing 463004 bytes to notebooks/introduction.html
 ```
 
-For exporting `.ml` files, we recommend [Jupyter-NBConvert-OCaml][Jupyter-NBConvert-OCaml]. It outputs `.ml` files with markdown cells as comments. After installation of Jupyter-NBConvert-OCaml, you can use `--to ocaml` option to export a `.ml` file:
+For exporting `.ml` files, we recommend [Jupyter-NBConvert-OCaml][Jupyter-NBConvert-OCaml]. It outputs `.ml` files with Markdown cells as comments. After installation of Jupyter-NBConvert-OCaml, you can use `--to ocaml` option to export a `.ml` file:
 
 ```console
 $ jupyter nbconvert --to ocaml notebooks/introduction.ipynb
@@ -105,7 +105,7 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter][jupyter-core] is a core library of OCaml Jupyter. This package is internally used. You don't need it directly.
 - [jupyter.notebook][jupyter-notebook] is a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
 - [jupyter.comm][jupyter-comm] is a library for communication between OCaml notebooks and Jupyter/Web frontend.
-- [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
+- [jupyter-archimedes][jupyter-archimedes] is a Jupyter backend for [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides an empty interface.
 
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
 [jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_notebook/
@@ -128,8 +128,8 @@ $ jupyter kernelspec install --name ocaml-jupyter-4.07.1 "$(opam config var shar
 If you want to prepare kernels for each `opam-switch` environment,
 the following command is useful:
 
-```shell
-jupyter kernelspec install --name ocaml-jupyter-$(opam config var switch) "$(opam config var share)/jupyter"
+```console
+$ jupyter kernelspec install --name ocaml-jupyter-$(opam config var switch) "$(opam config var share)/jupyter"
 ```
 
 ### Customize kernel parameters
@@ -210,7 +210,7 @@ Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in p
 
 ## Contact
 
-Open [Issue](https://github.com/akabe/ocaml-jupyter/issues) for any questions, bug reports, requests of new features. Your comments may help other users. Issues are a better way than direct contact (e.g., E-mails) to maintainers.
+Open an [issue](https://github.com/akabe/ocaml-jupyter/issues) for any question, bug report, feature request. Your comments may help other users. Discussion in issues is better than contacting maintainers directly (e.g. by email).
 
 ## Contribution
 
@@ -223,8 +223,8 @@ We welcome your patch!
 1. `git push` the commits into your (forked) repository.
 1. Pull request to `master` of this repository from the branch you pushed.
 
-Environment variable `OCAML_JUPYTER_LOG` controls a log level of OCaml Jupyter kernel.
-The following setting verbosely outputs log messages. They might help your debug.
+The environment variable `OCAML_JUPYTER_LOG` controls the log level of OCaml Jupyter kernel.
+The following setting verbosely outputs log messages. They might help you debug.
 
 ```console
 $ export OCAML_JUPYTER_LOG='debug'
