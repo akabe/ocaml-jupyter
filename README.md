@@ -34,6 +34,15 @@ which will add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by laun
 $ jupyter notebook
 ```
 
+If you get an error related to `archimedes.cairo` during installation of `jupyter-archimedes`,
+manually install `cairo2` before `archimedes`:
+
+```
+opam install "cairo2<0.6"
+opam reinstall archimedes
+opem install jupyter-archimedes
+```
+
 ### Development version
 
 ```console
