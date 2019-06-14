@@ -183,6 +183,11 @@ $ docker run -it -p 8888:8888 akabe/ocaml-jupyter-datascience
 
 [ocaml-jupyter-datascience]: https://github.com/akabe/docker-ocaml-jupyter-datascience
 
+## Running OCaml Jupyter on Google Colab
+
+OCaml Jupyter can be run on Google Colab. In order to do this you first have to run
+[this Python notebook](http://colab.research.google.com/github/akabe/ocaml-jupyter/blob/master/notebooks/install_ocaml_colab.ipynb)
+in your Colab instance. This will install the kernel and after that OCaml notebooks can be used on the same instance.
 
 ## Related work
 
