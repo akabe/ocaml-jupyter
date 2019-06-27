@@ -78,9 +78,9 @@ sig
   val to_string : t -> string
 
   val create :
-    ?recv_open:(comm -> Yojson.Safe.json -> unit) ->
-    ?recv_msg:(comm -> Yojson.Safe.json -> unit) ->
-    ?recv_close:(comm -> Yojson.Safe.json -> unit) ->
+    ?recv_open:(comm -> Yojson.Safe.t -> unit) ->
+    ?recv_msg:(comm -> Yojson.Safe.t -> unit) ->
+    ?recv_close:(comm -> Yojson.Safe.t -> unit) ->
     string -> t
 
   val close : t -> unit
@@ -97,13 +97,13 @@ sig
   val comms : ?target_name:string -> unit -> (t * Target.t) list
 
   (** Send an open message to Jupyter. *)
-  val create : ?data:Yojson.Safe.json -> Target.t -> t
+  val create : ?data:Yojson.Safe.t -> Target.t -> t
 
   (** Send a close message to Jupyter. *)
-  val close : ?data:Yojson.Safe.json -> t -> unit
+  val close : ?data:Yojson.Safe.t -> t -> unit
 
   (** Send a message to Jupyter. *)
-  val send : t -> Yojson.Safe.json -> unit
+  val send : t -> Yojson.Safe.t -> unit
 
   (**/**)
 

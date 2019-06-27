@@ -35,7 +35,7 @@ type exec_request =
     exec_code : string [@key "code"];
     exec_silent : bool [@key "silent"];
     exec_store_history : bool [@key "store_history"];
-    exec_user_expr : Yojson.Safe.json [@key "user_expressions"];
+    exec_user_expr : Yojson.Safe.t [@key "user_expressions"];
     exec_allow_stdin : bool [@key "allow_stdin"] [@default true];
     exec_stop_on_error : bool [@key "stop_on_error"] [@default false];
   } [@@deriving yojson { strict = false }]
@@ -59,8 +59,8 @@ type inspect_reply =
   {
     insp_status : status Json.enum [@key "status"];
     insp_found : bool [@key "found"];
-    insp_data : Yojson.Safe.json [@key "data"] [@default `Null];
-    insp_metadata : Yojson.Safe.json [@key "metadata"] [@default `Null];
+    insp_data : Yojson.Safe.t [@key "data"] [@default `Null];
+    insp_metadata : Yojson.Safe.t [@key "metadata"] [@default `Null];
   } [@@deriving yojson { strict = false }]
 
 (** {2 Completion} *)
@@ -76,7 +76,7 @@ type complete_reply =
     cmpl_matches : string list [@key "matches"];
     cmpl_start : int [@key "cursor_start"];
     cmpl_end : int [@key "cursor_end"];
-    cmpl_metadata : Yojson.Safe.json [@key "metadata"];
+    cmpl_metadata : Yojson.Safe.t [@key "metadata"];
     cmpl_status : status Json.enum [@key "status"];
   } [@@deriving yojson { strict = false }]
 
@@ -133,7 +133,7 @@ type comm_info_request =
 
 type comm_info_reply =
   {
-    ci_comms : Yojson.Safe.json [@key "comms"];
+    ci_comms : Yojson.Safe.t [@key "comms"];
   } [@@deriving yojson { strict = false }]
 
 (** {2 Kernel information} *)
@@ -145,7 +145,7 @@ type language_info =
     lang_mimetype : string [@key "mimetype"]; (** mimetype *)
     lang_file_ext : string [@key "file_extension"]; (** file extension *)
     lang_lexer : string option [@key "pygments_lexer"]; (** pygments lexer *)
-    lang_mode : Yojson.Safe.json [@key "codemirror_mode"]; (** codemirror mode *)
+    lang_mode : Yojson.Safe.t [@key "codemirror_mode"]; (** codemirror mode *)
     lang_exporter : string option [@key "nbconverter_exporter"];
   } [@@deriving yojson { strict = false }]
 

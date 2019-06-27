@@ -32,9 +32,9 @@ type comm = string
 type receiver =
   {
     target_name : string;
-    recv_open : comm -> Yojson.Safe.json -> unit;
-    recv_msg : comm -> Yojson.Safe.json -> unit;
-    recv_close : comm -> Yojson.Safe.json -> unit;
+    recv_open : comm -> Yojson.Safe.t -> unit;
+    recv_msg : comm -> Yojson.Safe.t -> unit;
+    recv_close : comm -> Yojson.Safe.t -> unit;
   }
 
 module Target =

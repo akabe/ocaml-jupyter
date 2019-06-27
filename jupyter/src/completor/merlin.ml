@@ -73,9 +73,9 @@ let call merlin command flags printer =
 
 type 'a merlin_reply =
   | RETURN of 'a [@name "return"]
-        | FAILURE of Yojson.Safe.json [@name "failure"]
-        | ERROR of Yojson.Safe.json [@name "error"]
-        | EXN of Yojson.Safe.json [@name "exception"]
+        | FAILURE of Yojson.Safe.t [@name "failure"]
+        | ERROR of Yojson.Safe.t [@name "error"]
+        | EXN of Yojson.Safe.t [@name "exception"]
 [@@deriving of_yojson]
 
 type 'a merlin_reply_body =
@@ -91,7 +91,7 @@ let parse_merlin_reply ~of_yojson str =
     error (fun pp -> pp "%s: %s" msg (Yojson.Safe.pretty_to_string json))
   in
   let reply = Yojson.Safe.from_string str
-              |> [%of_yojson: Yojson.Safe.json merlin_reply_body]
+              |> [%of_yojson: Yojson.Safe.t merlin_reply_body]
               |> Jupyter.Json.or_die in
   `List [`String reply.klass; reply.value]
   |> merlin_reply_of_yojson of_yojson
