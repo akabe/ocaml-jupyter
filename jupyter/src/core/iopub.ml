@@ -44,8 +44,8 @@ type transient =
 
 type display_data =
   {
-    display_data : Yojson.Safe.json [@key "data"];
-    display_metadata : Yojson.Safe.json [@key "metadata"];
+    display_data : Yojson.Safe.t [@key "data"];
+    display_metadata : Yojson.Safe.t [@key "metadata"];
     display_transient : transient option [@key "transient"] [@default None];
   } [@@deriving yojson { strict = false }]
 
@@ -62,8 +62,8 @@ type exec_input =
 type exec_result =
   {
     exres_count : int [@key "execution_count"];
-    exres_data : Yojson.Safe.json [@key "data"];
-    exres_metadata : Yojson.Safe.json [@key "metadata"];
+    exres_data : Yojson.Safe.t [@key "data"];
+    exres_metadata : Yojson.Safe.t [@key "metadata"];
   } [@@deriving yojson { strict = false }]
 
 (** {2 Kernel status} *)

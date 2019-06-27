@@ -38,7 +38,7 @@ val cell_context : unit -> ctx
 val display :
   ?ctx:ctx ->
   ?display_id:display_id ->
-  ?metadata:Yojson.Safe.json ->
+  ?metadata:Yojson.Safe.t ->
   ?base64:bool ->
   string -> string -> display_id
 
@@ -52,7 +52,7 @@ val display :
 val display_file :
   ?ctx:ctx ->
   ?display_id:display_id ->
-  ?metadata:Yojson.Safe.json ->
+  ?metadata:Yojson.Safe.t ->
   ?base64:bool ->
   string -> string -> display_id
 
@@ -87,6 +87,6 @@ val printf : ('a, Format.formatter, unit) format -> 'a
 val display_formatter :
   ?ctx:ctx ->
   ?display_id:display_id ->
-  ?metadata:Yojson.Safe.json ->
+  ?metadata:Yojson.Safe.t ->
   ?base64:bool ->
   string -> display_id

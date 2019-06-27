@@ -29,7 +29,7 @@ type cell =
     execution_count : int;
     source : string list;
     outputs : string list;
-    metadata : Yojson.Safe.json;
+    metadata : Yojson.Safe.t;
   }
 [@@deriving yojson]
 

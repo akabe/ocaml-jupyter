@@ -35,7 +35,7 @@ val setvalue : string -> 'a -> unit
 (** {2 Communication} *)
 
 val iopub_success :
-  ?metadata:Yojson.Safe.json -> count:int -> string -> Jupyter.Iopub.reply
+  ?metadata:Yojson.Safe.t -> count:int -> string -> Jupyter.Iopub.reply
 
 val iopub_interrupt : unit -> Jupyter.Iopub.reply
 
