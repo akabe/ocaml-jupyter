@@ -161,7 +161,9 @@ let test__ppx ctxt =
   let expected =
     [iopub_success ~count:0
        "type t = { x : int; }\n\
-        val pp : Format.formatter -> t -> Ppx_deriving_runtime.unit = <fun>\n\
+        val pp :\n  \
+        Ppx_deriving_runtime.Format.formatter -> t -> Ppx_deriving_runtime.unit =\n  \
+        <fun>\n\
         val show : t -> Ppx_deriving_runtime.string = <fun>\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
