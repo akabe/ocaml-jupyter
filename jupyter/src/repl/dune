@@ -5,6 +5,7 @@
  (modules     Jupyter_repl
               Process
               Evaluation
+              Lwt_async_rewrite
               Caml_args
               Error
               Compat)
