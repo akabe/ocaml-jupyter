@@ -81,6 +81,7 @@ let iopub_interrupt () =
 let eval_phrase ~filename phrase =
   Compat.reset_fatal_warnings () ;
   let phrase' = Compat.preprocess_phrase ~filename phrase in (* apply PPX *)
+  let phrase' = Lwt_async_rewrite.rewrite phrase' in
   Env.reset_cache_toplevel () ;
   let is_ok = Toploop.execute_phrase true ppf phrase' in
   let message = Buffer.contents buffer in
