@@ -34,11 +34,11 @@ let rewrite_rules = [
     path_to_rewrite = None;
     required_values = [longident_lwt_main_run];
     rewrite = (fun loc e ->
-      let open Ast_helper in
-      with_default_loc loc (fun () ->
-        Exp.apply (Exp.ident (with_loc loc longident_lwt_main_run)) [(nolabel, e)]
-      )
-    );
+        let open Ast_helper in
+        with_default_loc loc (fun () ->
+            Exp.apply (Exp.ident (with_loc loc longident_lwt_main_run)) [(nolabel, e)]
+          )
+      );
     enabled = true;
   };
 
@@ -49,14 +49,14 @@ let rewrite_rules = [
     path_to_rewrite = None;
     required_values = [longident_async_thread_safe_block_on_async_exn];
     rewrite = (fun loc e ->
-      let open Ast_helper in
-      let punit = Pat.construct (with_loc loc (Longident.Lident "()")) None in
-      with_default_loc loc (fun () ->
-        Exp.apply
-          (Exp.ident (with_loc loc longident_async_thread_safe_block_on_async_exn))
-          [(nolabel, Exp.fun_ nolabel None punit e)]
-      )
-    );
+        let open Ast_helper in
+        let punit = Pat.construct (with_loc loc (Longident.Lident "()")) None in
+        with_default_loc loc (fun () ->
+            Exp.apply
+              (Exp.ident (with_loc loc longident_async_thread_safe_block_on_async_exn))
+              [(nolabel, Exp.fun_ nolabel None punit e)]
+          )
+      );
     enabled = true;
   }
 ]
@@ -130,26 +130,26 @@ let rule_of_type typ =
 
 let rewrite_str_item pstr_item tstr_item =
   match pstr_item, tstr_item.Typedtree.str_desc with
-    | ({ Parsetree.pstr_desc = Parsetree.Pstr_eval (e, _);
-         Parsetree.pstr_loc = loc },
-       Typedtree.Tstr_eval ({ Typedtree.exp_type = typ; _ }, _)) -> begin
+  | ({ Parsetree.pstr_desc = Parsetree.Pstr_eval (e, _);
+       Parsetree.pstr_loc = loc },
+     Typedtree.Tstr_eval ({ Typedtree.exp_type = typ; _ }, _)) -> begin
       match rule_of_type typ with
-        | Some rule ->
-          { Parsetree.pstr_desc = Parsetree.Pstr_eval (rule.rewrite loc e, []);
-            Parsetree.pstr_loc = loc }
-        | None ->
-          pstr_item
+      | Some rule ->
+        { Parsetree.pstr_desc = Parsetree.Pstr_eval (rule.rewrite loc e, []);
+          Parsetree.pstr_loc = loc }
+      | None ->
+        pstr_item
     end
-    | _ ->
-      pstr_item
+  | _ ->
+    pstr_item
 
 let rewrite phrase =
   match phrase with
-    | Parsetree.Ptop_def pstr ->
-      if List.exists is_eval pstr then
-        let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
-        Parsetree.Ptop_def (List.map2 rewrite_str_item pstr tstr.Typedtree.str_items)
-      else
-        phrase
-    | Parsetree.Ptop_dir _ ->
+  | Parsetree.Ptop_def pstr ->
+    if List.exists is_eval pstr then
+      let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
+      Parsetree.Ptop_def (List.map2 rewrite_str_item pstr tstr.Typedtree.str_items)
+    else
       phrase
+  | Parsetree.Ptop_dir _ ->
+    phrase
