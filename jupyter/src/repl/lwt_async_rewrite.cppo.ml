@@ -93,7 +93,11 @@ let rule_path rule =
 (* Returns whether the given path is persistent. *)
 let rec is_persistent_path = function
   | Path.Pident id -> Ident.persistent id
+#if OCAML_VERSION < (4,08,0)
   | Path.Pdot (p, _, _) -> is_persistent_path p
+#else
+  | Path.Pdot (p, _) -> is_persistent_path p
+#endif
   | Path.Papply (_, p) -> is_persistent_path p
 
 (* Check that the given long identifier is present in the environment
@@ -147,7 +151,11 @@ let rewrite phrase =
   match phrase with
   | Parsetree.Ptop_def pstr ->
     if List.exists is_eval pstr then
+#if OCAML_VERSION < (4,08,0)
       let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
+#else
+      let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
+#endif
       Parsetree.Ptop_def (List.map2 rewrite_str_item pstr tstr.Typedtree.str_items)
     else
       phrase

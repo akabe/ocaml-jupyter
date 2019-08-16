@@ -22,6 +22,7 @@
 
 (** Error report for OCaml REPL *)
 
+#if OCAML_VERSION < (4,08,0)
 open Format
 open Lexing
 open Location
@@ -138,3 +139,6 @@ let to_string_hum ~ctx_size exn =
   Errors.report_error ppf exn ;
   Format.pp_print_flush ppf () ;
   Buffer.contents b
+#else
+let to_string_hum ~ctx_size _exn = ignore(ctx_size); ""
+#endif

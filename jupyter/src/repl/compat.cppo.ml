@@ -55,7 +55,11 @@ let extract_location = function
 #if OCAML_VERSION >= (4,02,0)
   | Typecore.Error_forward e
   | Typemod.Error_forward e
+#endif
+#if OCAML_VERSION >= (4,02,0) && OCAML_VERSION < (4,08,0)
   | Typeclass.Error_forward e -> Some e.Location.loc
+#elif OCAML_VERSION >= (4,08,0)
+  | Typeclass.Error_forward e -> Some e.Location.main.Location.loc
 #endif
 #if OCAML_VERSION >= (4,03,0)
   | Attr_helper.Error (loc, _)
