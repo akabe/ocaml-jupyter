@@ -77,10 +77,15 @@ let test__syntax_error ctxt =
   let status, actual = eval ~count:123 "let let let\nlet" in
   let expected =
     [error ~value:"compile_error"
-       ["\x1b[32mFile \"[123]\", line 1, characters 4-7:\
-         \n\x1b[31mError: Syntax error\
-         \n\x1b[36m   1: \x1b[30mlet \x1b[4mlet\x1b[0m\x1b[30m let\
-         \n\x1b[36m   2: \x1b[30mlet\x1b[0m\n"]] in
+       [if Sys.ocaml_version >= "4.08"
+        then "File \"[123]\", line 1, characters 4-7:\
+              \n1 | let let let\
+              \n        ^^^\
+              \nError: Syntax error\n"
+        else "\x1b[32mFile \"[123]\", line 1, characters 4-7:\
+              \n\x1b[31mError: Syntax error\
+              \n\x1b[36m   1: \x1b[30mlet \x1b[4mlet\x1b[0m\x1b[30m let\
+              \n\x1b[36m   2: \x1b[30mlet\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
@@ -88,9 +93,14 @@ let test__unbound_value ctxt =
   let status, actual = eval ~count:123 "foo 42" in
   let expected =
     [error ~value:"compile_error"
-       ["\x1b[32mFile \"[123]\", line 1, characters 0-3:\
-         \n\x1b[31mError: Unbound value foo\
-         \n\x1b[36m   1: \x1b[30m\x1b[4mfoo\x1b[0m\x1b[30m 42\x1b[0m\n"]] in
+       [if Sys.ocaml_version >= "4.08"
+        then "File \"[123]\", line 1, characters 0-3:\
+              \n1 | foo 42\
+              \n    ^^^\
+              \nError: Unbound value foo\n"
+        else "\x1b[32mFile \"[123]\", line 1, characters 0-3:\
+              \n\x1b[31mError: Unbound value foo\
+              \n\x1b[36m   1: \x1b[30m\x1b[4mfoo\x1b[0m\x1b[30m 42\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
@@ -98,10 +108,16 @@ let test__type_error ctxt =
   let status, actual = eval ~count:123 "42 = true" in
   let expected =
     [error ~value:"compile_error"
-       ["\x1b[32mFile \"[123]\", line 1, characters 5-9:\
-         \n\x1b[31mError: This expression has type bool but an expression was expected of type\
-         \n         int\
-         \n\x1b[36m   1: \x1b[30m42 = \x1b[4mtrue\x1b[0m\n"]] in
+       [if Sys.ocaml_version >= "4.08"
+        then "File \"[123]\", line 1, characters 5-9:\
+              \n1 | 42 = true\
+              \n         ^^^^\
+              \nError: This expression has type bool but an expression was expected of type\
+              \n         int\n"
+        else "\x1b[32mFile \"[123]\", line 1, characters 5-9:\
+              \n\x1b[31mError: This expression has type bool but an expression was expected of type\
+              \n         int\
+              \n\x1b[36m   1: \x1b[30m42 = \x1b[4mtrue\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
@@ -114,27 +130,41 @@ let test__long_error_message ctxt =
        ()" in
   let expected =
     [error ~value:"compile_error"
-       ["\x1b[32mFile \"[123]\", line 3, characters 8-11:\
-         \n\x1b[31mError: Unbound value foo\
-         \n\x1b[36m   2: \x1b[30mlet b = 43 in\
-         \n\x1b[36m   3: \x1b[30mlet c = \x1b[4mfoo\x1b[0m\x1b[30m in\
-         \n\x1b[36m   4: \x1b[30mlet d = 44 in\x1b[0m\n"]] in
+       [if Sys.ocaml_version >= "4.08"
+        then "File \"[123]\", line 3, characters 8-11:\
+              \n3 | let c = foo in\
+              \n            ^^^\
+              \nError: Unbound value foo\n"
+        else "\x1b[32mFile \"[123]\", line 3, characters 8-11:\
+              \n\x1b[31mError: Unbound value foo\
+              \n\x1b[36m   2: \x1b[30mlet b = 43 in\
+              \n\x1b[36m   3: \x1b[30mlet c = \x1b[4mfoo\x1b[0m\x1b[30m in\
+              \n\x1b[36m   4: \x1b[30mlet d = 44 in\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual ;
   let status, actual = eval ~count:123 "List.\n dummy" in
   let expected =
     [error ~value:"compile_error"
-       ["\x1b[32mFile \"[123]\", line 1, characters 0-12:\
-         \n\x1b[31mError: Unbound value List.dummy\
-         \n\x1b[36m   1: \x1b[30m\x1b[4mList.\x1b[0m\
-         \n\x1b[36m   2: \x1b[30m\x1b[4m dummy\x1b[0m\n"]] in
+       [if Sys.ocaml_version >= "4.08"
+        then "File \"[123]\", line 1, characters 0-12:\
+              \n1 | List.\
+              \n2 |  dummy\
+              \nError: Unbound value List.dummy\n"
+        else "\x1b[32mFile \"[123]\", line 1, characters 0-12:\
+              \n\x1b[31mError: Unbound value List.dummy\
+              \n\x1b[36m   1: \x1b[30m\x1b[4mList.\x1b[0m\
+              \n\x1b[36m   2: \x1b[30m\x1b[4m dummy\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version <= "4.02.3"
+    if Sys.ocaml_version >= "4.08"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at file \"stdlib.ml\", line 29, characters 22-33\n\
+          Called from file \"toplevel/toploop.ml\", line 208, characters 17-27\n\x1b[0m"
+    else if Sys.ocaml_version <= "4.02.3"
     then "\x1b[31mException: Failure \"FAIL\".\n\x1b[0m"
     else if Sys.ocaml_version <= "4.06.1"
     then "\x1b[31mException: Failure \"FAIL\".\n\
