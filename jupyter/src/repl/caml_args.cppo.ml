@@ -107,7 +107,11 @@ let set r () = r := true
 let clear r () = r := false
 
 module Options = Main_args.Make_bytetop_options (struct
+#if OCAML_VERSION < (4,08,0)
     let _absname = set Location.absname
+#else
+    let _absname = set Clflags.absname
+#endif
     let _I dir =
       let dir = Misc.expand_directory Config.standard_library dir in
       Clflags.include_dirs := dir :: !Clflags.include_dirs
@@ -138,7 +142,11 @@ module Options = Main_args.Make_bytetop_options (struct
     let _no_strict_formats = clear Clflags.strict_formats
     let _unboxed_types = set Clflags.unboxed_types
     let _no_unboxed_types = clear Clflags.unboxed_types
+#if OCAML_VERSION < (4,08,0)
     let _unsafe = set Clflags.fast
+#else
+    let _unsafe = set Clflags.unsafe
+#endif
     let _unsafe_string = set Clflags.unsafe_string
     let _version () = print_version ()
     let _vnum () = print_version_num ()
@@ -177,7 +185,12 @@ module Options = Main_args.Make_bytetop_options (struct
     let _dno_unique_ids = clear Clflags.unique_ids
     let _dunique_ids = set Clflags.unique_ids
 #endif
-
+#if OCAML_VERSION >= (4,08,0)
+    let _error_style = Misc.set_or_ignore Clflags.error_style_reader.Clflags.parse Clflags.error_style
+    let _color = Misc.set_or_ignore Clflags.color_reader.Clflags.parse Clflags.color
+    let _nopervasives = set Clflags.nopervasives
+    let _alert = Warnings.parse_alert_option
+#endif
 end)
 
 #if OCAML_VERSION >= (4,05,0)
