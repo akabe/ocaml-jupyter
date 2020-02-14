@@ -28,7 +28,7 @@ let preprocess_phrase ~filename = function
   | Parsetree.Ptop_def structure ->
     structure
     |> Pparse.apply_rewriters_str ~restore:true ~tool_name:"ocaml"
-#if OCAML_VERSION >= (4,04,0)
+#if OCAML_VERSION >= (4,04,0) && OCAML_VERSION < (4,09,0)
     |> Pparse.ImplementationHooks.apply_hooks { Misc.sourcefile = filename }
 #endif
     |> fun structure' -> Parsetree.Ptop_def structure'
