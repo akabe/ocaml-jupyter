@@ -1,5 +1,5 @@
 language: c
-dist: trusty
+dist: xenial
 
 cache:
   apt: true
@@ -12,8 +12,6 @@ cache:
 
 addons:
   apt:
-    sources:
-      - sourceline: ppa:bpaquet/zeromq4-trusty
     packages:
       - m4
       - git
@@ -21,7 +19,7 @@ addons:
       - aspcud
       - libffi-dev
       - libgmp-dev
-      - libzmq-dev=4.0.4-bpa~trusty2
+      - libzmq5-dev
 
 env:
   global:
