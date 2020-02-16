@@ -1,5 +1,5 @@
 language: c
-dist: trusty
+dist: xenial
 
 cache:
   apt: true
@@ -12,8 +12,6 @@ cache:
 
 addons:
   apt:
-    sources:
-      - sourceline: ppa:bpaquet/zeromq4-trusty
     packages:
       - m4
       - git
@@ -21,7 +19,7 @@ addons:
       - aspcud
       - libffi-dev
       - libgmp-dev
-      - libzmq-dev=4.0.4-bpa~trusty2
+      - libzmq5-dev
 
 env:
   global:
@@ -70,7 +68,7 @@ before_script:
   # Install OPAM and packages required for CI
   - curl -L https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/install_opam.sh | sh -xeu
   - eval $(opam env)
-  - opam install -y ocamlfind 'merlin>=3.0.0' ocp-indent 'ounit>=2.0.0'
+  - opam install -y ocamlfind 'merlin>=3.0.0' 'ounit>=2.0.0'
   - opam remove jupyter # remove ocaml-jupyter package in cache (if it exists)
 
 script:

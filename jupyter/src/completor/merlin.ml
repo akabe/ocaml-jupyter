@@ -73,9 +73,9 @@ let call merlin command flags printer =
 
 type 'a merlin_reply =
   | RETURN of 'a [@name "return"]
-        | FAILURE of Yojson.Safe.t [@name "failure"]
-        | ERROR of Yojson.Safe.t [@name "error"]
-        | EXN of Yojson.Safe.t [@name "exception"]
+  | FAILURE of Yojson.Safe.t [@name "failure"]
+  | ERROR of Yojson.Safe.t [@name "error"]
+  | EXN of Yojson.Safe.t [@name "exception"]
 [@@deriving of_yojson]
 
 type 'a merlin_reply_body =
@@ -145,16 +145,16 @@ let abs_position code pos =
 
 type kind =
   | CMPL_VALUE [@name "Value"]
-      | CMPL_VARIANT [@name "Variant"]
-      | CMPL_CONSTR [@name "Constructor"]
-      | CMPL_LABEL [@name "Label"]
-      | CMPL_MODULE [@name "Module"]
-      | CMPL_SIG [@name "Signature"]
-      | CMPL_TYPE [@name "Type"]
-      | CMPL_METHOD [@name "Method"]
-      | CMPL_METHOD_CALL [@name "#"]
-      | CMPL_EXN [@name "Exn"]
-      | CMPL_CLASS [@name "Class"]
+  | CMPL_VARIANT [@name "Variant"]
+  | CMPL_CONSTR [@name "Constructor"]
+  | CMPL_LABEL [@name "Label"]
+  | CMPL_MODULE [@name "Module"]
+  | CMPL_SIG [@name "Signature"]
+  | CMPL_TYPE [@name "Type"]
+  | CMPL_METHOD [@name "Method"]
+  | CMPL_METHOD_CALL [@name "#"]
+  | CMPL_EXN [@name "Exn"]
+  | CMPL_CLASS [@name "Class"]
 [@@deriving yojson]
 
 type candidate =
