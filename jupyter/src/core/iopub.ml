@@ -26,7 +26,7 @@
 
 type stream_name =
   | IOPUB_STDOUT [@name "stdout"]
-      | IOPUB_STDERR [@name "stderr"]
+  | IOPUB_STDERR [@name "stderr"]
 [@@deriving yojson { strict = false }]
 
 type stream =
@@ -70,8 +70,8 @@ type exec_result =
 
 type exec_status =
   | IOPUB_BUSY     [@name "busy"]
-      | IOPUB_IDLE     [@name "idle"]
-      | IOPUB_STARTING [@name "starting"]
+  | IOPUB_IDLE     [@name "idle"]
+  | IOPUB_STARTING [@name "starting"]
 [@@deriving yojson]
 
 type status =
@@ -103,16 +103,16 @@ type request = unit [@@deriving yojson]
 
 type reply =
   | IOPUB_STREAM of stream [@name "stream"]
-        | IOPUB_DISPLAY_DATA of display_data [@name "display_data"]
-        | IOPUB_UPDATE_DISPLAY_DATA of display_data [@name "update_display_data"]
-        | IOPUB_EXECUTE_INPUT of exec_input [@name "execute_input"]
-        | IOPUB_EXECUTE_RESULT of exec_result [@name "execute_result"]
-        | IOPUB_ERROR of error [@name "error"]
-        | IOPUB_STATUS of status [@name "status"]
-        | IOPUB_CLEAR_OUTPUT of clear_output [@name "clear_output"]
-        | IOPUB_COMM_OPEN of Comm.t [@name "comm_open"]
-        | IOPUB_COMM_MSG of Comm.t [@name "comm_msg"]
-        | IOPUB_COMM_CLOSE of Comm.t [@name "comm_close"]
+  | IOPUB_DISPLAY_DATA of display_data [@name "display_data"]
+  | IOPUB_UPDATE_DISPLAY_DATA of display_data [@name "update_display_data"]
+  | IOPUB_EXECUTE_INPUT of exec_input [@name "execute_input"]
+  | IOPUB_EXECUTE_RESULT of exec_result [@name "execute_result"]
+  | IOPUB_ERROR of error [@name "error"]
+  | IOPUB_STATUS of status [@name "status"]
+  | IOPUB_CLEAR_OUTPUT of clear_output [@name "clear_output"]
+  | IOPUB_COMM_OPEN of Comm.t [@name "comm_open"]
+  | IOPUB_COMM_MSG of Comm.t [@name "comm_msg"]
+  | IOPUB_COMM_CLOSE of Comm.t [@name "comm_close"]
 [@@deriving yojson]
 
 let stream ~name text =
