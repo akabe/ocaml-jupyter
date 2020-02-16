@@ -33,6 +33,7 @@ let preprocess_phrase ~filename = function
 #endif
     |> fun structure' -> Parsetree.Ptop_def structure'
   | phrase -> phrase
+[@@ocaml.warning "-27"]
 
 let pp_print_error_message ppf msg =
 #if OCAML_VERSION >= (4,04,0)
