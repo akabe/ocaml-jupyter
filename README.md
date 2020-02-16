@@ -19,16 +19,35 @@ This provides an OCaml REPL with a great user interface such as markdown/HTML do
 
 ## Getting started
 
+Requirements:
+
+- zlib
+  - Debian / Ubuntu: `apt install zlib1g-dev`
+  - RHEL / CentOS: `yum install -y zlib-devel`
+  - MacOS: `brew install zlib`
+- libffi
+  - Debian / Ubuntu: `apt install libffi-dev`
+  - RHEL / CentOS: `yum install -y libffi-dev`
+  - MacOS: `brew install libffi`
+- libgmp
+  - Debian / Ubuntu: `apt install libgmp-dev`
+  - RHEL / CentOS: `yum install gmp-devel`
+  - MacOS: `brew install gmp`
+- libzmq 5+
+  - Debian / Ubuntu: `apt install libzmq5-dev`
+  - RHEL / CentOS: `yum install zeromq-devel` (epel-release required)
+  - MacOS: `brew install zeromq`
+
 OCaml Jupyter can be installed by [OPAM][opam] as follows:
 
 ``` console
 $ pip install jupyter
 $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/jupyter"
+$ jupyter kernelspec install [ --user ] --name ocaml-jupyter "$(opam config var share)/jupyter"
 ```
 
-which will add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
+which will add the kernel to Jupyter. If the last command fails due to permission, `--user` option or `sudo` is required. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
 
 ```console
 $ jupyter notebook
