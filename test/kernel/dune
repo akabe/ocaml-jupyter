@@ -1,7 +1,7 @@
 (executables
  (names      test_kernel)
  (modes      byte)
- (preprocess (pps lwt_ppx ppx_deriving.show))
+ (preprocess (pps lwt_ppx ppx_deriving.show ppx_deriving_yojson))
  (libraries  jupyter
              jupyter_kernel
              oUnit
