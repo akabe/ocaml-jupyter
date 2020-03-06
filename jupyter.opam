@@ -43,6 +43,7 @@ conflicts: [
 post-messages: [
   "Please run for registration of ocaml-jupyter kernel:"
   ""
+  "$ ocaml-jupyter-opam-genspec"
   "$ jupyter kernelspec install --name ocaml-jupyter \\"
   "    %{share}%/jupyter"
   {success}
