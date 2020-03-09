@@ -1,5 +1,5 @@
 (executables
- (names       configure kernelspec)
+ (names       configure)
  (libraries   unix yojson)
  (flags       (:standard
                -w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58
@@ -32,12 +32,7 @@
 ;; kernelspec: kernel.json
 ;;
 
-(rule
- (targets kernel.json kernel.sh)
- (deps    kernelspec.exe)
- (action  (run %{deps})))
-
 (install
- (section share)
+ (section bin)
  (package jupyter)
- (files   kernel.json kernel.sh))
+ (files   ocaml-jupyter-opam-genspec))

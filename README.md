@@ -44,7 +44,8 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 $ pip install jupyter
 $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
-$ jupyter kernelspec install [ --user ] --name ocaml-jupyter "$(opam config var share)/jupyter"
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install [ --user ] --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
 
 which will add the kernel to Jupyter. If the last command fails due to permission, `--user` option or `sudo` is required. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
@@ -138,37 +139,39 @@ You can add kernels of different versions of OCaml as different names like:
 
 ```console
 $ opam switch create 4.06.0
-$ jupyter kernelspec install --name ocaml-jupyter-4.06.0 "$(opam config var share)/jupyter"
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-4.06.0 "$(opam var share)/jupyter"
 $ opam switch create 4.07.1
-$ jupyter kernelspec install --name ocaml-jupyter-4.07.1 "$(opam config var share)/jupyter"
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-4.07.1 "$(opam var share)/jupyter"
 ```
 
 `OCaml 4.06.0` and `OCaml 4.07.1` are displayed on Jupyter.
 If you want to prepare kernels for each `opam-switch` environment,
-the following command is useful:
+the following commands are useful:
 
 ```console
-$ jupyter kernelspec install --name ocaml-jupyter-$(opam config var switch) "$(opam config var share)/jupyter"
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-$(opam var switch) "$(opam var share)/jupyter"
 ```
 
 ### Customize kernel parameters
 
-A kernelspec JSON is saved at the following path:
+`ocaml-jupyter-opam-genspec` generates a configuration file like:
 
 ```console
-$ cat "$(opam config var share)/jupyter/kernel.json"
+$ cat "$(opam var share)/jupyter/kernel.json"
 {
-  "display_name": "OCaml 4.04.2",
+  "display_name": "OCaml 4.08.1",
   "language": "OCaml",
   "argv": [
     "/bin/sh",
-    "/home/USERNAME/.opam/4.04.2/share/jupyter/kernel.sh",
-    "--init",
-    "/home/USERNAME/.ocamlinit",
-    "--verbosity",
-    "info",
-    "--connection-file",
-    "{connection_file}"
+    "-c",
+    "eval $(opam config env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
+    "-init", "/home/xxxx/.ocamlinit",
+    "--merlin", "/home/xxxx/.opam/4.08.1/bin/ocamlmerlin",
+    "--verbosity", "app",
+    "--connection-file", "{connection_file}"
   ]
 }
 ```
@@ -176,8 +179,12 @@ $ cat "$(opam config var share)/jupyter/kernel.json"
 See `ocaml-jupyter-kernel --help` for details of command-line parameters in `argv`. After you edit the file, re-register the kernel:
 
 ```console
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/jupyter"
+$ jupyter kernelspec install --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
+
+### Installation without OPAM
+
+`ocaml-jupyter-opam-genspec` depends on OPAM. If you use an other package manager, you need to write `kernel.json` by hand or use provided suitable way for registering a new kernel (e.g., [jupyter module](https://nixos.org/nixos/options.html#jupyter.kernels) on  [Nix](https://nixos.org/nix/)).
 
 ## Docker image
 

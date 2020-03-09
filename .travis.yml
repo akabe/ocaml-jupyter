@@ -89,6 +89,7 @@ script:
   - dune runtest
   # integration tests
   - echo '#use "topfind" ;;' > $HOME/.ocamlinit
+  - ./config/ocaml-jupyter-opam-genspec
   - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
   - dune build test/integration/runtest.exe
   - ./_build/default/test/integration/runtest.exe test/integration/suite/*.ml
