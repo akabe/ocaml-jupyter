@@ -32,24 +32,24 @@ env:
 matrix:
   include:
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.04.2
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.04.2 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.05.0
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.05.0 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.06.1 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.06.1 ARCHIMEDES=1 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.07.1
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.07.1 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.08.1
-    - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
-    - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.10.0+trunk
-  allow_failures:
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.08.1 ARCHIMEDES=1
     - os: linux
       env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.10.0+trunk
+      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.10.0
+  # allow_failures:
+  #   - os: linux
+  #     env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
+  #   - os: linux
+  #     env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.10.0
 
 before_script:
   - eval "$(pyenv init -)"
@@ -78,13 +78,13 @@ script:
   - opam lint jupyter-archimedes.opam
   # installation
   - opam pin add jupyter . -y --verbose
-  - opam pin add jupyter-archimedes . -y --verbose
+  - [ "${ARCHIMEDES:-}" == "" ] || opam pin add jupyter-archimedes . -y --verbose
   - opam info jupyter # package is installed.
   - ocaml-jupyter-kernel --version # command is installed.
   - ocamlfind query jupyter
   - ocamlfind query jupyter.notebook
   - ocamlfind query jupyter.comm
-  - ocamlfind query jupyter-archimedes
+  - [ "${ARCHIMEDES:-}" == "" ] || ocamlfind query jupyter-archimedes
   # unit tests
   - dune runtest
   # integration tests
@@ -92,9 +92,11 @@ script:
   - ./config/ocaml-jupyter-opam-genspec
   - jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
   - dune build test/integration/runtest.exe
-  - ./_build/default/test/integration/runtest.exe test/integration/suite/*.ml
+  - ./_build/default/test/integration/runtest.exe test/integration/suite/jupyter-notebook.ml
+  - ./_build/default/test/integration/runtest.exe test/integration/suite/ppx.ml
+  - [ "${ARCHIMEDES:-}" == "" ] || ./_build/default/test/integration/runtest.exe test/integration/suite/jupyter-archimedes.ml
   # uninstallation
-  - opam remove jupyter jupyter-archimedes --verbose
+  - opam remove jupyter jupyter-archimedes --verbose || :
   - (! ocamlfind query jupyter)
 
 after_success: |
