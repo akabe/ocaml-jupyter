@@ -145,7 +145,12 @@ let test__long_error_message ctxt =
   let status, actual = eval ~count:123 "List.\n dummy" in
   let expected =
     [error ~value:"compile_error"
-       [if Sys.ocaml_version >= "4.08"
+       [if Sys.ocaml_version >= "4.09"
+        then "File \"[123]\", lines 1-2, characters 0-6:\
+              \n1 | List.\
+              \n2 |  dummy\
+              \nError: Unbound value List.dummy\n"
+        else if Sys.ocaml_version >= "4.08"
         then "File \"[123]\", line 1, characters 0-12:\
               \n1 | List.\
               \n2 |  dummy\
@@ -160,7 +165,11 @@ let test__long_error_message ctxt =
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "4.08"
+    if Sys.ocaml_version >= "4.10"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at file \"stdlib.ml\", line 29, characters 22-33\n\
+          Called from file \"toplevel/toploop.ml\", line 212, characters 17-27\n\x1b[0m"
+    else if Sys.ocaml_version >= "4.08"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at file \"stdlib.ml\", line 29, characters 22-33\n\
           Called from file \"toplevel/toploop.ml\", line 208, characters 17-27\n\x1b[0m"
@@ -199,11 +208,13 @@ let test__ppx ctxt =
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
 let test__camlp4 ctxt =
-  let _ = eval "#camlp4o ;;" in
-  let status, actual = eval "[< '1 ; '2 >]" in
-  let expected = [iopub_success ~count:0 "- : int Stream.t = <abstr>\n"] in
-  assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  if Sys.ocaml_version < "4.09" then begin
+    let _ = eval "#camlp4o ;;" in
+    let status, actual = eval "[< '1 ; '2 >]" in
+    let expected = [iopub_success ~count:0 "- : int Stream.t = <abstr>\n"] in
+    assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
+    assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  end
 
 let suite =
   "Evaluation" >::: [
