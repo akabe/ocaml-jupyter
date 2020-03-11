@@ -61,9 +61,19 @@ let rewrite_rules = [
   }
 ]
 
+#if OCAML_VERSION >= (4,10,0)
+let lookup_type longident env = Env.find_type_by_name longident env
+#else
 let lookup_type longident env =
   let path = Env.lookup_type longident env in
   (path, Env.find_type path env)
+#endif
+
+#if OCAML_VERSION >= (4, 10, 0)
+let lookup_value = Env.find_value_by_name
+#else
+let lookup_value = Env.lookup_value
+#endif
 
 let rule_path rule =
   match rule.path_to_rewrite with
@@ -104,7 +114,7 @@ let rec is_persistent_path = function
    and is persistent. *)
 let is_persistent_in_env longident =
   try
-    is_persistent_path (fst (Env.lookup_value longident !Toploop.toplevel_env))
+    is_persistent_path (fst (lookup_value longident !Toploop.toplevel_env))
   with Not_found ->
     false
 
