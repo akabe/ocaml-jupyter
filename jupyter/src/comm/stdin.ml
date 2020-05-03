@@ -41,4 +41,4 @@ let read_line_async ~recv ?(password = false) prompt =
 
 let read_line ?password prompt =
   read_line_async ~recv:Router.blocking_on_recv ?password prompt ;
-  input_line stdin
+  input_line Router.stdin
