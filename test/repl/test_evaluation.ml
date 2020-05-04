@@ -207,15 +207,6 @@ let test__ppx ctxt =
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
-let test__camlp4 ctxt =
-  if Sys.ocaml_version < "4.09" then begin
-    let _ = eval "#camlp4o ;;" in
-    let status, actual = eval "[< '1 ; '2 >]" in
-    let expected = [iopub_success ~count:0 "- : int Stream.t = <abstr>\n"] in
-    assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-    assert_equal ~ctxt ~printer:[%show: reply list] expected actual
-  end
-
 let suite =
   "Evaluation" >::: [
     "eval" >::: [
@@ -230,7 +221,6 @@ let suite =
       "exception" >:: test__exception;
       "unknown_directive" >:: test__unknown_directive;
       "ppx" >:: test__ppx;
-      "camlp4" >:: test__camlp4;
     ]
   ]
 
