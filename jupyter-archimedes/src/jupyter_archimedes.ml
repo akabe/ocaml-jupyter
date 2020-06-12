@@ -33,7 +33,7 @@ module R = Archimedes.Backend.Register(struct
       let ctx : Cairo.context = Obj.magic b in
       let surf = Cairo.get_target ctx in
       let buf = Buffer.create 256 in
-      Cairo.PNG.write_to_stream ~output:(Buffer.add_string buf) surf ;
+      Cairo.PNG.write_to_stream surf (Buffer.add_string buf) ;
       close ~options b ;
       ignore (display ~base64:true "image/png" (Buffer.contents buf))
   end)
