@@ -191,6 +191,11 @@ module Options = Main_args.Make_bytetop_options (struct
     let _nopervasives = set Clflags.nopervasives
     let _alert = Warnings.parse_alert_option
 #endif
+
+#if OCAML_VERSION >= (4,11,0)
+    let _dlocations = set Clflags.locations
+    let _dno_locations = clear Clflags.locations
+#endif
 end)
 
 #if OCAML_VERSION >= (4,05,0)
