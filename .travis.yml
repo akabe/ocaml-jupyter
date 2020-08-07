@@ -28,23 +28,26 @@ env:
     - PATH=$PATH:$OPAM_PREFIX/bin:$HOME/.local/bin
     - PYTHONUSERBASE=$HOME/.local
     - PYTHONVERSION=3.6.1
+    - OPAM_VERSION=2.0.7
 
 matrix:
   include:
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.04.2 ARCHIMEDES=1
+      env: OCAML_VERSION=4.04.2 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.05.0 ARCHIMEDES=1
+      env: OCAML_VERSION=4.05.0 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.06.1 ARCHIMEDES=1 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
+      env: OCAML_VERSION=4.06.1 ARCHIMEDES=1 GIT_REMOTE_URL="https://akabe:$GITHUB_API_KEY@github.com/akabe/ocaml-jupyter"
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.07.1 ARCHIMEDES=1
+      env: OCAML_VERSION=4.07.1 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.08.1 ARCHIMEDES=1
+      env: OCAML_VERSION=4.08.1 ARCHIMEDES=1
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
+      env: OCAML_VERSION=4.09.0
     - os: linux
-      env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.10.0
+      env: OCAML_VERSION=4.10.0
+    - os: linux
+      env: OCAML_VERSION=4.11.0+trunk
   # allow_failures:
   #   - os: linux
   #     env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
@@ -66,7 +69,15 @@ before_script:
   - pyenv global $PYTHONVERSION
   - pip install ipython==5.4.1 jupyter
   # Install OPAM and packages required for CI
-  - curl -L https://gist.githubusercontent.com/akabe/24979afbf95c4cf4393f589cda997e1b/raw/install_opam.sh | sh -xeu
+  - |
+    if ! which opam; then
+      mkdir -p "$OPAM_PREFIX/bin"
+      curl "https://github.com/ocaml/opam/releases/download/$OPAM_VERSION/opam-$OPAM_VERSION-$(uname -m)-$(uname -s)" \
+       -Lo "$OPAM_PREFIX/bin/opam"
+      chmod 755 "$OPAM_PREFIX/bin/opam"
+      opam init -a -y --bare ${OPAM_INIT_FLAGS:-}
+      opam switch create "$OCAML_VERSION" --repositories=default,beta=git://github.com/ocaml/ocaml-beta-repository.git
+    fi
   - eval $(opam env)
   - opam install -y ocamlfind 'merlin>=3.0.0' 'ounit>=2.0.0'
   - opam remove -y jupyter # remove ocaml-jupyter package in cache (if it exists)
