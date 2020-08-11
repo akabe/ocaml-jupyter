@@ -165,7 +165,11 @@ let test__long_error_message ctxt =
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "4.10"
+    if Sys.ocaml_version >= "4.11"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+          Called from Toploop.load_lambda in file \"toplevel/toploop.ml\", line 212, characters 17-27\n\x1b[0m"
+    else if Sys.ocaml_version >= "4.10"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at file \"stdlib.ml\", line 29, characters 22-33\n\
           Called from file \"toplevel/toploop.ml\", line 212, characters 17-27\n\x1b[0m"
