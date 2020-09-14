@@ -13,7 +13,7 @@ cat <<EOF >"$OPAM_SHAREDIR/kernel.json"
   "argv": [
     "/bin/sh",
     "-c",
-    "eval \$(opam config env --switch=$OPAM_SWITCH) && $OPAM_BINDIR/ocaml-jupyter-kernel \"\$@\"",
+    "eval \$(opam config env --switch=$OPAM_SWITCH --shell=sh) && $OPAM_BINDIR/ocaml-jupyter-kernel \"\$@\"",
     "ocaml-jupyter-kernel",
     "-init", "$HOME/.ocamlinit",
     "--merlin", "$OPAM_BINDIR/ocamlmerlin",
