@@ -43,11 +43,11 @@ matrix:
     - os: linux
       env: OCAML_VERSION=4.08.1 ARCHIMEDES=1
     - os: linux
-      env: OCAML_VERSION=4.09.0
+      env: OCAML_VERSION=4.09.0 ARCHIMEDES=1
     - os: linux
-      env: OCAML_VERSION=4.10.0
+      env: OCAML_VERSION=4.10.0 ARCHIMEDES=1
     - os: linux
-      env: OCAML_VERSION=4.11.0
+      env: OCAML_VERSION=4.11.0 ARCHIMEDES=1
   # allow_failures:
   #   - os: linux
   #     env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
@@ -67,7 +67,7 @@ before_script:
   # Install Python 3 and Jupyter
   - pyenv install -s $PYTHONVERSION
   - pyenv global $PYTHONVERSION
-  - pip install ipython==5.4.1 jupyter
+  - pip install 'ipython>=7.0.0' jupyter
   # Install OPAM and packages required for CI
   - |
     if ! which opam; then
