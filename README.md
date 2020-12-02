@@ -209,6 +209,14 @@ $ docker run -it -p 8888:8888 akabe/ocaml-jupyter-datascience
 
 [ocaml-jupyter-datascience]: https://github.com/akabe/docker-ocaml-jupyter-datascience
 
+## Running OCaml Jupyter on Binder
+
+OCaml Jupyter can be run on [Binder](https://www.mybinder.org).  Click
+the button to get started:
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/edmcman/ocaml-jupyter-binder-environment/master?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fakabe%252Fdocker-ocaml-jupyter-datascience%26urlpath%3Dtree%252Fdocker-ocaml-jupyter-datascience%252Fnotebooks%26branch%3Dmaster)
+
+For more information, see this [repository](https://github.com/edmcman/ocaml-jupyter-binder-environment).
+
 ## Running OCaml Jupyter on Google Colab
 
 OCaml Jupyter can be run on Google Colab. In order to do this you first have to run
