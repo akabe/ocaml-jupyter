@@ -68,15 +68,15 @@ val clear_output : ?ctx:ctx -> ?wait:bool -> unit -> unit
     @since 1.1.0 *)
 val formatter : Format.formatter
 
-(** Same as {!Format.printf}, but output on {!JupyterNotebook.formatter}.
+(** Same as {!Format.printf}, but output on {!Jupyter_notebook.formatter}.
     @since 1.1.0 *)
 val printf : ('a, Format.formatter, unit) format -> 'a
 
 (** [display_formatter ?ctx ?base64 mime] shows data written in
-    {!JupyterNotebook.formatter} at [ctx].
+    {!Jupyter_notebook.formatter} at [ctx].
     [mime] is the mime type of the data.
 
-    {!JupyterNotebook.formatter} is flushed and data in the formatter
+    {!Jupyter_notebook.formatter} is flushed and data in the formatter
     is cleaned by calling this function.
 
     @param ctx        default = the current cell.
