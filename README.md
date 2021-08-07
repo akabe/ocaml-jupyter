@@ -167,7 +167,7 @@ $ cat "$(opam var share)/jupyter/kernel.json"
   "argv": [
     "/bin/sh",
     "-c",
-    "eval $(opam config env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
+    "eval $(opam env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
     "-init", "/home/xxxx/.ocamlinit",
     "--merlin", "/home/xxxx/.opam/4.08.1/bin/ocamlmerlin",
     "--verbosity", "app",
