@@ -25,7 +25,7 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 $ pip install jupyter
 $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/jupyter"
+$ jupyter kernelspec install --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
 
 which will add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
@@ -109,7 +109,7 @@ OCaml Jupyter includes some sub-packages:
 A kernelspec JSON is saved at the following path:
 
 ```console
-$ cat "$(opam config var share)/jupyter/kernel.json"
+$ cat "$(opam var share)/jupyter/kernel.json"
 {
   "display_name": "OCaml 4.04.2",
   "language": "OCaml",
@@ -128,7 +128,7 @@ $ cat "$(opam config var share)/jupyter/kernel.json"
 See `ocaml-jupyter-kernel --help` for details of command-line parameters in `argv`. After you edit the file, re-register the kernel:
 
 ```console
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam config var share)/jupyter"
+$ jupyter kernelspec install --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
 
 ## Docker image
