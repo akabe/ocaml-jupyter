@@ -163,8 +163,10 @@ let rewrite phrase =
     if List.exists is_eval pstr then
 #if OCAML_VERSION < (4,08,0)
       let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
-#else
+#elif OCAML_VERSION < (4,13,0)
       let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
+#else
+      let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr in
 #endif
       Parsetree.Ptop_def (List.map2 rewrite_str_item pstr tstr.Typedtree.str_items)
     else

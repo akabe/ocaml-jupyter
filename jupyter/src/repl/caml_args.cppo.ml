@@ -151,8 +151,17 @@ module Options = Main_args.Make_bytetop_options (struct
     let _version () = print_version ()
     let _vnum () = print_version_num ()
     let _no_version = set Clflags.noversion
+#if OCAML_VERSION < (4,13,0)
     let _w s = Warnings.parse_options false s
+#else
+    let _w s = Warnings.parse_options false s |> Option.iter Location.(prerr_alert none)
+#endif
+
+#if OCAML_VERSION < (4,13,0)
     let _warn_error s = Warnings.parse_options true s
+#else
+    let _warn_error s = Warnings.parse_options true s |> Option.iter Location.(prerr_alert none)
+#endif
     let _warn_help = Warnings.help_warnings
     let _dparsetree = set Clflags.dump_parsetree
     let _dtypedtree = set Clflags.dump_typedtree
