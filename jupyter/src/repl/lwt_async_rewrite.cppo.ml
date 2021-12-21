@@ -163,7 +163,7 @@ let rewrite phrase =
     if List.exists is_eval pstr then
 #if OCAML_VERSION < (4,08,0)
       let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
-#elif OCAML_VERSION < (4,13,0)
+#elif OCAML_VERSION < (4,12,0)
       let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
 #else
       let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr in
