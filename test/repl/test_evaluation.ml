@@ -165,7 +165,21 @@ let test__long_error_message ctxt =
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "4.11"
+    if Sys.ocaml_version >= "4.13"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+          Called from Stdlib__Fun.protect in file \"fun.ml\", line 33, characters 8-15\n\
+          Re-raised at Stdlib__Fun.protect in file \"fun.ml\", line 38, characters 6-52\n\
+          Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 89, characters 4-150\n\
+          \x1b[0m"
+    else if Sys.ocaml_version >= "4.12"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+          Called from Stdlib__fun.protect in file \"fun.ml\", line 33, characters 8-15\n\
+          Re-raised at Stdlib__fun.protect in file \"fun.ml\", line 38, characters 6-52\n\
+          Called from Toploop.load_lambda in file \"toplevel/toploop.ml\", line 212, characters 4-150\n\
+          \x1b[0m"
+    else if Sys.ocaml_version >= "4.11"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
           Called from Toploop.load_lambda in file \"toplevel/toploop.ml\", line 212, characters 17-27\n\x1b[0m"
