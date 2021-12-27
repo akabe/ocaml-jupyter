@@ -167,7 +167,7 @@ $ cat "$(opam var share)/jupyter/kernel.json"
   "argv": [
     "/bin/sh",
     "-c",
-    "eval $(opam config env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
+    "eval $(opam env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
     "-init", "/home/xxxx/.ocamlinit",
     "--merlin", "/home/xxxx/.opam/4.08.1/bin/ocamlmerlin",
     "--verbosity", "app",
@@ -213,7 +213,7 @@ $ docker run -it -p 8888:8888 akabe/ocaml-jupyter-datascience
 
 OCaml Jupyter can be run on [Binder](https://www.mybinder.org).  Click
 the button to get started:
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/edmcman/ocaml-jupyter-binder-environment/master?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fakabe%252Fdocker-ocaml-jupyter-datascience%26urlpath%3Dtree%252Fdocker-ocaml-jupyter-datascience%252Fnotebooks%26branch%3Dmaster)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/edmcman/ocaml-jupyter-binder-environment/master?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fakabe%252Fdocker-ocaml-jupyter-datascience%26urlpath%3Dtree%252Fdocker-ocaml-jupyter-datascience%252Fnotebooks%252Fintroduction.ipynb%26branch%3Dmaster)
 
 For more information, see this [repository](https://github.com/edmcman/ocaml-jupyter-binder-environment).
 

@@ -1,8 +1,8 @@
 #!/bin/sh -eu
 
-OPAM_BINDIR="$(opam config var bin)"
-OPAM_SWITCH="$(opam config var switch)"
-OPAM_SHAREDIR="$(opam config var share)/jupyter"
+OPAM_BINDIR="$(opam var bin)"
+OPAM_SWITCH="$(opam var switch)"
+OPAM_SHAREDIR="$(opam var share)/jupyter"
 
 mkdir -p "$OPAM_SHAREDIR/"
 
@@ -13,7 +13,7 @@ cat <<EOF >"$OPAM_SHAREDIR/kernel.json"
   "argv": [
     "/bin/sh",
     "-c",
-    "eval \$(opam config env --switch=$OPAM_SWITCH --shell=sh) && $OPAM_BINDIR/ocaml-jupyter-kernel \"\$@\"",
+    "eval \$(opam env --switch=$OPAM_SWITCH --shell=sh) && $OPAM_BINDIR/ocaml-jupyter-kernel \"\$@\"",
     "ocaml-jupyter-kernel",
     "-init", "$HOME/.ocamlinit",
     "--merlin", "$OPAM_BINDIR/ocamlmerlin",
