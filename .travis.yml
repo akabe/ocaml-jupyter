@@ -50,6 +50,8 @@ matrix:
       env: OCAML_VERSION=4.11.0 ARCHIMEDES=1
     - os: linux
       env: OCAML_VERSION=4.12.0 ARCHIMEDES=1
+    - os: linux
+      env: OCAML_VERSION=4.13.0 ARCHIMEDES=1
   # allow_failures:
   #   - os: linux
   #     env: OPAM_VERSION=2.0.4 OCAML_VERSION=4.09.0
