@@ -1,0 +1,86 @@
+name: OCaml
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'bugfix/*'
+      - 'hotfix/*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      OCAML_JUPYTER_LOG: debug
+    strategy:
+      fail-fast: false
+      matrix:
+        ocaml-compiler:
+          - 4.11.0
+          - 4.12.0
+          - 4.13.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@master
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+      - name: Install Jupyter
+        run: pip install jupyter
+
+      - name: Install dependencies
+        run: |
+          opam install . -y --deps-only --with-test
+          opam install 'merlin>3.0.0' -y
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.opam
+            ~/.local
+          key: ${{ runner.os }}-opam-${{ matrix.ocaml-compiler }}-${{ hashFiles('*.opam') }}
+          restore-keys: ${{ runner.os }}-opam-${{ matrix.ocaml-compiler }}-
+
+      - name: Lint for opam files
+        run: opam lint *.opam
+      - name: Lint for source files
+        run: ./git/pre-commit
+      - name: Build
+        run: opam exec -- dune build
+      - name: Unit tests
+        run: opam exec -- dune runtest
+
+      # =====
+      # Integration tests
+      # =====
+
+      - name: Install ocaml-jupyter kernel
+        run: opam pin add jupyter . -y
+      - name: Install jupyter-archimedes
+        run: opam pin add jupyter-archimedes . -y
+      - name: Install kernelspec
+        run: |
+          ./config/ocaml-jupyter-opam-genspec
+          jupyter kernelspec install --user --name ocaml-jupyter "$(opam config var share)/jupyter"
+          echo '#use "topfind";;' >> ~/.ocamlinit
+
+      - name: Build integration tests
+        run: opam exec -- dune build test/integration/runtest.exe
+      - name: An integration test for jupyter-notebook
+        run: opam exec -- ./_build/default/test/integration/runtest.exe test/integration/suite/jupyter-notebook.ml
+      - name: An integration test for ppx
+        run: opam exec -- ./_build/default/test/integration/runtest.exe test/integration/suite/ppx.ml
+      - name: An integration test for jupyter-archimedes
+        run: opam exec -- ./_build/default/test/integration/runtest.exe test/integration/suite/jupyter-archimedes.ml
