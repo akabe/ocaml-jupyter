@@ -1,6 +1,6 @@
 # OCaml Jupyter
 
-[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
+[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![CI](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml/badge.svg)](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml)
 
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
