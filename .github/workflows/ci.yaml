@@ -1,4 +1,4 @@
-name: OCaml
+name: CI
 
 on:
   push:
@@ -11,7 +11,8 @@ on:
       - master
 
 jobs:
-  build:
+  tests:
+    name: Unit Tests
     runs-on: ubuntu-latest
     env:
       OCAML_JUPYTER_LOG: debug
@@ -30,28 +31,12 @@ jobs:
         uses: ocaml/setup-ocaml@master
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
-
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-          architecture: 'x64'
-      - name: Install Jupyter
-        run: pip install jupyter
+          cache-prefix: opam-${{ matrix.ocaml-compiler }}-
 
       - name: Install dependencies
         run: |
           opam install . -y --deps-only --with-test
           opam install 'merlin>3.0.0' -y
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.opam
-            ~/.local
-          key: ${{ runner.os }}-opam-${{ matrix.ocaml-compiler }}-${{ hashFiles('*.opam') }}
-          restore-keys: ${{ runner.os }}-opam-${{ matrix.ocaml-compiler }}-
 
       - name: Lint for opam files
         run: opam lint *.opam
@@ -62,14 +47,25 @@ jobs:
       - name: Unit tests
         run: opam exec -- dune runtest
 
-      # =====
-      # Integration tests
-      # =====
+      ##
+      ## Integration tests
+      ##
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+
+      - name: Install Jupyter
+        run: pip install jupyter
 
       - name: Install ocaml-jupyter kernel
         run: opam pin add jupyter . -y
+
       - name: Install jupyter-archimedes
         run: opam pin add jupyter-archimedes . -y
+
       - name: Install kernelspec
         run: |
           ./config/ocaml-jupyter-opam-genspec
