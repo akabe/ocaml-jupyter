@@ -2,10 +2,6 @@
 
 eval $(opam env)
 
-if ! which ocp-indent 2>&1 >/dev/null; then
-    opam install -y 'ocp-indent>=1.7.0'
-fi
-
 exit_code=0
 
 for fname in $(find jupyter jupyter-archimedes test -name '*.ml' -or -name '*.mli'); do

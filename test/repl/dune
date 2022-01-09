@@ -5,7 +5,7 @@
  (preprocess (pps lwt_ppx ppx_deriving.show ppx_deriving_yojson))
  (libraries  jupyter
              jupyter_repl
-             oUnit
+             ounit2
              ppx_deriving.runtime)
  (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp)
               (:include %{workspace_root}/config/ocaml_test_flags.sexp))))
