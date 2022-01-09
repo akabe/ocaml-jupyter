@@ -8,7 +8,7 @@ on:
       - 'hotfix/*'
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
