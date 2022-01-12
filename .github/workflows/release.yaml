@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build Artifacts
+    runs-on: ubuntu-latest
+    env:
+      OCAML_VERSION: 4.13.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get the version
+        id: version
+        run: |
+          echo "VERSION=$(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')" >> $GITHUB_ENV
+
+      - name: Setup OCaml
+        uses: ocaml/setup-ocaml@master
+        with:
+          ocaml-compiler: ${{ env.OCAML_VERSION }}
+          cache-prefix: opam-${{ env.OCAML_VERSION }}
+
+      - name: Install Dependencies
+        run: opam install dune-release
+
+      - name: Archive ocaml-jupyter
+        run: |
+          opam exec -- dune-release distrib --skip-build --pkg-version=${{ env.VERSION }} || :
+          ls ./_build/jupyter-${{ env.VERSION }}.tbz
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: upload
+          path: ./_build/jupyter-${{ env.VERSION }}.tbz
+
+  deploy:
+    name: Deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get the version
+        id: version
+        run: |
+          echo "VERSION=$(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')" >> $GITHUB_ENV
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: ${{ env.VERSION }}
+          draft: true
+          prerelease: false
+          body: |
+            ## Breaking changes
+            ## Minor changes
+            ## Micro changes
+
+      - name: Upload Artifacts
+        uses: shogo82148/actions-upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: 'artifacts/upload/*'
