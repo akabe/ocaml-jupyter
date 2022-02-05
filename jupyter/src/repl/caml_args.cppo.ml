@@ -83,7 +83,11 @@ let file_argument name =
         (Array.length Sys.argv - !Arg.current)
     in
     Compenv.readenv ppf Compenv.Before_link;
+#if OCAML_VERSION < (4,14,0)
     if prepare ppf && Toploop.run_script ppf name newargs
+#else
+    if prepare ppf && Toploop.run_script ppf (Toploop.File name) newargs
+#endif
     then exit 0
     else exit 2
   end
@@ -204,6 +208,12 @@ module Options = Main_args.Make_bytetop_options (struct
 #if OCAML_VERSION >= (4,11,0)
     let _dlocations = set Clflags.locations
     let _dno_locations = clear Clflags.locations
+#endif
+
+#if OCAML_VERSION >= (4,14,0)
+let _force_tmc = set Clflags.force_tmc
+let _dshape = set Clflags.dump_shape
+let _eval (_ : string) = ()
 #endif
 end)
 
