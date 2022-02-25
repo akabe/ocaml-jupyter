@@ -1,6 +1,7 @@
 # OCaml Jupyter
 
-[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![CI](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml/badge.svg)](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml)
+[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![CI](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml/badge.svg)](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml) [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4&link=https://github.com/sponsors/srz-zumix
+)](https://github.com/sponsors/akabe)
 
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
