@@ -23,13 +23,13 @@ jobs:
           - 4.11.0
           - 4.12.0
           - 4.13.0
-          - 4.14.0~beta1
+          - ocaml-base-compiler.4.14.0~beta1
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup OCaml
-        uses: ocaml/setup-ocaml@master
+        uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           cache-prefix: opam-${{ matrix.ocaml-compiler }}-
