@@ -88,7 +88,11 @@ let rule_path rule =
                 ; Types.type_manifest = Some ty
                 ; _
                 } -> begin
+#if OCAML_VERSION < (4,14,0)
             match Ctype.expand_head env ty with
+#else
+            match Types.Transient_expr.repr (Ctype.expand_head env ty) with
+#endif
             | { Types.desc = Types.Tconstr (path, _, _); _ } -> path
             | _ -> path
           end
@@ -132,7 +136,11 @@ let is_eval = function
 
 (* Returns the rewrite rule associated to a type, if any. *)
 let rule_of_type typ =
+#if OCAML_VERSION < (4,14,0)
   match (Ctype.expand_head !Toploop.toplevel_env typ).Types.desc with
+#else
+  match (Types.Transient_expr.repr (Ctype.expand_head !Toploop.toplevel_env typ)).Types.desc with
+#endif
   | Types.Tconstr (path, _, _) -> begin
       try
         Some (List.find (fun rule -> rule_matches rule path) rewrite_rules)
@@ -165,8 +173,10 @@ let rewrite phrase =
       let tstr, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
 #elif OCAML_VERSION < (4,12,0)
       let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr Location.none in
-#else
+#elif OCAML_VERSION < (4,14,0)
       let tstr, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr in
+#else
+      let tstr, _, _, _, _ = Typemod.type_structure !Toploop.toplevel_env pstr in
 #endif
       Parsetree.Ptop_def (List.map2 rewrite_str_item pstr tstr.Typedtree.str_items)
     else

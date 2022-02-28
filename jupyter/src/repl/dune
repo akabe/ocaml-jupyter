@@ -35,6 +35,11 @@
  (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))
 
 (rule
+ (targets evaluation.ml)
+ (deps    evaluation.cppo.ml)
+ (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))
+
+(rule
  (targets lwt_async_rewrite.ml)
  (deps    lwt_async_rewrite.cppo.ml)
  (action  (run %{bin:cppo} -V OCAML:%{ocaml_version} %{deps} -o %{targets})))

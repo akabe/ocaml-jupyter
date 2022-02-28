@@ -92,7 +92,7 @@ let epoch_to_iso8601_string epoch =
 
 let create_next ?(time = Unix.gettimeofday ()) ~content_to_yojson parent content =
   let date = Some (epoch_to_iso8601_string time) in
-  let msg_id = Uuidm.(to_string (create `V4)) in
+  let msg_id = Uuidm.(to_string (v `V4)) in
   let msg_type =
     match content_to_yojson content with
     | `List (`String msg_type :: _) -> msg_type

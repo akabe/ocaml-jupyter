@@ -23,6 +23,7 @@ jobs:
           - 4.11.0
           - 4.12.0
           - 4.13.0
+          - ocaml-base-compiler.4.14.0~beta1
 
     steps:
       - uses: actions/checkout@v2
@@ -32,6 +33,9 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           cache-prefix: opam-${{ matrix.ocaml-compiler }}-
+          opam-repositories: |
+            default: https://github.com/ocaml/opam-repository.git
+            beta: https://github.com/ocaml/ocaml-beta-repository.git
 
       - name: Install dependencies
         run: |

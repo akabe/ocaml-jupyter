@@ -60,7 +60,12 @@ let init ?(preinit = ignore) ?init_file () =
   preinit () ;
   begin match init_file with
     | None -> ()
-    | Some path -> ignore (Toploop.use_silently Format.std_formatter path)
+    | Some path ->
+#if OCAML_VERSION < (4,14,0)
+      ignore (Toploop.use_silently Format.std_formatter path)
+#else
+      ignore (Toploop.use_silently Format.std_formatter (Toploop.File path))
+#endif
   end
 
 let setvalue name value = Toploop.setvalue name (Obj.repr value)
