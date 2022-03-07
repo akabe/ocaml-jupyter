@@ -224,6 +224,12 @@ OCaml Jupyter can be run on Google Colab. In order to do this you first have to 
 [this Python notebook](http://colab.research.google.com/github/akabe/ocaml-jupyter/blob/master/notebooks/install_ocaml_colab.ipynb)
 in your Colab instance. This will install the kernel and after that OCaml notebooks can be used on the same instance.
 
+## Sponsors
+
+If you like this project, please support by becoming a sponsor via [GitHub Sponsors](https://github.com/sponsors/akabe).
+
+[<img width=200 src="https://raw.githubusercontent.com/akabe/ocaml-jupyter/gh-pages/images/sponsors/ahrefs.svg"/>](https://ahrefs.com/)
+
 ## Related work
 
 Many Jupyter kernels for functional programming languages are available such as [IHaskell][ihaskell], [Jupyter Scala][jupyter-scala], and [Jupyter Rust][jupyter-rs]. [IOCaml][iocaml] is another practical OCaml kernel that inspires us, but it seems no longer maintained. OCaml Jupyter kernel differs from IOCaml in
