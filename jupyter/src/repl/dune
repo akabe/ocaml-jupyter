@@ -8,6 +8,7 @@
               Lwt_async_rewrite
               Caml_args
               Error
+              Dir_trace
               Compat)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
  (preprocess  (pps lwt_ppx))

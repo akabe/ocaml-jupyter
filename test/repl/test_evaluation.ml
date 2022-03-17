@@ -67,6 +67,19 @@ let test__directive ctxt =
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
+(* Implementation of [#trace] directive changes after OCaml 4.13.0. *)
+let test__trace_directive ctxt =
+  let status, actual = eval "let f x = x ;; #trace f ;; f 10 ;;" in
+  let expected = [
+    iopub_success ~count:0 "val f : 'a -> 'a = <fun>\n";
+    iopub_success ~count:0 "f is now traced.\n";
+    iopub_success ~count:0 "f <-- <poly>\n\
+                            f --> <poly>\n\
+                            - : int = 10\n";
+  ] in
+  assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
+  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+
 let test__external_command ctxt =
   let status, actual = eval "Sys.command \"ls -l >/dev/null 2>/dev/null\"" in
   let expected = [iopub_success ~count:0 "- : int = 0\n"] in
@@ -231,6 +244,7 @@ let suite =
       "simple_phrase" >:: test__simple_phrase;
       "multiple_phrases" >:: test__multiple_phrases;
       "directive" >:: test__directive;
+      "#trace directive" >:: test__trace_directive;
       "external_command" >:: test__external_command;
       "syntax_error" >:: test__syntax_error;
       "unbound_value" >:: test__unbound_value;

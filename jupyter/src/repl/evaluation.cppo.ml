@@ -26,7 +26,7 @@ open Format
 open Jupyter
 
 let buffer = Buffer.create 256
-let ppf = formatter_of_buffer buffer
+let buffer_ppf = formatter_of_buffer buffer
 
 (** {2 Initialization} *)
 
@@ -45,7 +45,7 @@ let init_toploop () =
   try
     Toploop.initialize_toplevel_env ()
   with Env.Error _ | Typetexp.Error _ as exn ->
-    Location.report_exception ppf exn ;
+    Location.report_exception buffer_ppf exn ;
     exit 2
 
 let init ?(preinit = ignore) ?init_file () =
@@ -57,6 +57,7 @@ let init ?(preinit = ignore) ?init_file () =
   Compenv.readenv ppf Compenv.Before_link ;
   if not (Caml_args.prepare ppf) then exit 2 ;
   init_toploop () ;
+  Dir_trace.add_directives buffer_ppf ;
   preinit () ;
   begin match init_file with
     | None -> ()
@@ -88,7 +89,7 @@ let eval_phrase ~filename phrase =
   let phrase' = Compat.preprocess_phrase ~filename phrase in (* apply PPX *)
   let phrase' = Lwt_async_rewrite.rewrite phrase' in
   Env.reset_cache_toplevel () ;
-  let is_ok = Toploop.execute_phrase true ppf phrase' in
+  let is_ok = Toploop.execute_phrase true buffer_ppf phrase' in
   let message = Buffer.contents buffer in
   Buffer.clear buffer ;
   (is_ok, message)
