@@ -154,6 +154,11 @@ $ docker run -it -p 8888:8888 akabe/ocaml-jupyter-datascience
 
 [ocaml-jupyter-datascience]: https://github.com/akabe/docker-ocaml-jupyter-datascience
 
+## Sponsors
+
+If you like this project, please support by becoming a sponsor via [GitHub Sponsors](https://github.com/sponsors/akabe).
+
+[<img width=200 src="https://raw.githubusercontent.com/akabe/ocaml-jupyter/gh-pages/images/sponsors/ahrefs.svg"/>](https://ahrefs.com/)
 
 ## Related work
 
