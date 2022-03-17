@@ -74,3 +74,15 @@ let reset_fatal_warnings () =
 #else
   ()
 #endif
+
+#if OCAML_VERSION < (4,14,0)
+let types_get_desc t = t.Types.desc
+#else
+let types_get_desc = Types.get_desc
+#endif
+
+#if OCAML_VERSION < (4,13,0)
+let section_trace = "Tracing"
+#else
+let section_trace = Topdirs.section_trace
+#endif
