@@ -29,7 +29,7 @@
     See {{:http://jupyter-notebook.readthedocs.io/en/latest/comms.html}
     Comms (Jupyter Notebook Docs)} for details.
 
-    {9 Opening a comm from the REPL}
+    {2 Opening a comm from the REPL}
 
     {b OCaml}:
 
@@ -49,7 +49,7 @@
         })
     ]}
 
-    {9 Opening a comm from the frontend}
+    {2 Opening a comm from the frontend}
 
     {b OCaml}:
 
