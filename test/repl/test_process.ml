@@ -36,9 +36,9 @@ type reply =
 let pp_reply ppf reply =
   begin
     match reply with
-    | Shell shell -> [%to_yojson: Jupyter.Shell.reply] shell
-    | Iopub iopub -> [%to_yojson: Jupyter.Iopub.reply] iopub
-    | Stdin stdin -> [%to_yojson: Jupyter.Stdin.reply] stdin
+    | Shell shell -> [%yojson_of: Jupyter.Shell.reply] shell
+    | Iopub iopub -> [%yojson_of: Jupyter.Iopub.reply] iopub
+    | Stdin stdin -> [%yojson_of: Jupyter.Stdin.reply] stdin
   end
   |> Yojson.Safe.to_string
   |> pp_print_string ppf

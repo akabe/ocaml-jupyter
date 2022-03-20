@@ -76,8 +76,7 @@ struct
       let header = header_of_string header in
       let content = Yojson.Safe.from_string content
                     |> compose_content ~msg_type:header.msg_type
-                    |> [%of_yojson: Content.request]
-                    |> Jupyter.Json.or_die in
+                    |> [%of_yojson: Content.request] in
       {
         zmq_ids = ids;
         header;
@@ -99,7 +98,7 @@ struct
     let header = string_of_header resp.header in
     let parent_header = string_of_header_option resp.parent_header in
     let content =
-      match [%to_yojson: Content.reply] resp.content with
+      match [%yojson_of: Content.reply] resp.content with
       | `List (_ :: content :: _) -> Yojson.Safe.to_string content
       | _ -> "{}" in
     let hmac =
@@ -128,7 +127,7 @@ struct
 
   let reply ?time ~parent ch content =
     Jupyter.Message.create_next
-      ~content_to_yojson:[%to_yojson: Content.reply]
+      ~content_to_yojson:[%yojson_of: Content.reply]
       ?time parent content
     |> send ch
 

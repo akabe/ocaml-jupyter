@@ -53,7 +53,7 @@ let test_recv ctxt =
   let channel = Channel.create ~key ~ctx ~kind:Zmq.Socket.rep "" in
   let actual = Lwt_main.run @@ Channel.recv channel in
   assert_equal ~ctxt ~printer:(fun msg ->
-      [%to_yojson: Jupyter.Shell.request Jupyter.Message.t] msg
+      [%yojson_of: Jupyter.Shell.request Jupyter.Message.t] msg
       |> Yojson.Safe.to_string)
     message actual
 

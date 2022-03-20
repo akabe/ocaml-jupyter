@@ -29,7 +29,7 @@ type cell =
     execution_count : int;
     source : string list;
     outputs : string list;
-    metadata : Yojson.Safe.t;
+    metadata : Json.t;
   }
 [@@deriving yojson]
 
@@ -90,7 +90,7 @@ let runtest ml_fname =
   let ipynb_fname = ml_fname ^ ".ipynb" in
   read_lines ml_fname
   |> ipynb_of_code
-  |> [%to_yojson: ipynb]
+  |> [%yojson_of: ipynb]
   |> Yojson.Safe.to_file ipynb_fname ;
   let cmd = sprintf "jupyter nbconvert --to notebook --execute %S" ipynb_fname in
   printf "%s>> %s%s@." AnsiCode.FG.cyan cmd AnsiCode.reset ;

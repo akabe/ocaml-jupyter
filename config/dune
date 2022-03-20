@@ -14,10 +14,8 @@
  (targets ocaml_flags.sexp)
  (deps    configure.exe)
  (action  (run %{deps} -o %{targets}
-               -ppx ppx_deriving_yojson
-               -ppx lwt_ppx
                -ocamlfind %{bin:ocamlfind}
-               -ocaml-flag "-w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58"
+               -ocaml-flag "-w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58-66"
                -ocaml-flag "-safe-string -strict-sequence -strict-formats"
                -ocaml-flag "-short-paths")))
 

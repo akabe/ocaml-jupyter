@@ -22,8 +22,12 @@
 
 (** JSON utility *)
 
-val or_none : ('a, string) Result.result -> 'a option
-
-val or_die : ('a, string) Result.result -> 'a
-
 type 'a enum = 'a [@@deriving yojson]
+
+type t = Yojson.Safe.t
+
+val yojson_of_t : t -> Yojson.Safe.t
+
+val t_of_yojson : Yojson.Safe.t -> t
+
+type 'a option_try = 'a option [@@deriving of_yojson]

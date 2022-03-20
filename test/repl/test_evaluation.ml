@@ -27,12 +27,12 @@ open Jupyter.Shell
 open Jupyter_repl.Evaluation
 
 let pp_status ppf status =
-  [%to_yojson: Jupyter.Shell.status] status
+  [%yojson_of: Jupyter.Shell.status] status
   |> Yojson.Safe.to_string
   |> pp_print_string ppf
 
 let pp_reply ppf reply =
-  [%to_yojson: Jupyter.Iopub.reply] reply
+  [%yojson_of: Jupyter.Iopub.reply] reply
   |> Yojson.Safe.to_string
   |> pp_print_string ppf
 

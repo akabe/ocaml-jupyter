@@ -6,7 +6,7 @@
  (modules     Jupyter_notebook
               Unsafe)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
- (preprocess  (pps ppx_deriving_yojson))
+ (preprocess  (pps ppx_yojson_conv))
  (libraries   jupyter
               uuidm
               base64

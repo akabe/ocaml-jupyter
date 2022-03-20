@@ -22,18 +22,22 @@
 
 (** JSON utility *)
 
-let or_none = function
-  | Result.Error _ -> None
-  | Result.Ok x -> Some x
-
-let or_die = function
-  | Result.Error msg -> Yojson.json_error msg
-  | Result.Ok x -> x
-
 type 'a enum = 'a
 
 let enum_of_yojson of_yojson json = of_yojson (`List [json])
 
-let enum_to_yojson to_yojson x = match to_yojson x with
+let yojson_of_enum yojson_of x = match yojson_of x with
   | `List [json] -> json
-  | _ -> assert false
+  | _ -> assert false (* TODO: replace with a suitable exception *)
+
+type t = Yojson.Safe.t
+
+let yojson_of_t x = x
+
+let t_of_yojson x = x
+
+type 'a option_try = 'a option
+
+let option_try_of_yojson of_yojson x =
+  try Some (of_yojson x)
+  with _ -> None

@@ -5,10 +5,10 @@
               Merlin
               Intf)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
- (preprocess  (pps lwt_ppx ppx_deriving_yojson))
+ (preprocess  (pps lwt_ppx ppx_yojson_conv))
  (libraries   jupyter
               jupyter_log
               lwt
               lwt.unix
               yojson
-              ppx_deriving_yojson.runtime))
+              ppx_yojson_conv_lib))

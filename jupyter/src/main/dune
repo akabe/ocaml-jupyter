@@ -3,11 +3,10 @@
  (modes       byte)
  (package     jupyter)
  (public_name ocaml-jupyter-kernel)
- (preprocess  (pps lwt_ppx ppx_deriving_yojson))
+ (preprocess  (pps lwt_ppx ppx_yojson_conv))
  (libraries   jupyter
               jupyter_log
               jupyter_repl
               jupyter_completor
-              jupyter_kernel
-              ppx_deriving.runtime)
+              jupyter_kernel)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp))))

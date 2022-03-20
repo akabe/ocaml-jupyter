@@ -45,7 +45,7 @@ sig
       cmpl_type : string;
       cmpl_doc  : string;
     }
-  [@@deriving yojson { strict = false }]
+  [@@deriving yojson]
 
   type reply =
     {
@@ -53,7 +53,7 @@ sig
       cmpl_start : int;
       cmpl_end : int;
     }
-  [@@deriving yojson { strict = false }]
+  [@@deriving yojson]
 
   type t
 
