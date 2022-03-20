@@ -1,14 +1,15 @@
 # OCaml Jupyter
 
-[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![Travis Build Status][travis-img]][travis]
+[![Jupyter protocol][protocol-img]][protocol] [![License][license-img]][license] [![CI](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml/badge.svg)](https://github.com/akabe/ocaml-jupyter/actions/workflows/ci.yaml) [![Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4&link=https://github.com/sponsors/srz-zumix
+)](https://github.com/sponsors/akabe)
 
 [license]:      https://github.com/akabe/ocaml-jupyter/blob/master/LICENSE
 [license-img]:  https://img.shields.io/badge/license-MIT-blue.svg
-[protocol]:     http://jupyter-client.readthedocs.io/en/stable/messaging.html
+[protocol]:     https://jupyter-client.readthedocs.io/en/stable/messaging.html
 [protocol-img]: https://img.shields.io/badge/Jupyter%20protocol-5.2-blue.svg
 [travis]:       https://travis-ci.org/akabe/ocaml-jupyter
 [travis-img]:   https://img.shields.io/travis/akabe/ocaml-jupyter/master.svg?label=travis
-[jupyter]:      http://jupyter.org/
+[jupyter]:      https://jupyter.org/
 [opam]:         https://opam.ocaml.org/
 
 An OCaml kernel for [Jupyter notebook][jupyter].
@@ -19,19 +20,48 @@ This provides an OCaml REPL with a great user interface such as markdown/HTML do
 
 ## Getting started
 
+Requirements:
+
+- zlib
+  - Debian / Ubuntu: `apt install zlib1g-dev`
+  - RHEL / CentOS: `yum install -y zlib-devel`
+  - MacOS: `brew install zlib`
+- libffi
+  - Debian / Ubuntu: `apt install libffi-dev`
+  - RHEL / CentOS: `yum install -y libffi-dev`
+  - MacOS: `brew install libffi`
+- libgmp
+  - Debian / Ubuntu: `apt install libgmp-dev`
+  - RHEL / CentOS: `yum install gmp-devel`
+  - MacOS: `brew install gmp`
+- libzmq 5+
+  - Debian / Ubuntu: `apt install libzmq5-dev`
+  - RHEL / CentOS: `yum install zeromq-devel` (epel-release required)
+  - MacOS: `brew install zeromq`
+
 OCaml Jupyter can be installed by [OPAM][opam] as follows:
 
 ``` console
 $ pip install jupyter
 $ opam install jupyter
 $ opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
-$ jupyter kernelspec install --name ocaml-jupyter "$(opam var share)/jupyter"
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install [ --user ] --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
 
-which will add the kernel to Jupyter. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
+which will add the kernel to Jupyter. If the last command fails due to permission, `--user` option or `sudo` is required. You can use `ocaml-jupyter` kernel by launching Jupyter notebook server:
 
 ```console
 $ jupyter notebook
+```
+
+If you get an error related to `archimedes.cairo` during installation of `jupyter-archimedes`,
+manually install `cairo2` before `archimedes`:
+
+```console
+$ opam install "cairo2<0.6"
+$ opam reinstall archimedes
+$ opam install jupyter-archimedes
 ```
 
 ### Development version
@@ -52,11 +82,11 @@ $ opam pin add jupyter https://github.com/akabe/ocaml-jupyter.git
 In addition, many examples (e.g, image processing, voice analysis, etc.) are available at
 [docker-ocaml-jupyter-datascience/notebooks](https://github.com/akabe/docker-ocaml-jupyter-datascience/tree/master/notebooks).
 
-These examples are publish in **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
+These examples are placed in the **public domain**, e.g., you can edit, copy, and re-distribute with no copyright messages.
 
 ### NBConvert
 
-OCaml notebooks can be converted to HTML, markdown, LaTeX, `.ml` files, etc. by `jupyter nbconvert` command.
+OCaml notebooks can be converted to HTML, Markdown, LaTeX, `.ml` files, etc. using the `jupyter nbconvert` command.
 For example, a `.ipynb` file is converted into a `.html` file as follows:
 
 ```console
@@ -65,7 +95,7 @@ $ jupyter nbconvert --to html notebooks/introduction.ipynb
 [NbConvertApp] Writing 463004 bytes to notebooks/introduction.html
 ```
 
-For exporting `.ml` files, we recommend [Jupyter-NBConvert-OCaml][Jupyter-NBConvert-OCaml]. It outputs `.ml` files with markdown cells as comments. After installation of Jupyter-NBConvert-OCaml, you can use `--to ocaml` option to export a `.ml` file:
+For exporting `.ml` files, we recommend [Jupyter-NBConvert-OCaml][Jupyter-NBConvert-OCaml]. It outputs `.ml` files with Markdown cells as comments. After installation of Jupyter-NBConvert-OCaml, you can use `--to ocaml` option to export a `.ml` file:
 
 ```console
 $ jupyter nbconvert --to ocaml notebooks/introduction.ipynb
@@ -96,7 +126,7 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter][jupyter-core] is a core library of OCaml Jupyter. This package is internally used. You don't need it directly.
 - [jupyter.notebook][jupyter-notebook] is a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
 - [jupyter.comm][jupyter-comm] is a library for communication between OCaml notebooks and Jupyter/Web frontend.
-- [jupyter-archimedes][jupyter-archimedes] is Jupyter backend of [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides empty interface.
+- [jupyter-archimedes][jupyter-archimedes] is a Jupyter backend for [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides an empty interface.
 
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
 [jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_notebook/
@@ -104,23 +134,45 @@ OCaml Jupyter includes some sub-packages:
 [jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
 [archimedes]:         http://archimedes.forge.ocamlcore.org/
 
+### Registration of multiple kernels
+
+You can add kernels of different versions of OCaml as different names like:
+
+```console
+$ opam switch create 4.06.0
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-4.06.0 "$(opam var share)/jupyter"
+$ opam switch create 4.07.1
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-4.07.1 "$(opam var share)/jupyter"
+```
+
+`OCaml 4.06.0` and `OCaml 4.07.1` are displayed on Jupyter.
+If you want to prepare kernels for each `opam-switch` environment,
+the following commands are useful:
+
+```console
+$ ocaml-jupyter-opam-genspec
+$ jupyter kernelspec install --name ocaml-jupyter-$(opam var switch) "$(opam var share)/jupyter"
+```
+
 ### Customize kernel parameters
 
-A kernelspec JSON is saved at the following path:
+`ocaml-jupyter-opam-genspec` generates a configuration file like:
 
 ```console
 $ cat "$(opam var share)/jupyter/kernel.json"
 {
-  "display_name": "OCaml 4.04.2",
+  "display_name": "OCaml 4.08.1",
   "language": "OCaml",
   "argv": [
-    "/home/USERNAME/.opam/4.04.2/bin/ocaml-jupyter-kernel",
-    "--init",
-    "/home/USERNAME/.ocamlinit",
-    "--verbosity",
-    "info",
-    "--connection-file",
-    "{connection_file}"
+    "/bin/sh",
+    "-c",
+    "eval $(opam env --switch=4.08.1) && /home/xxxx/.opam/4.08.1/bin/ocaml-jupyter-kernel \"$@\"",
+    "-init", "/home/xxxx/.ocamlinit",
+    "--merlin", "/home/xxxx/.opam/4.08.1/bin/ocamlmerlin",
+    "--verbosity", "app",
+    "--connection-file", "{connection_file}"
   ]
 }
 ```
@@ -130,6 +182,10 @@ See `ocaml-jupyter-kernel --help` for details of command-line parameters in `arg
 ```console
 $ jupyter kernelspec install --name ocaml-jupyter "$(opam var share)/jupyter"
 ```
+
+### Installation without OPAM
+
+`ocaml-jupyter-opam-genspec` depends on OPAM. If you use an other package manager, you need to write `kernel.json` by hand or use provided suitable way for registering a new kernel (e.g., [jupyter module](https://nixos.org/nixos/options.html#jupyter.kernels) on  [Nix](https://nixos.org/nix/)).
 
 ## Docker image
 
@@ -154,6 +210,20 @@ $ docker run -it -p 8888:8888 akabe/ocaml-jupyter-datascience
 
 [ocaml-jupyter-datascience]: https://github.com/akabe/docker-ocaml-jupyter-datascience
 
+## Running OCaml Jupyter on Binder
+
+OCaml Jupyter can be run on [Binder](https://www.mybinder.org).  Click
+the button to get started:
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/edmcman/ocaml-jupyter-binder-environment/master?urlpath=git-pull%3Frepo%3Dhttps%253A%252F%252Fgithub.com%252Fakabe%252Fdocker-ocaml-jupyter-datascience%26urlpath%3Dtree%252Fdocker-ocaml-jupyter-datascience%252Fnotebooks%252Fintroduction.ipynb%26branch%3Dmaster)
+
+For more information, see this [repository](https://github.com/edmcman/ocaml-jupyter-binder-environment).
+
+## Running OCaml Jupyter on Google Colab
+
+OCaml Jupyter can be run on Google Colab. In order to do this you first have to run
+[this Python notebook](http://colab.research.google.com/github/akabe/ocaml-jupyter/blob/master/notebooks/install_ocaml_colab.ipynb)
+in your Colab instance. This will install the kernel and after that OCaml notebooks can be used on the same instance.
+
 ## Sponsors
 
 If you like this project, please support by becoming a sponsor via [GitHub Sponsors](https://github.com/sponsors/akabe).
@@ -174,8 +244,6 @@ Many Jupyter kernels for functional programming languages are available such as 
 | User-defined messages  | Yes           | No            |
 | Stdin                  | Yes           | No            |
 
-In addition, the installer of OCaml Jupyter automatically adds the kernel to Jupyter.
-
 Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in practice.
 [jupyter-kernel][jupyter-kernel] is a library to write OCaml kernels (*not a kernel*), but OCaml Jupyter kernel does not use this library.
 
@@ -188,7 +256,7 @@ Another OCaml kernel [simple_jucaml][simple_jucaml] seems too simple to use in p
 
 ## Contact
 
-Open [Issue](https://github.com/akabe/ocaml-jupyter/issues) for any questions, bug reports, requests of new features. Your comments may help other users. Issues are a better way than direct contact (e.g., E-mails) to maintainers.
+Open an [issue](https://github.com/akabe/ocaml-jupyter/issues) for any question, bug report, feature request. Your comments may help other users. Discussion in issues is better than contacting maintainers directly (e.g. by email).
 
 ## Contribution
 
@@ -201,8 +269,8 @@ We welcome your patch!
 1. `git push` the commits into your (forked) repository.
 1. Pull request to `master` of this repository from the branch you pushed.
 
-Environment variable `OCAML_JUPYTER_LOG` controls a log level of OCaml Jupyter kernel.
-The following setting verbosely outputs log messages. They might help your debug.
+The environment variable `OCAML_JUPYTER_LOG` controls the log level of OCaml Jupyter kernel.
+The following setting verbosely outputs log messages. They might help you debug.
 
 ```console
 $ export OCAML_JUPYTER_LOG='debug'
