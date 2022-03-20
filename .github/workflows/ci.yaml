@@ -1,11 +1,6 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - 'feature/*'
-      - 'bugfix/*'
-      - 'hotfix/*'
   pull_request:
     branches:
       - master
