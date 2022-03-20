@@ -1,0 +1,52 @@
+name: gh-pages
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone master
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 4.13.0
+
+      - name: Install dependencies
+        run: |
+          opam install . --deps-only --with-test
+          opam install odoc
+
+      - name: Build doc
+        run: opam exec -- dune build @doc
+
+      - name: Clone gh-pages
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ./gh-pages
+          fetch-depth: 0
+
+      - name: Update api doc
+        run: |
+          rm -rf ./gh-pages/api
+          cp -r _build/default/_doc/_html ./gh-pages/api
+          cp README.md ./gh-pages/README.md
+
+      - name: git config
+        run: |
+          git config --global user.email "aabe.65535@gmail.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Publish
+        run: |
+          git -C ./gh-pages add .
+          git -C ./gh-pages commit -m "Update doc"
+          git -C ./gh-pages push origin gh-pages
