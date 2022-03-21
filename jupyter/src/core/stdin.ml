@@ -28,12 +28,14 @@ type input_request =
   {
     stdin_prompt : string [@key "prompt"];
     stdin_password : bool [@key "password"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type input_reply =
   {
     stdin_value : string [@key "value"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Request} *)
 

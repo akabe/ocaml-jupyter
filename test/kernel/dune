@@ -1,11 +1,10 @@
 (executables
  (names      test_kernel)
  (modes      byte)
- (preprocess (pps lwt_ppx ppx_deriving.show ppx_deriving_yojson))
+ (preprocess (pps lwt_ppx ppx_deriving.show ppx_yojson_conv))
  (libraries  jupyter
              jupyter_kernel
-             ounit2
-             ppx_deriving.runtime)
+             ounit2)
  (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp)
               (:include %{workspace_root}/config/ocaml_test_flags.sexp))))
 

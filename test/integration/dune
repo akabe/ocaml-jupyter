@@ -3,9 +3,11 @@
 
 (executables
  (names      runtest)
- (preprocess (pps ppx_deriving_yojson))
+ (preprocess (pps ppx_yojson_conv ppx_yojson_conv))
+ (flags      (:standard
+              -w A-4-31-33-34-39-41-42-43-44-45-48-49-50-58
+              -safe-string -strict-sequence -strict-formats
+              -short-paths))
  (libraries  jupyter
              unix
-             ppx_deriving.runtime)
- (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp)
-              (:include %{workspace_root}/config/ocaml_test_flags.sexp))))
+             ppx_yojson_conv_lib))

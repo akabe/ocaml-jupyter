@@ -28,7 +28,7 @@ open Jupyter_completor
 (** {2 Merlin.occurrences} *)
 
 let pp_ident_reply ppf reply =
-  [%to_yojson: Merlin.ident_reply] reply
+  [%yojson_of: Merlin.ident_reply] reply
   |> Yojson.Safe.to_string
   |> pp_print_string ppf
 
@@ -81,7 +81,7 @@ let test_abs_position ctxt =
 (** {2 Merlin.complete} *)
 
 let pp_reply ppf reply =
-  [%to_yojson: Merlin.reply] reply
+  [%yojson_of: Merlin.reply] reply
   |> Yojson.Safe.to_string
   |> fprintf ppf "%s"
 

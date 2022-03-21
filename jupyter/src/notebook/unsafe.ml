@@ -52,5 +52,5 @@ let send_iopub ?ctx content =
   in
   let message =
     Jupyter.Message.create_next parent content
-      ~content_to_yojson:[%to_yojson: Jupyter.Iopub.reply] in
+      ~content_to_yojson:[%yojson_of: Jupyter.Iopub.reply] in
   send (Jupyter.Message.IOPUB_REP message)

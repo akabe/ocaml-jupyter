@@ -73,9 +73,9 @@ let call merlin command flags printer =
 
 type 'a merlin_reply =
   | RETURN of 'a [@name "return"]
-  | FAILURE of Yojson.Safe.t [@name "failure"]
-  | ERROR of Yojson.Safe.t [@name "error"]
-  | EXN of Yojson.Safe.t [@name "exception"]
+  | FAILURE of Jupyter.Json.t [@name "failure"]
+  | ERROR of Jupyter.Json.t [@name "error"]
+  | EXN of Jupyter.Json.t [@name "exception"]
 [@@deriving of_yojson]
 
 type 'a merlin_reply_body =
@@ -84,18 +84,17 @@ type 'a merlin_reply_body =
     value : 'a;
     notifications : string list;
   }
-[@@deriving of_yojson { strict = false }]
+[@@deriving of_yojson]
+[@@yojson.allow_extra_fields]
 
 let parse_merlin_reply ~of_yojson str =
   let error_json msg json =
     error (fun pp -> pp "%s: %s" msg (Yojson.Safe.pretty_to_string json))
   in
   let reply = Yojson.Safe.from_string str
-              |> [%of_yojson: Yojson.Safe.t merlin_reply_body]
-              |> Jupyter.Json.or_die in
+              |> [%of_yojson: Jupyter.Json.t merlin_reply_body] in
   `List [`String reply.klass; reply.value]
   |> merlin_reply_of_yojson of_yojson
-  |> Jupyter.Json.or_die
   |> function
   | RETURN ret -> Some ret
   | FAILURE j -> error_json "Merlin failure" j ; None
@@ -109,14 +108,16 @@ type ident_position =
     id_line : int [@key "line"];
     id_col : int [@key "col"];
   }
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type ident_reply =
   {
     id_start : ident_position [@key "start"];
     id_end : ident_position [@key "end"];
   }
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let occurrences ~pos merlin code =
   let args = ["-identifier-at"; string_of_int pos] in
@@ -164,7 +165,8 @@ type candidate =
     cmpl_type : string [@key "desc"];
     cmpl_doc  : string [@key "info"];
   }
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type reply =
   {
@@ -172,7 +174,8 @@ type reply =
     cmpl_start : int [@key "start"] [@default 0];
     cmpl_end : int [@key "end"] [@default 0];
   }
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let empty = { cmpl_candidates = []; cmpl_start = 0; cmpl_end = 0; }
 

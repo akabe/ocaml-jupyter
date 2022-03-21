@@ -27,27 +27,30 @@
 type stream_name =
   | IOPUB_STDOUT [@name "stdout"]
   | IOPUB_STDERR [@name "stderr"]
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
 
 type stream =
   {
     stream_name : stream_name Json.enum [@key "name"];
     stream_text : string [@key "text"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Display data} *)
 
 type transient =
   {
     display_id : string [@key "display_id"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type display_data =
   {
-    display_data : Yojson.Safe.t [@key "data"];
-    display_metadata : Yojson.Safe.t [@key "metadata"];
+    display_data : Json.t [@key "data"];
+    display_metadata : Json.t [@key "metadata"];
     display_transient : transient option [@key "transient"] [@default None];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Code inputs} *)
 
@@ -55,16 +58,18 @@ type exec_input =
   {
     exin_code : string [@key "code"];
     exin_count : int [@key "execution_count"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Execution results} *)
 
 type exec_result =
   {
     exres_count : int [@key "execution_count"];
-    exres_data : Yojson.Safe.t [@key "data"];
-    exres_metadata : Yojson.Safe.t [@key "metadata"];
-  } [@@deriving yojson { strict = false }]
+    exres_data : Json.t [@key "data"];
+    exres_metadata : Json.t [@key "metadata"];
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Kernel status} *)
 
@@ -77,7 +82,8 @@ type exec_status =
 type status =
   {
     kernel_state : exec_status Json.enum [@key "execution_state"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Execution errors} *)
 
@@ -86,14 +92,16 @@ type error =
     ename : string [@key "ename"];
     evalue : string [@key "evalue"];
     traceback : string list [@key "traceback"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Clear output} *)
 
 type clear_output =
   {
     clear_wait : bool [@key "wait"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 IOPUB Request} *)
 

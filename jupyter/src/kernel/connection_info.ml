@@ -38,7 +38,8 @@ type t =
     key : string option [@default None];
     signature_scheme : string;
     transport : string;
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let from_file fname =
   if not (Sys.file_exists fname)
@@ -46,9 +47,8 @@ let from_file fname =
   let json = Yojson.Safe.from_file ~fname fname in
   info (fun pp -> pp "Load connection info: %s" (Yojson.Safe.to_string json)) ;
   match [%of_yojson: t] json with
-  | Result.Error msg -> Yojson.json_error msg
-  | Result.Ok info when info.key = Some "" -> { info with key = None }
-  | Result.Ok info -> info
+  | info when info.key = Some "" -> { info with key = None }
+  | info -> info
 
 (** [make_address info port] returns an address for ZeroMQ communication. *)
 let make_address info port =

@@ -71,7 +71,7 @@ opam pin add jupyter https://github.com/akabe/ocaml-jupyter.git
 - [Introduction](https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/introduction.ipynb):
   a very simple example for use of OCaml Jupyter and sub-packages.
 - [Get a description of a word from DuckDuckGo API](https://github.com/akabe/ocaml-jupyter/blob/master/notebooks/word_description_from_DuckDuckGoAPI.ipynb):
-  request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_deriving_yojson`.
+  request to DuckDuckGo API server by `cohttp.lwt`, and parse a response JSON by `yojson` and `ppx_yojson_conv`.
 
 In addition, many examples (e.g, image processing, voice analysis, etc.) are available at
 [docker-ocaml-jupyter-datascience/notebooks](https://github.com/akabe/docker-ocaml-jupyter-datascience/tree/master/notebooks).

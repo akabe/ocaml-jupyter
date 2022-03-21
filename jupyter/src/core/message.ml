@@ -33,20 +33,19 @@ type header =
                                               the message is created *)
     username : string; (** the current username *)
     version : string; (** the message protocol version *)
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let header_of_string str =
   Yojson.Safe.from_string str
   |> [%of_yojson: header]
-  |> Json.or_die
 
-let header_option_of_string s =
-  Yojson.Safe.from_string s
-  |> [%of_yojson: header]
-  |> Json.or_none
+let header_option_of_string str =
+  Yojson.Safe.from_string str
+  |> [%of_yojson: header Json.option_try]
 
 let string_of_header hdr =
-  [%to_yojson: header] hdr
+  [%yojson_of: header] hdr
   |> Yojson.Safe.to_string
 
 let string_of_header_option = function
@@ -81,7 +80,8 @@ type 'content t =
     buffers : string list;
     (** optional: buffers is a list of binary data buffers for implementations
         that support binary extensions to the protocol. *)
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let epoch_to_iso8601_string epoch =
   let open Unix in
@@ -108,13 +108,13 @@ let create_next ?(time = Unix.gettimeofday ()) ~content_to_yojson parent content
   }
 
 let create_next_shell ?time parent content =
-  create_next ?time ~content_to_yojson:[%to_yojson: Shell.reply] parent content
+  create_next ?time ~content_to_yojson:[%yojson_of: Shell.reply] parent content
 
 let create_next_iopub ?time parent content =
-  create_next ?time ~content_to_yojson:[%to_yojson: Iopub.reply] parent content
+  create_next ?time ~content_to_yojson:[%yojson_of: Iopub.reply] parent content
 
 let create_next_stdin ?time parent content =
-  create_next ?time ~content_to_yojson:[%to_yojson: Stdin.reply] parent content
+  create_next ?time ~content_to_yojson:[%yojson_of: Stdin.reply] parent content
 
 (** {2 Messages} *)
 

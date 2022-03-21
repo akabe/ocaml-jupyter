@@ -35,16 +35,18 @@ type exec_request =
     exec_code : string [@key "code"];
     exec_silent : bool [@key "silent"];
     exec_store_history : bool [@key "store_history"];
-    exec_user_expr : Yojson.Safe.t [@key "user_expressions"];
+    exec_user_expr : Json.t [@key "user_expressions"];
     exec_allow_stdin : bool [@key "allow_stdin"] [@default true];
     exec_stop_on_error : bool [@key "stop_on_error"] [@default false];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type exec_reply =
   {
     exec_count : int [@key "execution_count"];
     exec_status : status Json.enum [@key "status"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Instrospection} *)
 
@@ -53,15 +55,17 @@ type inspect_request =
     insp_code : string [@key "code"];
     insp_pos : int [@key "cursor_pos"];
     insp_detail : int [@key "detail_level"] [@default 0];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type inspect_reply =
   {
     insp_status : status Json.enum [@key "status"];
     insp_found : bool [@key "found"];
-    insp_data : Yojson.Safe.t [@key "data"] [@default `Null];
-    insp_metadata : Yojson.Safe.t [@key "metadata"] [@default `Null];
-  } [@@deriving yojson { strict = false }]
+    insp_data : Json.t [@key "data"] [@default `Null];
+    insp_metadata : Json.t [@key "metadata"] [@default `Null];
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Completion} *)
 
@@ -69,16 +73,18 @@ type complete_request =
   {
     cmpl_code : string [@key "code"];
     cmpl_pos : int [@key "cursor_pos"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type complete_reply =
   {
     cmpl_matches : string list [@key "matches"];
     cmpl_start : int [@key "cursor_start"];
     cmpl_end : int [@key "cursor_end"];
-    cmpl_metadata : Yojson.Safe.t [@key "metadata"];
+    cmpl_metadata : Json.t [@key "metadata"];
     cmpl_status : status Json.enum [@key "status"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 History} *)
 
@@ -93,25 +99,29 @@ type history_request =
     hist_n : int [@key "n"];
     hist_pattern : string option [@key "pattern"] [@default None];
     hist_unique : bool [@key "unique"] [@default false];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type history_reply =
   {
     history : (int option * int * string) list;
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Code completeness} *)
 
 type is_complete_request =
   {
     is_cmpl_code : string [@key "code"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type is_complete_reply =
   {
     is_cmpl_status : string [@key "status"];
     is_cmpl_indent : string option [@key "indent"] [@default None];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Connect} *)
 
@@ -122,19 +132,22 @@ type connect_reply =
     conn_stdin_port : int [@key "stdin_port"];
     conn_hb_port : int [@key "hb_port"];
     conn_ctrl_port : int [@key "control_port"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Comm info} *)
 
 type comm_info_request =
   {
     ci_target : string option [@key "target_name"] [@default None];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 type comm_info_reply =
   {
-    ci_comms : Yojson.Safe.t [@key "comms"];
-  } [@@deriving yojson { strict = false }]
+    ci_comms : Json.t [@key "comms"];
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Kernel information} *)
 
@@ -145,9 +158,10 @@ type language_info =
     lang_mimetype : string [@key "mimetype"]; (** mimetype *)
     lang_file_ext : string [@key "file_extension"]; (** file extension *)
     lang_lexer : string option [@key "pygments_lexer"]; (** pygments lexer *)
-    lang_mode : Yojson.Safe.t [@key "codemirror_mode"]; (** codemirror mode *)
+    lang_mode : Json.t [@key "codemirror_mode"]; (** codemirror mode *)
     lang_exporter : string option [@key "nbconverter_exporter"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let language_info =
   {
@@ -164,7 +178,8 @@ type help_link =
   {
     help_text : string [@key "text"];
     help_url : string [@key "url"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let help_links =
   [
@@ -183,7 +198,8 @@ type kernel_info_reply =
     kernel_help_links : help_link list [@key "help_links"];
     kernel_lang_info : language_info [@key "language_info"];
     kernel_lang : string [@key "language"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 let kernel_info_reply =
   let banner =
@@ -207,7 +223,8 @@ let kernel_info_reply =
 type shutdown =
   {
     shutdown_restart : bool [@key "restart"];
-  } [@@deriving yojson { strict = false }]
+  } [@@deriving yojson]
+[@@yojson.allow_extra_fields]
 
 (** {2 Request} *)
 
@@ -224,7 +241,7 @@ type request =
   | SHELL_COMM_OPEN of Comm.t [@name "comm_open"]
   | SHELL_COMM_MSG of Comm.t [@name "comm_msg"]
   | SHELL_COMM_CLOSE of Comm.t [@name "comm_close"]
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
 
 (** {2 Reply} *)
 
@@ -238,7 +255,7 @@ type reply =
   | SHELL_CONNECT_REP of connect_reply [@name "connect_reply"]
   | SHELL_COMM_INFO_REP of comm_info_reply [@name "comm_info_reply"]
   | SHELL_SHUTDOWN_REP of shutdown [@name "shutdown_reply"]
-[@@deriving yojson { strict = false }]
+[@@deriving yojson]
 
 let execute_reply ~count status =
   SHELL_EXEC_REP { exec_count = count; exec_status = status; }

@@ -25,5 +25,7 @@ type t =
   {
     comm_target : string option [@key "target_name"] [@default None];
     comm_id : string [@key "comm_id"];
-    comm_data : Yojson.Safe.t [@key "data"];
-  } [@@deriving yojson { strict = false }]
+    comm_data : Json.t [@key "data"];
+  }
+[@@deriving yojson]
+[@@yojson.allow_extra_fields]

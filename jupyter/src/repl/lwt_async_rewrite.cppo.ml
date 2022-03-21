@@ -21,16 +21,20 @@ type rewrite_rule = {
   (* Whether the rule is enabled or not. *)
 }
 
+let longident l = match Longident.unflatten l with
+  | Some li -> li
+  | None -> failwith "Failed to parse longident"
+
 let longident_lwt_main_run = Longident.Ldot (Longident.Lident "Lwt_main", "run")
 let longident_async_thread_safe_block_on_async_exn =
-  Longident.parse "Async.Thread_safe.block_on_async_exn"
+  longident ["Async"; "Thread_safe"; "block_on_async_exn"]
 
 let nolabel = Asttypes.Nolabel
 
 let rewrite_rules = [
   (* Rewrite Lwt.t expressions to Lwt_main.run <expr> *)
   {
-    type_to_rewrite = Longident.parse "Lwt.t";
+    type_to_rewrite = longident ["Lwt"; "t"];
     path_to_rewrite = None;
     required_values = [longident_lwt_main_run];
     rewrite = (fun loc e ->
@@ -45,7 +49,7 @@ let rewrite_rules = [
   (* Rewrite Async.Defered.t expressions to
      Async.Thread_safe.block_on_async_exn (fun () -> <expr>). *)
   {
-    type_to_rewrite = Longident.parse "Async.Deferred.t";
+    type_to_rewrite = longident ["Async"; "Deferred"; "t"];
     path_to_rewrite = None;
     required_values = [longident_async_thread_safe_block_on_async_exn];
     rewrite = (fun loc e ->
