@@ -37,7 +37,6 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 ``` shell
 pip install jupyter
 opam install jupyter
-opam install jupyter-archimedes  # Jupyter-friendly 2D plotting library
 grep topfind ~/.ocamlinit || echo '#use "topfind";;' >> ~/.ocamlinit  # For using '#require' directive
 ocaml-jupyter-opam-genspec
 jupyter kernelspec install [ --user ] --name "ocaml-jupyter-$(opam var switch)" "$(opam var share)/jupyter"
@@ -47,15 +46,6 @@ If the last command fails due to permission, `--user` option or `sudo` is requir
 
 ```shell
 jupyter notebook
-```
-
-If you get an error related to `archimedes.cairo` during installation of `jupyter-archimedes`,
-manually install `cairo2` before `archimedes`:
-
-```shell
-opam install "cairo2<0.6"
-opam reinstall archimedes
-opam install jupyter-archimedes
 ```
 
 ### Development version
@@ -99,13 +89,10 @@ OCaml Jupyter includes some sub-packages:
 - [jupyter][jupyter-core] is a core library of OCaml Jupyter. This package is internally used. You don't need it directly.
 - [jupyter.notebook][jupyter-notebook] is a library to control Jupyter from OCaml REPL in notebooks. This provides dynamic generation of HTML/markdown, and image embedding.
 - [jupyter.comm][jupyter-comm] is a library for communication between OCaml notebooks and Jupyter/Web frontend.
-- [jupyter-archimedes][jupyter-archimedes] is a Jupyter backend for [Archimedes][archimedes], an easy-to-use 2D plotting library. This package only registers the `jupyter` backend to Archimedes, and provides an empty interface.
 
 [jupyter-core]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/
 [jupyter-notebook]:   https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_notebook/
 [jupyter-comm]:       https://akabe.github.io/ocaml-jupyter/api/jupyter/Jupyter_comm/
-[jupyter-archimedes]: https://akabe.github.io/ocaml-jupyter/api/jupyter-archimedes/
-[archimedes]:         http://archimedes.forge.ocamlcore.org/
 
 ### NBConvert
 
