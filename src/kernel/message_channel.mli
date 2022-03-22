@@ -20,20 +20,15 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
-(** Archimedes plugin for OCaml Jupyter *)
+(** Messaging channel for Jupyter *)
 
-open Jupyter_notebook
+module type ContentType =
+sig
+  type request [@@deriving yojson]
+  type reply [@@deriving yojson]
+end
 
-module R = Archimedes.Backend.Register(struct
-    include Archimedes_cairo.B
-
-    let name = "jupyter"
-
-    let close ~options b =
-      let ctx : Cairo.context = Obj.magic b in
-      let surf = Cairo.get_target ctx in
-      let buf = Buffer.create 256 in
-      Cairo.PNG.write_to_stream surf (Buffer.add_string buf) ;
-      close ~options b ;
-      ignore (display ~base64:true "image/png" (Buffer.contents buf))
-  end)
+module Make (Content : ContentType) (_ : Channel_intf.Zmq)
+  : Channel_intf.Message
+    with type request = Content.request
+     and type reply = Content.reply

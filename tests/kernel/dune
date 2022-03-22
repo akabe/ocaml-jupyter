@@ -5,8 +5,7 @@
  (libraries  jupyter
              jupyter_kernel
              ounit2)
- (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp)
-              (:include %{workspace_root}/config/ocaml_test_flags.sexp))))
+ (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp))))
 
 (alias
  (name   runtest)
