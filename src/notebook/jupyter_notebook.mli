@@ -90,3 +90,11 @@ val display_formatter :
   ?metadata:Yojson.Safe.t ->
   ?base64:bool ->
   string -> display_id
+
+(** {2 Utilities} *)
+
+module Bench = Jupyter_notebook__Bench
+
+module Process = Jupyter_notebook__Process
+
+module Eval = Jupyter_notebook__Eval

@@ -30,6 +30,7 @@ depends: [
   "zmq-lwt" {>= "5.0.0"}
   "yojson" {>="1.6.0"}
   "ppx_yojson_conv" {>= "0.14.0"}
+  "ppx_deriving" {>= "5.2.1"}
   "cryptokit" {>= "1.12"}
   "dune" {>= "1.0.0"}
   "ounit2" {with-test & >= "2.0.0"}

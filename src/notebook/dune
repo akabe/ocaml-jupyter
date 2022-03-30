@@ -2,11 +2,14 @@
  (name        jupyter_notebook)
  (public_name jupyter.notebook)
  (synopsis    "A library for Jupyter notebooks")
+ (preprocess  (pps ppx_yojson_conv ppx_deriving.show))
  (modes       byte)
  (modules     Jupyter_notebook
+              Bench
+              Process
+              Eval
               Unsafe)
  (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
- (preprocess  (pps ppx_yojson_conv))
  (libraries   jupyter
               uuidm
               base64

@@ -82,3 +82,11 @@ let display_formatter ?ctx ?display_id ?metadata ?base64 mime =
   let data = Buffer.contents formatter_buf in
   Buffer.clear formatter_buf ;
   display ?ctx ?display_id ?metadata ?base64 mime data
+
+(** {2 Utilities} *)
+
+module Bench = Jupyter_notebook__Bench
+
+module Process = Jupyter_notebook__Process
+
+module Eval = Jupyter_notebook__Eval
