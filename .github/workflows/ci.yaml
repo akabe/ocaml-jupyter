@@ -35,6 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get install -y bash zsh python2 python3 ruby
           opam install . -y --deps-only --with-test
           opam install 'merlin>3.0.0' -y
 
