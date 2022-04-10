@@ -1,0 +1,12 @@
+(executables
+ (names      test_notebook)
+ (modes      byte)
+ (preprocess (pps lwt_ppx ppx_deriving.show ppx_yojson_conv))
+ (libraries  jupyter_notebook
+             ounit2)
+ (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp))))
+
+(alias
+ (name   runtest)
+ (deps   test_notebook.bc)
+ (action (run %{dep:test_notebook.bc})))

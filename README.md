@@ -38,6 +38,7 @@ OCaml Jupyter can be installed by [OPAM][opam] as follows:
 pip install jupyter
 opam install jupyter
 grep topfind ~/.ocamlinit || echo '#use "topfind";;' >> ~/.ocamlinit  # For using '#require' directive
+grep Topfind.log ~/.ocamlinit || echo 'Topfind.log:=ignore;;' >> ~/.ocamlinit  # Suppress logging of topfind (recommended but not necessary)
 ocaml-jupyter-opam-genspec
 jupyter kernelspec install [ --user ] --name "ocaml-jupyter-$(opam var switch)" "$(opam var share)/jupyter"
 ```
