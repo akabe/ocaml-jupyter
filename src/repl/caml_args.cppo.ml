@@ -210,8 +210,10 @@ module Options = Main_args.Make_bytetop_options (struct
     let _dno_locations = clear Clflags.locations
 #endif
 
-#if OCAML_VERSION >= (4,14,0)
+#if OCAML_VERSION = (4,14,0)
 let _force_tmc = set Clflags.force_tmc
+#endif
+#if OCAML_VERSION >= (4,14,0)
 let _dshape = set Clflags.dump_shape
 let _eval (_ : string) = ()
 #endif
