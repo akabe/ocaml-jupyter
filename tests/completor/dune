@@ -4,9 +4,9 @@
  (libraries  jupyter
              jupyter_completor
              ounit2)
- (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp))))
+ (flags      ((:include %{project_root}/config/ocaml_flags.sexp))))
 
 (alias
  (name   runtest)
  (deps   test_completor.exe)
- (action (chdir %{workspace_root}/test (run %{deps} -runner sequential))))
+ (action (chdir %{project_root}/test (run %{deps} -runner sequential))))

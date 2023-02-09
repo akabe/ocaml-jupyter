@@ -9,4 +9,4 @@
               jupyter_repl
               jupyter_completor
               jupyter_kernel)
- (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp))))
+ (flags       ((:include %{project_root}/config/ocaml_flags.sexp))))

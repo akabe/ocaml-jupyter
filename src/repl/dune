@@ -10,7 +10,7 @@
               Error
               Dir_trace
               Compat)
- (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (flags       ((:include %{project_root}/config/ocaml_flags.sexp)))
  (preprocess  (pps lwt_ppx))
  (libraries   jupyter
               jupyter_log
