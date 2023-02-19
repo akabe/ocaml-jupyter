@@ -11,6 +11,6 @@
               AnsiCode
               Json
               Version)
- (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (flags       ((:include %{project_root}/config/ocaml_flags.sexp)))
  (preprocess  (pps ppx_yojson_conv))
  (libraries   unix uuidm ppx_yojson_conv_lib))

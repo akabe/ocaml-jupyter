@@ -9,7 +9,7 @@
               Stdin)
  (flags       (:standard
                -thread
-               (:include %{workspace_root}/config/ocaml_flags.sexp)))
+               (:include %{project_root}/config/ocaml_flags.sexp)))
  (preprocess  (pps ppx_yojson_conv))
  (libraries   jupyter
               jupyter.notebook))

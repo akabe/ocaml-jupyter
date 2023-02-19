@@ -9,7 +9,7 @@
               Process
               Eval
               Unsafe)
- (flags       ((:include %{workspace_root}/config/ocaml_flags.sexp)))
+ (flags       ((:include %{project_root}/config/ocaml_flags.sexp)))
  (libraries   jupyter
               uuidm
               base64

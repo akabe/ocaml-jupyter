@@ -6,7 +6,7 @@
  (libraries  jupyter
              jupyter_repl
              ounit2)
- (flags      ((:include %{workspace_root}/config/ocaml_flags.sexp))))
+ (flags      ((:include %{project_root}/config/ocaml_flags.sexp))))
 
 (alias
  (name   runtest)
@@ -15,7 +15,7 @@
          ../fixtures/ocamlinit.ml
          ../fixtures/file.bin)
  (action
-  (chdir %{workspace_root}/tests
+  (chdir %{project_root}/tests
          (progn
            (run %{dep:test_evaluation.bc})
            (run %{dep:test_process.bc} -runner sequential)))))
