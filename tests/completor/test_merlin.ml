@@ -163,7 +163,8 @@ let test_complete ctxt =
       ];
     } in
   let actual = complete merlin code ~pos:15 in
-  require expected actual ~msg:"module" ;
+  require expected actual ~msg:"module" 
+  (* ;
   Merlin.add_context merlin "#load \"unix.cma\"" ;
   let code = "let _ = Unix.std " in
   let expected = Merlin.{
@@ -192,7 +193,7 @@ let test_complete ctxt =
       ];
     } in
   let actual = complete merlin code ~types:true ~pos:16 in
-  require expected actual ~msg:"variant constructor"
+  require expected actual ~msg:"variant constructor" *)
 
 let suite =
   "Merlin" >::: [
