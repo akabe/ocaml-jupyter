@@ -163,37 +163,7 @@ let test_complete ctxt =
       ];
     } in
   let actual = complete merlin code ~pos:15 in
-  require expected actual ~msg:"module" 
-  (* ;
-  Merlin.add_context merlin "#load \"unix.cma\"" ;
-  let code = "let _ = Unix.std " in
-  let expected = Merlin.{
-      cmpl_start = 13; cmpl_end = 16;
-      cmpl_candidates = [
-        { cmpl_name = "stderr"; cmpl_kind = CMPL_VALUE;
-          cmpl_type = "Unix.file_descr"; cmpl_doc = ""; };
-        { cmpl_name = "stdin"; cmpl_kind = CMPL_VALUE;
-          cmpl_type = "Unix.file_descr"; cmpl_doc = ""; };
-        { cmpl_name = "stdout"; cmpl_kind = CMPL_VALUE;
-          cmpl_type = "Unix.file_descr"; cmpl_doc = ""; };
-      ];
-    } in
-  let actual = complete merlin code ~types:true ~pos:16 in
-  require expected actual ~msg:"context" ;
-  let code = "let _ = Unix.EINP " in
-  let expected = Merlin.{
-      cmpl_start = 13; cmpl_end = 17;
-      cmpl_candidates = [
-        { cmpl_name = "EINPROGRESS"; cmpl_kind = CMPL_CONSTR;
-          cmpl_type = "Unix.error"; cmpl_doc = ""; };
-        { cmpl_name = "EINTR"; cmpl_kind = CMPL_CONSTR;
-          cmpl_type = "Unix.error"; cmpl_doc = ""; };
-        { cmpl_name = "EINVAL"; cmpl_kind = CMPL_CONSTR;
-          cmpl_type = "Unix.error"; cmpl_doc = ""; };
-      ];
-    } in
-  let actual = complete merlin code ~types:true ~pos:16 in
-  require expected actual ~msg:"variant constructor" *)
+  require expected actual ~msg:"module"
 
 let suite =
   "Merlin" >::: [
