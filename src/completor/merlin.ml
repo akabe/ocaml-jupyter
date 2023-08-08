@@ -27,6 +27,7 @@
 open Format
 open Lwt.Infix
 open Jupyter_log
+open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 let string_of_bool b = if b then "y" else "n"
 

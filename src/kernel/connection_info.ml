@@ -23,6 +23,7 @@
 (** Connection information *)
 
 open Jupyter_log
+open Ppx_yojson_conv_lib.Yojson_conv.Primitives
 
 (** The type of connection information.
 
