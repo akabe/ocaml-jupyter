@@ -20,6 +20,8 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE. *)
 
+open Ppx_yojson_conv_lib.Yojson_conv.Primitives
+
 (** Contents on IOPUB channels *)
 
 (** {2 Streams} *)
