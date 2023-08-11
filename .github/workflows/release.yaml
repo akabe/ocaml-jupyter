@@ -13,7 +13,7 @@ jobs:
       OCAML_VERSION: 4.13.0
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Get the version
         id: version
@@ -35,7 +35,7 @@ jobs:
           ls ./_build/jupyter-${{ env.VERSION }}.tbz
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: upload
           path: ./_build/jupyter-${{ env.VERSION }}.tbz
@@ -52,7 +52,7 @@ jobs:
           echo "VERSION=$(echo ${{ github.ref }} | sed -e 's#refs/tags/v##g')" >> $GITHUB_ENV
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: artifacts
 
