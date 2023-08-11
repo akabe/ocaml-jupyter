@@ -137,7 +137,9 @@ module Options = Main_args.Make_bytetop_options (struct
     let _no_principal = clear Clflags.principal
     let _rectypes = set Clflags.recursive_types
     let _no_rectypes = clear Clflags.recursive_types
+#if OCAML_VERSION < (5,0,0)
     let _safe_string = clear Clflags.unsafe_string
+#endif
     let _short_paths = clear Clflags.real_paths
     let _stdin () = file_argument ""
     let _strict_sequence = set Clflags.strict_sequence
@@ -151,7 +153,9 @@ module Options = Main_args.Make_bytetop_options (struct
 #else
     let _unsafe = set Clflags.unsafe
 #endif
+#if OCAML_VERSION < (5,0,0)
     let _unsafe_string = set Clflags.unsafe_string
+#endif
     let _version () = print_version ()
     let _vnum () = print_version_num ()
     let _no_version = set Clflags.noversion
@@ -216,6 +220,9 @@ let _force_tmc = set Clflags.force_tmc
 #if OCAML_VERSION >= (4,14,0)
 let _dshape = set Clflags.dump_shape
 let _eval (_ : string) = ()
+#endif
+#if OCAML_VERSION = (5,0,0)
+  let _nocwd = set Clflags.no_cwd
 #endif
 end)
 

@@ -5,6 +5,8 @@
  (preprocess (pps lwt_ppx ppx_deriving.show ppx_yojson_conv))
  (libraries  jupyter
              jupyter_repl
+             compiler-libs.toplevel str
+             compiler-libs.common
              ounit2)
  (flags      ((:include %{project_root}/config/ocaml_flags.sexp))))
 
