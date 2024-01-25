@@ -26,7 +26,7 @@
 
 (** This module provides communication of arbitrary JSON data between the OCaml
     REPL and the Jupyter.
-    See {{:http://jupyter-notebook.readthedocs.io/en/latest/comms.html}
+    See {{:https://jupyter-client.readthedocs.io/en/stable/messaging.html#custom-messages}
     Comms (Jupyter Notebook Docs)} for details.
 
     {2 Opening a comm from the REPL}
