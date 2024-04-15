@@ -63,7 +63,11 @@ let test__multiple_phrases ctxt =
 
 let test__directive ctxt =
   let status, actual = eval "#load \"str.cma\" ;; Str.regexp \".*\"" in
-  let expected = [iopub_success ~count:0 "- : Str.regexp = <abstr>\n"] in
+  let expected = [iopub_success ~count:0
+    (if Sys.ocaml_version >= "5.00"
+    then "\n- : Str.regexp = <abstr>\n"
+    else "- : Str.regexp = <abstr>\n")
+  ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
@@ -158,7 +162,12 @@ let test__long_error_message ctxt =
   let status, actual = eval ~count:123 "List.\n dummy" in
   let expected =
     [error ~value:"compile_error"
-       [if Sys.ocaml_version >= "4.09"
+       [if Sys.ocaml_version >= "5.00"
+        then "\nFile \"[123]\", lines 1-2, characters 0-6:\
+              \n1 | List.\
+              \n2 |  dummy\
+              \nError: Unbound value List.dummy\n"
+        else if Sys.ocaml_version >= "4.09"
         then "File \"[123]\", lines 1-2, characters 0-6:\
               \n1 | List.\
               \n2 |  dummy\
@@ -178,7 +187,12 @@ let test__long_error_message ctxt =
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "4.13"
+    if Sys.ocaml_version >= "5.00"
+    then "\x1b[31m\nException: Failure \"FAIL\".\n\
+          \nRaised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+          Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 89, characters 4-14\n\
+          \x1b[0m"
+    else if Sys.ocaml_version >= "4.13"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
           Called from Stdlib__Fun.protect in file \"fun.ml\", line 33, characters 8-15\n\

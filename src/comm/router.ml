@@ -65,7 +65,7 @@ let _ =
   let loop () =
     while true do
       match Jupyter_notebook__Unsafe.recv () with
-      | exception End_of_file -> Thread.exit ()
+      | exception End_of_file -> raise Thread.Exit
       | Message.SHELL_REQ msg ->
         begin
           match msg.Message.content with
