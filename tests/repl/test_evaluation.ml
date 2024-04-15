@@ -62,12 +62,8 @@ let test__multiple_phrases ctxt =
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
 let test__directive ctxt =
-  let status, actual = eval "#load \"str.cma\" ;; Str.regexp \".*\"" in
-  let expected = [iopub_success ~count:0
-    (if Sys.ocaml_version >= "5.00"
-    then "\n- : Str.regexp = <abstr>\n"
-    else "- : Str.regexp = <abstr>\n")
-  ] in
+  let status, actual = eval "#directory \"+str\" ;; #load \"str.cma\" ;; Str.regexp \".*\"" in
+  let expected = [iopub_success ~count:0 "- : Str.regexp = <abstr>\n" ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
@@ -188,8 +184,8 @@ let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
     if Sys.ocaml_version >= "5.00"
-    then "\x1b[31m\nException: Failure \"FAIL\".\n\
-          \nRaised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
           Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 89, characters 4-14\n\
           \x1b[0m"
     else if Sys.ocaml_version >= "4.13"
