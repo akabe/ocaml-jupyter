@@ -36,7 +36,11 @@ let current = ref (!Arg.current)
 
 let argv = ref Sys.argv
 
+#if OCAML_VERSION >= (5,0,0)
+let preload_objects = ref []
+#else
 let preload_objects = ref ["stdlib.cma"]
+#endif
 
 (* Test whether the option is part of a responsefile *)
 let is_expanded pos = pos < !first_nonexpanded_pos
