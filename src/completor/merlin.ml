@@ -57,7 +57,7 @@ let call merlin command flags printer =
   let args = merlin.bin_path :: mode :: command
              :: "-dot-merlin" :: merlin.dot_merlin :: flags in
   info (fun pp -> pp "Merlin command: %s" (String.concat " " args)) ;
-  let proc = Lwt_process.open_process ("ocamlmerlin", Array.of_list args) in
+  let proc = Lwt_process.open_process (merlin.bin_path, Array.of_list args) in
   let%lwt () = printer proc#stdin in
   let%lwt () = Lwt_io.flush proc#stdin in
   let%lwt () = Lwt_io.close proc#stdin in
