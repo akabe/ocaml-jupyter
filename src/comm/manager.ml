@@ -37,6 +37,10 @@ type receiver =
     recv_close : comm -> Yojson.Safe.t -> unit;
   }
 
+let random_state = Random.State.make_self_init ()
+let uuid_gen = Uuidm.v4_gen random_state
+let next_uuid () = Uuidm.(to_string (uuid_gen ()))
+
 module Target =
 struct
   type t = target
@@ -91,7 +95,7 @@ struct
   let default = `Assoc []
 
   let create ?(data = default) target =
-    let comm_id = Uuidm.(to_string (v `V4)) in
+    let comm_id = next_uuid () in
     ignore (register target comm_id) ;
     Jupyter_notebook__Unsafe.send_iopub
       (IOPUB_COMM_OPEN {

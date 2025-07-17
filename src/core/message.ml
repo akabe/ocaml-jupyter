@@ -92,9 +92,13 @@ let epoch_to_iso8601_string epoch =
     (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday
     tm.tm_hour tm.tm_min (mod_float epoch 60.0)
 
+let random_state = Random.State.make_self_init ()
+let uuid_gen = Uuidm.v4_gen random_state
+let next_uuid () = Uuidm.(to_string (uuid_gen ()))
+
 let create_next ?(time = Unix.gettimeofday ()) ~content_to_yojson parent content =
   let date = Some (epoch_to_iso8601_string time) in
-  let msg_id = Uuidm.(to_string (v `V4)) in
+  let msg_id = next_uuid () in
   let msg_type =
     match content_to_yojson content with
     | `List (`String msg_type :: _) -> msg_type

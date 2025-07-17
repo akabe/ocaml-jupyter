@@ -37,7 +37,7 @@ let current = ref (!Arg.current)
 let argv = ref Sys.argv
 
 #if OCAML_VERSION >= (5,0,0)
-let preload_objects = ref []
+let preload_objects = ref [] (* ["stdlib.cma"] *)
 #else
 let preload_objects = ref ["stdlib.cma"]
 #endif
@@ -52,49 +52,55 @@ let expand_position pos len =
     first_nonexpanded_pos :=  pos + len + 2 (* New last position *)
 
 let prepare ppf =
-  Toploop.set_paths ();
+  Topcommon.set_paths ();
+  begin try
+    Toploop.initialize_toplevel_env ()
+  with Env.Error _ | Typetexp.Error _ as exn ->
+    Location.report_exception ppf exn; raise (Compenv.Exit_with_status 2)
+  end;
   try
     let res =
       let objects =
         List.rev (!preload_objects @ !Compenv.first_objfiles)
       in
-      List.for_all (Topdirs.load_file ppf) objects
+      List.for_all (Topeval.load_file false ppf) objects
     in
-    !Toploop.toplevel_startup_hook ();
+    Topcommon.run_hooks Topcommon.Startup;
     res
   with x ->
-  try Location.report_exception ppf x; false
-  with x ->
-    Format.fprintf ppf "Uncaught exception: %s\n" (Printexc.to_string x);
-    false
+    try Location.report_exception ppf x; false
+    with x ->
+      Format.fprintf ppf "Uncaught exception: %s\n" (Printexc.to_string x);
+      false
 
-(* If [name] is "", then the "file" is stdin treated as a script file. *)
-let file_argument name =
+let input_argument name =
+  let filename = Toploop.filename_of_input name in
   let ppf = Format.err_formatter in
-  if Filename.check_suffix name ".cmo" || Filename.check_suffix name ".cma"
-  then preload_objects := name :: !preload_objects
+  if Filename.check_suffix filename ".cmo"
+          || Filename.check_suffix filename ".cma"
+  then preload_objects := filename :: !preload_objects
   else if is_expanded !current then begin
     (* Script files are not allowed in expand options because otherwise the
        check in override arguments may fail since the new argv can be larger
-       than the original argv. *)
+       than the original argv.
+    *)
     Printf.eprintf "For implementation reasons, the toplevel does not support\
-                   \ having script files (here %S) inside expanded arguments passed through the\
-                   \ -args{,0} command-line option.\n" name ;
-    exit 2
+   \ having script files (here %S) inside expanded arguments passed through the\
+   \ -args{,0} command-line option.\n" filename;
+    raise (Compenv.Exit_with_status 2)
   end else begin
-    let newargs =
-      Array.sub Sys.argv !Arg.current
-        (Array.length Sys.argv - !Arg.current)
-    in
-    Compenv.readenv ppf Compenv.Before_link;
-#if OCAML_VERSION < (4,14,0)
-    if prepare ppf && Toploop.run_script ppf name newargs
-#else
-    if prepare ppf && Toploop.run_script ppf (Toploop.File name) newargs
-#endif
-    then exit 0
-    else exit 2
-  end
+      let newargs = Array.sub !argv !current
+                              (Array.length !argv - !current)
+      in
+      Compenv.readenv ppf Before_link;
+      Compmisc.read_clflags_from_env ();
+      if prepare ppf &&
+         Toploop.run_script ppf name newargs
+      then raise (Compenv.Exit_with_status 0)
+      else raise (Compenv.Exit_with_status 2)
+    end
+
+let file_argument x = input_argument (Toploop.File x)
 
 let print_version () =
   Printf.printf "ocaml-jupyter kernel version %s (OCaml version %s)\n"
@@ -123,6 +129,11 @@ module Options = Main_args.Make_bytetop_options (struct
     let _I dir =
       let dir = Misc.expand_directory Config.standard_library dir in
       Clflags.include_dirs := dir :: !Clflags.include_dirs
+#if OCAML_VERSION >= (5,02,0)
+    let _H dir =
+      let dir = Misc.expand_directory Config.standard_library dir in
+      Clflags.hidden_include_dirs := dir :: !Clflags.hidden_include_dirs
+#endif
     let _init s = Clflags.init_file := Some s
     let _noinit = set Clflags.noinit
     let _labels = clear Clflags.classic
@@ -133,6 +144,7 @@ module Options = Main_args.Make_bytetop_options (struct
     let _noassert = set Clflags.noassert
     let _nolabels = set Clflags.classic
     let _noprompt = set Clflags.noprompt
+    let _prompt = clear Clflags.noprompt
     let _nopromptcont = set Clflags.nopromptcont
     let _nostdlib = set Clflags.no_std_include
     let _open s = Clflags.open_modules := s :: !Clflags.open_modules
@@ -141,6 +153,8 @@ module Options = Main_args.Make_bytetop_options (struct
     let _no_principal = clear Clflags.principal
     let _rectypes = set Clflags.recursive_types
     let _no_rectypes = clear Clflags.recursive_types
+    let _keywords k =
+      Clflags.keyword_edition := Some (k)
 #if OCAML_VERSION < (5,0,0)
     let _safe_string = clear Clflags.unsafe_string
 #endif

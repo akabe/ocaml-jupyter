@@ -58,7 +58,10 @@ let rewrite_rules = [
         with_default_loc loc (fun () ->
             Exp.apply
               (Exp.ident (with_loc loc longident_async_thread_safe_block_on_async_exn))
-              [(nolabel, Exp.fun_ nolabel None punit e)]
+              (*
+              [(nolabel, Exp.fun_ nolabel None punit e)] (* label * expression option * pattern * expression -> expression *)
+              *)
+              [ (nolabel, Exp.function_ ([ ({ pparam_loc=loc; pparam_desc=(Parsetree.Pparam_val (nolabel, None, punit)); }) ]) None (Parsetree.Pfunction_body e)) ] (*TODO EL: check if type_cosntraint None works; check if loc works *)
           )
       );
     enabled = true;
@@ -87,7 +90,7 @@ let rule_path rule =
       let env = !Toploop.toplevel_env in
       let path =
         match lookup_type rule.type_to_rewrite env with
-        | path, { Types.type_kind     = Types.Type_abstract
+        | path, { Types.type_kind     = Types.Type_abstract _
                 ; Types.type_private  = Asttypes.Public
                 ; Types.type_manifest = Some ty
                 ; _
@@ -117,6 +120,7 @@ let rec is_persistent_path = function
   | Path.Pdot (p, _) -> is_persistent_path p
 #endif
   | Path.Papply (_, p) -> is_persistent_path p
+  | Path.Pextra_ty (p, _) -> is_persistent_path p
 
 (* Check that the given long identifier is present in the environment
    and is persistent. *)
