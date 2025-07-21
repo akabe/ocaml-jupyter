@@ -263,9 +263,6 @@ let test__unknown_directive ctxt =
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
 let test__ppx ctxt =
-(*  let status, actual = eval "#use \"topfind\" ;; \
-                             #require \"ppx_deriving.show\" ;; \
-                             type t = { x : int } [@@deriving show]" in *)
   let status, actual = eval "#require \"ppx_deriving.show\" ;; \
                              type t = { x : int } [@@deriving show]" in
   let expected =
@@ -298,6 +295,5 @@ let suite =
 
 let () =
   init ~init_file:"fixtures/ocamlinit.ml" () ;
-(*  init (); *)
   run_test_tt_main suite;
   ()
