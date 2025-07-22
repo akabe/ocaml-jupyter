@@ -43,3 +43,5 @@ type ident_reply =
 val occurrences : pos:int -> t -> string -> ident_reply list Lwt.t
 
 val abs_position : string -> ident_position -> int
+
+val get_dot_merlin : t -> string

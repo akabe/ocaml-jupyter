@@ -36,9 +36,22 @@ let occurrences ~pos merlin code =
   Merlin.occurrences merlin code ~pos
   |> Lwt_main.run
 
+let merlin_create_test () =
+  let merlin = Merlin.create () in
+  let dot_merlin = Merlin.get_dot_merlin merlin in
+
+  (* recent dune does not create .merlin anymore, create one for this test *)
+  if not @@ Sys.file_exists dot_merlin then begin
+    let oc = open_out dot_merlin in
+    output_string oc "S .\nB .\nPKG unix\n";
+    close_out oc
+  end;
+
+  merlin
+
 let test_occurrences ctxt =
   let require ?msg x y = assert_equal ~ctxt ~printer:[%show: ident_reply list] ?msg x y in
-  let merlin = Merlin.create () in
+  let merlin = merlin_create_test () in
   let code = "let _ = Lwt_m " in
   let expected = Merlin.([
       { id_start = { id_line=1; id_col=8; }; id_end = { id_line=1; id_col=13 } }
@@ -93,7 +106,7 @@ let complete ?doc ?types merlin ~pos code =
 
 let test_complete ctxt =
   let require ?msg x y = assert_equal ~ctxt ~printer:[%show: reply] ?msg x y in
-  let merlin = Merlin.create () in
+  let merlin = merlin_create_test () in
   let code = "List" in
   let expected = Merlin.{
       cmpl_start = 0; cmpl_end = 4;
