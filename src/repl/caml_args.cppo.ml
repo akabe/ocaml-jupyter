@@ -37,7 +37,7 @@ let current = ref (!Arg.current)
 let argv = ref Sys.argv
 
 #if OCAML_VERSION >= (5,0,0)
-let preload_objects = ref [] (* ["stdlib.cma"] *)
+let preload_objects = ref []
 #else
 let preload_objects = ref ["stdlib.cma"]
 #endif
@@ -92,7 +92,7 @@ let input_argument name =
       let newargs = Array.sub !argv !current
                               (Array.length !argv - !current)
       in
-      Compenv.readenv ppf Before_link;
+      Compenv.(readenv ppf Before_link);
       Compmisc.read_clflags_from_env ();
       if prepare ppf &&
          Toploop.run_script ppf name newargs
