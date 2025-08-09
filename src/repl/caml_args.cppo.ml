@@ -153,8 +153,10 @@ module Options = Main_args.Make_bytetop_options (struct
     let _no_principal = clear Clflags.principal
     let _rectypes = set Clflags.recursive_types
     let _no_rectypes = clear Clflags.recursive_types
+#if OCAML_VERSION >= (5,03,0)
     let _keywords k =
       Clflags.keyword_edition := Some (k)
+#endif
 #if OCAML_VERSION < (5,0,0)
     let _safe_string = clear Clflags.unsafe_string
 #endif

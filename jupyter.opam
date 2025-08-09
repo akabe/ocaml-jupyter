@@ -17,7 +17,7 @@ build: [
   [ "dune" "build" "-p" name "-j" jobs ]
 ]
 depends: [
-  "ocaml" {>= "4.10.0"}
+  "ocaml" {>= "5.2.0"}
   "base-threads"
   "base-unix"
   "uuidm" {>= "0.9.6"}

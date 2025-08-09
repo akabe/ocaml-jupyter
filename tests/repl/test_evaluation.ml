@@ -134,10 +134,14 @@ let test__type_error ctxt =
   let status, actual = eval ~count:123 "42 = true" in
   let expected =
     [error ~value:"compile_error"
-       [if Sys.ocaml_version >= "5.03"
+       [if Sys.ocaml_version >= "5.3"
         then "File \"[123]\", line 1, characters 5-9:\n\
               1 | 42 = true\n         \
               ^^^^\nError: The constructor true has type bool\n       but an expression was expected of type int\n"
+        else if Sys.ocaml_version >= "5.2"
+        then "File \"[123]\", line 1, characters 5-9:\n\
+              1 | 42 = true         \
+              ^^^^Error: This expression has type bool but an expression was expected of type         int"
         else if Sys.ocaml_version >= "4.08"
         then "File \"[123]\", line 1, characters 5-9:\
               \n1 | 42 = true\
