@@ -58,7 +58,7 @@ let rewrite_rules = [
         with_default_loc loc (fun () ->
             Exp.apply
               (Exp.ident (with_loc loc longident_async_thread_safe_block_on_async_exn))
-              [ (nolabel, Exp.function_ ([ ({ Parsetree.pparam_loc=loc; pparam_desc=(Parsetree.Pparam_val (nolabel, None, punit)); }) ]) None (Parsetree.Pfunction_body e)) ] (*TODO EL: check if type_cosntraint None works; check if loc works *)
+              [ (nolabel, Exp.function_ ([ ({ Parsetree.pparam_loc=loc; pparam_desc=(Parsetree.Pparam_val (nolabel, None, punit)); }) ]) None (Parsetree.Pfunction_body e)) ]
           )
       );
     enabled = true;

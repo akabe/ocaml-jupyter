@@ -204,7 +204,7 @@ let test__long_error_message ctxt =
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "5.03"
+    if Sys.ocaml_version >= "5.2"
     then"\x1b[31mException: Failure \"FAIL\".\n\
           Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
           Called from <unknown> in file \"[0]\", line 1, characters 0-15\n\
@@ -258,7 +258,7 @@ let test__exception ctxt =
 let test__unknown_directive ctxt =
   let status, actual = eval "#foo" in
   let msg =
-    if Sys.ocaml_version >= "5.03"
+    if Sys.ocaml_version >= "5.2"
     then "\x1b[31mUnknown directive foo.\x1b[0m"
     else "\x1b[31mUnknown directive `foo'.\x1b[0m" in
   let expected = [error ~value:"runtime_error"
@@ -299,5 +299,4 @@ let suite =
 
 let () =
   init ~init_file:"fixtures/ocamlinit.ml" () ;
-  run_test_tt_main suite;
-  ()
+  run_test_tt_main suite
