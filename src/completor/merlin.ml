@@ -85,7 +85,7 @@ type 'a merlin_reply_body =
   {
     klass : string [@key "class"];
     value : 'a;
-    notifications : string list;
+    (* notifications : string list; *)
   }
 [@@deriving of_yojson]
 [@@yojson.allow_extra_fields]
