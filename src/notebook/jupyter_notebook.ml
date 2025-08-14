@@ -40,7 +40,7 @@ let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data
   let send content = Unsafe.send_iopub ?ctx content in
   match display_id with
   | None ->
-    let display_id = Uuidm.(to_string (v `V4)) in
+    let display_id = Jupyter.Message.next_uuid () in
     send (IOPUB_DISPLAY_DATA {
         display_data = `Assoc [mime, `String data];
         display_metadata = metadata;

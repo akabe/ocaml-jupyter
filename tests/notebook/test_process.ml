@@ -88,10 +88,10 @@ let test__bash ctxt =
   assert_equal ~ctxt ~printer:[%show: string option] None res.stderr
 
 let test__python2 ctxt =
-  let res = python2 ~capture_stdout:true "print 'ok'" in
-  assert_equal ~ctxt ~printer:[%show: process_status] (Unix.WEXITED 0) res.exit_status ;
-  assert_equal ~ctxt ~printer:[%show: string option] (Some "ok\n") res.stdout ;
-  assert_equal ~ctxt ~printer:[%show: string option] None res.stderr
+   let res = python2 ~capture_stdout:true "print 'ok'" in
+   assert_equal ~ctxt ~printer:[%show: process_status] (Unix.WEXITED 0) res.exit_status ;
+   assert_equal ~ctxt ~printer:[%show: string option] (Some "ok\n") res.stdout ;
+   assert_equal ~ctxt ~printer:[%show: string option] None res.stderr
 
 let test__python3 ctxt =
   let res = python3 ~capture_stdout:true "print('ok')" in

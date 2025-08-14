@@ -48,6 +48,8 @@ let create ?(server = true) ?(bin_path = "ocamlmerlin") ?(dot_merlin = ".merlin"
     else dot_merlin in (* absolute path *)
   { server; bin_path; dot_merlin; context = Buffer.create 16; }
 
+let get_dot_merlin merlin = merlin.dot_merlin
+
 let add_context merlin code =
   Buffer.add_string merlin.context code ;
   Buffer.add_string merlin.context " ;; "
@@ -57,7 +59,7 @@ let call merlin command flags printer =
   let args = merlin.bin_path :: mode :: command
              :: "-dot-merlin" :: merlin.dot_merlin :: flags in
   info (fun pp -> pp "Merlin command: %s" (String.concat " " args)) ;
-  let proc = Lwt_process.open_process ("ocamlmerlin", Array.of_list args) in
+  let proc = Lwt_process.open_process (merlin.bin_path, Array.of_list args) in
   let%lwt () = printer proc#stdin in
   let%lwt () = Lwt_io.flush proc#stdin in
   let%lwt () = Lwt_io.close proc#stdin in
@@ -83,7 +85,7 @@ type 'a merlin_reply_body =
   {
     klass : string [@key "class"];
     value : 'a;
-    notifications : string list;
+    (* notifications : string list; *)
   }
 [@@deriving of_yojson]
 [@@yojson.allow_extra_fields]
@@ -201,6 +203,7 @@ let complete ?(doc = false) ?(types = false) ~pos merlin code =
   let prefix_length = pos - prefix_start in
   let prefix = String.sub code prefix_start prefix_length in
   info (fun pp -> pp "completion prefix = %S (%d--%d)" prefix prefix_start pos) ;
+
   let args = [
     "-position"; string_of_int (offset + pos);
     "-prefix"; prefix;

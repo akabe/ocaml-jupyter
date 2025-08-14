@@ -2,7 +2,13 @@ NON_CPPO_SOURCES = $(shell find src tests \( -name '*.ml' -or -name '*.mli' \) -
 KERNEL_NAME = ocaml-jupyter-$(shell opam var switch)
 OCAML_JUPYTER_LOG = debug
 
-.PHONY: format check-format test unit-test integration-test
+.PHONY: format check-format test unit-test integration-test build clean
+
+build:
+	dune build
+
+clean:
+	dune clean
 
 format:
 	opam exec -- ocp-indent -i $(NON_CPPO_SOURCES)

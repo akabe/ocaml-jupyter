@@ -91,7 +91,7 @@ struct
   let default = `Assoc []
 
   let create ?(data = default) target =
-    let comm_id = Uuidm.(to_string (v `V4)) in
+    let comm_id = Jupyter.Message.next_uuid () in
     ignore (register target comm_id) ;
     Jupyter_notebook__Unsafe.send_iopub
       (IOPUB_COMM_OPEN {

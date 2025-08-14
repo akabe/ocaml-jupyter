@@ -36,26 +36,39 @@ let occurrences ~pos merlin code =
   Merlin.occurrences merlin code ~pos
   |> Lwt_main.run
 
+let merlin_create_test () =
+  let merlin = Merlin.create () in
+  let dot_merlin = Merlin.get_dot_merlin merlin in
+
+  (* recent dune does not create .merlin anymore, create one for this test *)
+  if not @@ Sys.file_exists dot_merlin then begin
+    let oc = open_out dot_merlin in
+    output_string oc "S .\nB .\nPKG unix\n";
+    close_out oc
+  end;
+
+  merlin
+
 let test_occurrences ctxt =
   let require ?msg x y = assert_equal ~ctxt ~printer:[%show: ident_reply list] ?msg x y in
-  let merlin = Merlin.create () in
-  let code = "let _ = Lwt_m " in
+  let merlin = merlin_create_test () in
+  let code = "let _ = List.map  " in
   let expected = Merlin.([
-      { id_start = { id_line=1; id_col=8; }; id_end = { id_line=1; id_col=13 } }
+      { id_start = { id_line=1; id_col=13; }; id_end = { id_line=1; id_col=16 } }
     ]) in
-  let actual = occurrences merlin code ~pos:13 in
+  let actual = occurrences merlin code ~pos:15 in
   require expected actual ~msg:"at the end of identifier" ;
-  let actual = occurrences merlin code ~pos:10 in
-  require expected actual ~msg:"at a middle position in identifier" ;
-  let actual = occurrences merlin code ~pos:8 in
-  require expected actual ~msg:"at the head of identifier" ;
   let actual = occurrences merlin code ~pos:14 in
+  require expected actual ~msg:"at a middle position in identifier" ;
+  let actual = occurrences merlin code ~pos:13 in
+  require expected actual ~msg:"at the head of identifier" ;
+  let actual = occurrences merlin code ~pos:17 in
   require [] actual ~msg:"not found" ;
-  let code = "let x = 15\nlet y = 42\nlet z = Lwt_m \nlet w = 123" in
+  let code = "let x = 15\nlet y = 42\nlet z = List.map\nlet w = 123" in
   let expected = Merlin.([
-      { id_start = { id_line=3; id_col=8; }; id_end = { id_line=3; id_col=13 } }
+      { id_start = { id_line=3; id_col=13; }; id_end = { id_line=3; id_col=16 } }
     ]) in
-  let actual = occurrences merlin code ~pos:32 in
+  let actual = occurrences merlin code ~pos:35 in
   require expected actual ~msg:"multi-line code"
 
 let test_abs_position ctxt =
@@ -93,7 +106,7 @@ let complete ?doc ?types merlin ~pos code =
 
 let test_complete ctxt =
   let require ?msg x y = assert_equal ~ctxt ~printer:[%show: reply] ?msg x y in
-  let merlin = Merlin.create () in
+  let merlin = merlin_create_test () in
   let code = "List" in
   let expected = Merlin.{
       cmpl_start = 0; cmpl_end = 4;
