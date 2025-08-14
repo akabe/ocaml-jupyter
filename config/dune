@@ -6,3 +6,8 @@
  (section bin)
  (package jupyter)
  (files   ocaml-jupyter-opam-genspec))
+
+(install
+ (section share)
+ (package jupyter)
+ (files   logo-64x64.png))
