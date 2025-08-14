@@ -29,10 +29,6 @@ type display_id = string
 
 (** {2 Display} *)
 
-let random_state = Random.State.make_self_init ()
-let uuid_gen = Uuidm.v4_gen random_state
-let next_uuid () = Uuidm.(to_string (uuid_gen ()))
-
 let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data =
   let data =
     if base64 then Base64.encode data
@@ -44,7 +40,7 @@ let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data
   let send content = Unsafe.send_iopub ?ctx content in
   match display_id with
   | None ->
-    let display_id = next_uuid () in
+    let display_id = Jupyter.Message.next_uuid () in
     send (IOPUB_DISPLAY_DATA {
         display_data = `Assoc [mime, `String data];
         display_metadata = metadata;
