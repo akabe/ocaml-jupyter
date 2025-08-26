@@ -38,16 +38,16 @@ let pp_reply ppf reply =
 
 (* starting from 5.03 the error message can have a difference number of new lines probably from a race condition, remove all \n before comparing *)
 let remove_newlines s =
-String.split_on_char '\n' s
+  String.split_on_char '\n' s
   |> List.filter (fun x -> not (String.trim x = ""))
   |> String.concat ""
 
 let clean_newlines rep =
-match rep with
-| IOPUB_ERROR error -> IOPUB_ERROR { error with traceback = List.map remove_newlines error.traceback }
-(* ppx below can fail too on the newline however it is not IOPUB_ERROR *)
-(*| IOPUB_EXECUTE_RESULT result -> IOPUB_EXECUTE_RESULT { result with exres_data = List.map remove_newlines result.exres_data }*)
-| other -> other
+  match rep with
+  | IOPUB_ERROR error -> IOPUB_ERROR { error with traceback = List.map remove_newlines error.traceback }
+  (* ppx below can fail too on the newline however it is not IOPUB_ERROR *)
+  (*| IOPUB_EXECUTE_RESULT result -> IOPUB_EXECUTE_RESULT { result with exres_data = List.map remove_newlines result.exres_data }*)
+  | other -> other
 
 let eval ?(count = 0) code =
   let replies = ref [] in
@@ -206,10 +206,10 @@ let test__exception ctxt =
   let msg =
     if Sys.ocaml_version >= "5.2"
     then"\x1b[31mException: Failure \"FAIL\".\n\
-          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
-          Called from <unknown> in file \"[0]\", line 1, characters 0-15\n\
-          Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 93, characters 4-14\n\
-          \x1b[0m"
+         Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+         Called from <unknown> in file \"[0]\", line 1, characters 0-15\n\
+         Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 93, characters 4-14\n\
+         \x1b[0m"
     else if Sys.ocaml_version >= "5.00"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
