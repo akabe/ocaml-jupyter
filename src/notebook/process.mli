@@ -174,17 +174,6 @@ val bash :
   ?interval:float ->
   ?args:string list -> string -> t
 
-(** [python2 ?check ?capture_stdout ?capture_stderr ?interval ?args script]
-    evaluates a given code [script] by [python2] command.
-
-    @since 2.8.0 *)
-val python2 :
-  ?check:bool ->
-  ?capture_stdout:bool ->
-  ?capture_stderr:capture_stderr_type ->
-  ?interval:float ->
-  ?args:string list -> string -> t
-
 (** [python3 ?check ?capture_stdout ?capture_stderr ?interval ?args script]
     evaluates a given code [script] by [python3] command.
 
