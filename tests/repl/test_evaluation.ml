@@ -42,11 +42,17 @@ let remove_newlines s =
   |> List.filter (fun x -> not (String.trim x = ""))
   |> String.concat ""
 
+let rec clean_newlines_json json =
+  match json with
+  | `String str -> `String (remove_newlines str)
+  | `List lst -> `List (List.map clean_newlines_json lst)
+  | `Assoc lst -> `Assoc (List.map (fun (k, v) -> (k, clean_newlines_json v)) lst)
+  | other -> other
+
 let clean_newlines rep =
   match rep with
   | IOPUB_ERROR error -> IOPUB_ERROR { error with traceback = List.map remove_newlines error.traceback }
-  (* ppx below can fail too on the newline however it is not IOPUB_ERROR *)
-  (*| IOPUB_EXECUTE_RESULT result -> IOPUB_EXECUTE_RESULT { result with exres_data = List.map remove_newlines result.exres_data }*)
+  | IOPUB_EXECUTE_RESULT result -> IOPUB_EXECUTE_RESULT { result with exres_data = clean_newlines_json result.exres_data }
   | other -> other
 
 let eval ?(count = 0) code =
@@ -59,7 +65,7 @@ let test__simple_phrase ctxt =
   let status, actual = eval "let x = (4 + 1) * 3" in
   let expected = [iopub_success ~count:0 "val x : int = 15\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__multiple_phrases ctxt =
   let status, actual = eval
@@ -72,13 +78,13 @@ let test__multiple_phrases ctxt =
     iopub_success ~count:0 "val z : int list = [2; 4; 6]\n";
   ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__directive ctxt =
   let status, actual = eval "#directory \"+str\" ;; #load \"str.cma\" ;; Str.regexp \".*\"" in
   let expected = [iopub_success ~count:0 "- : Str.regexp = <abstr>\n" ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 (* Implementation of [#trace] directive changes after OCaml 4.13.0. *)
 let test__trace_directive ctxt =
@@ -91,13 +97,13 @@ let test__trace_directive ctxt =
                             - : int = 10\n";
   ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__external_command ctxt =
   let status, actual = eval "Sys.command \"ls -l >/dev/null 2>/dev/null\"" in
   let expected = [iopub_success ~count:0 "- : int = 0\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__syntax_error ctxt =
   let status, actual = eval ~count:123 "let let let\nlet" in
@@ -264,7 +270,7 @@ let test__unknown_directive ctxt =
   let expected = [error ~value:"runtime_error"
                     [msg]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__ppx ctxt =
   let status, actual = eval "#require \"ppx_deriving.show\" ;; \
@@ -277,7 +283,7 @@ let test__ppx ctxt =
         <fun>\n\
         val show : t -> Ppx_deriving_runtime.string = <fun>\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let suite =
   "Evaluation" >::: [
