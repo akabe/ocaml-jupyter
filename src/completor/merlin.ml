@@ -95,7 +95,7 @@ let parse_merlin_reply ~of_yojson str =
     error (fun pp -> pp "%s: %s" msg (Yojson.Safe.pretty_to_string json))
   in
   let reply = Yojson.Safe.from_string str
-              |> [%of_yojson: Jupyter.Json.t merlin_reply_body] in
+    |> [%of_yojson: Jupyter.Json.t merlin_reply_body] in
   `List [`String reply.klass; reply.value]
   |> merlin_reply_of_yojson of_yojson
   |> function

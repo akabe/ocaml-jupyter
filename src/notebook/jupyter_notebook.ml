@@ -32,9 +32,9 @@ type display_id = string
 let display ?ctx ?display_id ?(metadata = `Assoc []) ?(base64 = false) mime data =
   let data =
     if base64 then Base64.encode data
-                   |> function
-                   | Ok result -> result
-                   | Error (`Msg erro) -> raise @@ Failure erro
+      |> function
+      | Ok result -> result
+      | Error (`Msg erro) -> raise @@ Failure erro
     else data
   in
   let send content = Unsafe.send_iopub ?ctx content in
