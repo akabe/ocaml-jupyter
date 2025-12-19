@@ -36,17 +36,36 @@ let pp_reply ppf reply =
   |> Yojson.Safe.to_string
   |> pp_print_string ppf
 
+(* starting from 5.03 the error message can have a difference number of new lines probably from a race condition, remove all \n before comparing *)
+let remove_newlines s =
+  String.split_on_char '\n' s
+  |> List.filter (fun x -> not (String.trim x = ""))
+  |> String.concat ""
+
+let rec clean_newlines_json json =
+  match json with
+  | `String str -> `String (remove_newlines str)
+  | `List lst -> `List (List.map clean_newlines_json lst)
+  | `Assoc lst -> `Assoc (List.map (fun (k, v) -> (k, clean_newlines_json v)) lst)
+  | other -> other
+
+let clean_newlines rep =
+  match rep with
+  | IOPUB_ERROR error -> IOPUB_ERROR { error with traceback = List.map remove_newlines error.traceback }
+  | IOPUB_EXECUTE_RESULT result -> IOPUB_EXECUTE_RESULT { result with exres_data = clean_newlines_json result.exres_data }
+  | other -> other
+
 let eval ?(count = 0) code =
   let replies = ref [] in
   let send r = replies := r :: !replies in
   let status = eval ~send ~count code in
-  (status, List.rev !replies)
+  (status, List.map clean_newlines (List.rev !replies))
 
 let test__simple_phrase ctxt =
   let status, actual = eval "let x = (4 + 1) * 3" in
   let expected = [iopub_success ~count:0 "val x : int = 15\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__multiple_phrases ctxt =
   let status, actual = eval
@@ -59,13 +78,13 @@ let test__multiple_phrases ctxt =
     iopub_success ~count:0 "val z : int list = [2; 4; 6]\n";
   ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__directive ctxt =
-  let status, actual = eval "#load \"str.cma\" ;; Str.regexp \".*\"" in
-  let expected = [iopub_success ~count:0 "- : Str.regexp = <abstr>\n"] in
+  let status, actual = eval "#directory \"+str\" ;; #load \"str.cma\" ;; Str.regexp \".*\"" in
+  let expected = [iopub_success ~count:0 "- : Str.regexp = <abstr>\n" ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 (* Implementation of [#trace] directive changes after OCaml 4.13.0. *)
 let test__trace_directive ctxt =
@@ -78,13 +97,13 @@ let test__trace_directive ctxt =
                             - : int = 10\n";
   ] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__external_command ctxt =
   let status, actual = eval "Sys.command \"ls -l >/dev/null 2>/dev/null\"" in
   let expected = [iopub_success ~count:0 "- : int = 0\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__syntax_error ctxt =
   let status, actual = eval ~count:123 "let let let\nlet" in
@@ -100,7 +119,7 @@ let test__syntax_error ctxt =
               \n\x1b[36m   1: \x1b[30mlet \x1b[4mlet\x1b[0m\x1b[30m let\
               \n\x1b[36m   2: \x1b[30mlet\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__unbound_value ctxt =
   let status, actual = eval ~count:123 "foo 42" in
@@ -115,13 +134,21 @@ let test__unbound_value ctxt =
               \n\x1b[31mError: Unbound value foo\
               \n\x1b[36m   1: \x1b[30m\x1b[4mfoo\x1b[0m\x1b[30m 42\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__type_error ctxt =
   let status, actual = eval ~count:123 "42 = true" in
   let expected =
     [error ~value:"compile_error"
-       [if Sys.ocaml_version >= "4.08"
+       [if Sys.ocaml_version >= "5.3"
+        then "File \"[123]\", line 1, characters 5-9:\n\
+              1 | 42 = true\n         \
+              ^^^^\nError: The constructor true has type bool\n       but an expression was expected of type int\n"
+        else if Sys.ocaml_version >= "5.2"
+        then "File \"[123]\", line 1, characters 5-9:\n\
+              1 | 42 = true         \
+              ^^^^Error: This expression has type bool but an expression was expected of type         int"
+        else if Sys.ocaml_version >= "4.08"
         then "File \"[123]\", line 1, characters 5-9:\
               \n1 | 42 = true\
               \n         ^^^^\
@@ -132,7 +159,7 @@ let test__type_error ctxt =
               \n         int\
               \n\x1b[36m   1: \x1b[30m42 = \x1b[4mtrue\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__long_error_message ctxt =
   let status, actual = eval ~count:123
@@ -154,11 +181,16 @@ let test__long_error_message ctxt =
               \n\x1b[36m   3: \x1b[30mlet c = \x1b[4mfoo\x1b[0m\x1b[30m in\
               \n\x1b[36m   4: \x1b[30mlet d = 44 in\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual ;
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual ;
   let status, actual = eval ~count:123 "List.\n dummy" in
   let expected =
     [error ~value:"compile_error"
-       [if Sys.ocaml_version >= "4.09"
+       [if Sys.ocaml_version >= "5.00"
+        then "\nFile \"[123]\", lines 1-2, characters 0-6:\
+              \n1 | List.\
+              \n2 |  dummy\
+              \nError: Unbound value List.dummy\n"
+        else if Sys.ocaml_version >= "4.09"
         then "File \"[123]\", lines 1-2, characters 0-6:\
               \n1 | List.\
               \n2 |  dummy\
@@ -173,12 +205,23 @@ let test__long_error_message ctxt =
               \n\x1b[36m   1: \x1b[30m\x1b[4mList.\x1b[0m\
               \n\x1b[36m   2: \x1b[30m\x1b[4m dummy\x1b[0m\n"]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__exception ctxt =
   let status, actual = eval "failwith \"FAIL\"" in
   let msg =
-    if Sys.ocaml_version >= "4.13"
+    if Sys.ocaml_version >= "5.2"
+    then"\x1b[31mException: Failure \"FAIL\".\n\
+         Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+         Called from <unknown> in file \"[0]\", line 1, characters 0-15\n\
+         Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 93, characters 4-14\n\
+         \x1b[0m"
+    else if Sys.ocaml_version >= "5.00"
+    then "\x1b[31mException: Failure \"FAIL\".\n\
+          Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
+          Called from Topeval.load_lambda in file \"toplevel/byte/topeval.ml\", line 89, characters 4-14\n\
+          \x1b[0m"
+    else if Sys.ocaml_version >= "4.13"
     then "\x1b[31mException: Failure \"FAIL\".\n\
           Raised at Stdlib.failwith in file \"stdlib.ml\", line 29, characters 17-33\n\
           Called from Stdlib__Fun.protect in file \"fun.ml\", line 33, characters 8-15\n\
@@ -216,14 +259,18 @@ let test__exception ctxt =
   in
   let expected = [error ~value:"runtime_error" [msg]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__unknown_directive ctxt =
   let status, actual = eval "#foo" in
+  let msg =
+    if Sys.ocaml_version >= "5.2"
+    then "\x1b[31mUnknown directive foo.\x1b[0m"
+    else "\x1b[31mUnknown directive `foo'.\x1b[0m" in
   let expected = [error ~value:"runtime_error"
-                    ["\x1b[31mUnknown directive `foo'.\n\x1b[0m"]] in
+                    [msg]] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_ERROR status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let test__ppx ctxt =
   let status, actual = eval "#require \"ppx_deriving.show\" ;; \
@@ -236,7 +283,7 @@ let test__ppx ctxt =
         <fun>\n\
         val show : t -> Ppx_deriving_runtime.string = <fun>\n"] in
   assert_equal ~ctxt ~printer:[%show: status] SHELL_OK status ;
-  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+  assert_equal ~ctxt ~printer:[%show: reply list] (List.map clean_newlines expected) actual
 
 let suite =
   "Evaluation" >::: [

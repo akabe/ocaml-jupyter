@@ -192,7 +192,7 @@ struct
         client.completor body.insp_code ~pos:body.insp_pos in
     let shell_reply =
       let data = List.map format raw_reply.Completor.cmpl_candidates
-                 |> String.concat "\n\n" in
+        |> String.concat "\n\n" in
       {
         insp_status = SHELL_OK;
         insp_found = (raw_reply.Completor.cmpl_candidates <> []);

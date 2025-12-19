@@ -75,8 +75,8 @@ struct
       Hmac.validate ?key ~hmac ~header ~parent_header ~metadata ~content () ;
       let header = header_of_string header in
       let content = Yojson.Safe.from_string content
-                    |> compose_content ~msg_type:header.msg_type
-                    |> [%of_yojson: Content.request] in
+        |> compose_content ~msg_type:header.msg_type
+        |> [%of_yojson: Content.request] in
       {
         zmq_ids = ids;
         header;

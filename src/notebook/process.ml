@@ -213,10 +213,6 @@ let bash ?check ?capture_stdout ?capture_stderr ?interval ?args script =
   eval_script ?check ?capture_stdout ?capture_stderr ?interval
     ?args ~opt:"-c" "bash" script
 
-let python2 ?check ?capture_stdout ?capture_stderr ?interval ?args script =
-  eval_script ?check ?capture_stdout ?capture_stderr ?interval
-    ?args ~opt:"-c" "python2" script
-
 let python3 ?check ?capture_stdout ?capture_stderr ?interval ?args script =
   eval_script ?check ?capture_stdout ?capture_stderr ?interval
     ?args ~opt:"-c" "python3" script
