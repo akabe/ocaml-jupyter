@@ -36,11 +36,8 @@ let current = ref (!Arg.current)
 
 let argv = ref Sys.argv
 
-#if OCAML_VERSION >= (5,0,0)
+(* older OCaml versions required the preload of "stdlib.cma" *)
 let preload_objects = ref []
-#else
-let preload_objects = ref ["stdlib.cma"]
-#endif
 
 (* Test whether the option is part of a responsefile *)
 let is_expanded pos = pos < !first_nonexpanded_pos
@@ -121,19 +118,13 @@ let set r () = r := true
 let clear r () = r := false
 
 module Options = Main_args.Make_bytetop_options (struct
-#if OCAML_VERSION < (4,08,0)
-    let _absname = set Location.absname
-#else
     let _absname = set Clflags.absname
-#endif
     let _I dir =
       let dir = Misc.expand_directory Config.standard_library dir in
       Clflags.include_dirs := dir :: !Clflags.include_dirs
-#if OCAML_VERSION >= (5,02,0)
     let _H dir =
       let dir = Misc.expand_directory Config.standard_library dir in
       Clflags.hidden_include_dirs := dir :: !Clflags.hidden_include_dirs
-#endif
     let _init s = Clflags.init_file := Some s
     let _noinit = set Clflags.noinit
     let _labels = clear Clflags.classic
@@ -157,9 +148,6 @@ module Options = Main_args.Make_bytetop_options (struct
     let _keywords k =
       Clflags.keyword_edition := Some (k)
 #endif
-#if OCAML_VERSION < (5,0,0)
-    let _safe_string = clear Clflags.unsafe_string
-#endif
     let _short_paths = clear Clflags.real_paths
     let _stdin () = file_argument ""
     let _strict_sequence = set Clflags.strict_sequence
@@ -168,28 +156,13 @@ module Options = Main_args.Make_bytetop_options (struct
     let _no_strict_formats = clear Clflags.strict_formats
     let _unboxed_types = set Clflags.unboxed_types
     let _no_unboxed_types = clear Clflags.unboxed_types
-#if OCAML_VERSION < (4,08,0)
-    let _unsafe = set Clflags.fast
-#else
     let _unsafe = set Clflags.unsafe
-#endif
-#if OCAML_VERSION < (5,0,0)
-    let _unsafe_string = set Clflags.unsafe_string
-#endif
     let _version () = print_version ()
     let _vnum () = print_version_num ()
     let _no_version = set Clflags.noversion
-#if OCAML_VERSION < (4,13,0)
-    let _w s = Warnings.parse_options false s
-#else
     let _w s = Warnings.parse_options false s |> Option.iter Location.(prerr_alert none)
-#endif
 
-#if OCAML_VERSION < (4,13,0)
-    let _warn_error s = Warnings.parse_options true s
-#else
     let _warn_error s = Warnings.parse_options true s |> Option.iter Location.(prerr_alert none)
-#endif
     let _warn_help = Warnings.help_warnings
     let _dparsetree = set Clflags.dump_parsetree
     let _dtypedtree = set Clflags.dump_typedtree
@@ -201,56 +174,29 @@ module Options = Main_args.Make_bytetop_options (struct
 
     let anonymous s = file_argument s
 
-#if OCAML_VERSION >= (4,05,0)
-    (* OCaml 4.05 or above *)
     let _args = wrap_expand Arg.read_arg
     let _args0 = wrap_expand Arg.read_arg0
-#endif
 
-#if OCAML_VERSION >= (4,06,0)
-    (* OCaml 4.06 or above *)
     let _dtimings () = Clflags.profile_columns := [ `Time ]
     let _dprofile () = Clflags.profile_columns := Profile.all_columns
-#else
-    (* OCaml 4.05 or below *)
-    let _plugin p = Compplugin.load p
-    let _dtimings = set Clflags.print_timings
-#endif
-
-#if OCAML_VERSION >= (4,07,0)
-    (* OCaml 4.07 or above *)
     let _dno_unique_ids = clear Clflags.unique_ids
     let _dunique_ids = set Clflags.unique_ids
-#endif
-#if OCAML_VERSION >= (4,08,0)
+
     let _error_style = Misc.set_or_ignore Clflags.error_style_reader.Clflags.parse Clflags.error_style
     let _color = Misc.set_or_ignore Clflags.color_reader.Clflags.parse Clflags.color
     let _nopervasives = set Clflags.nopervasives
     let _alert = Warnings.parse_alert_option
-#endif
 
-#if OCAML_VERSION >= (4,11,0)
     let _dlocations = set Clflags.locations
     let _dno_locations = clear Clflags.locations
-#endif
 
-#if OCAML_VERSION = (4,14,0)
-let _force_tmc = set Clflags.force_tmc
-#endif
-#if OCAML_VERSION >= (4,14,0)
 let _dshape = set Clflags.dump_shape
 let _eval (_ : string) = ()
-#endif
-#if OCAML_VERSION >= (5,0,0)
     let _nocwd = set Clflags.no_cwd
     let _no_absname = set Clflags.absname
     let _safer_matching = set Clflags.safer_matching
-#endif
 end)
 
-#if OCAML_VERSION >= (4,05,0)
-
-(* OCaml 4.05 or above *)
 let parse ppf ~usage ~specs =
   Compenv.readenv ppf Compenv.Before_args ;
   let list = ref (specs @ Options.list) in
@@ -260,15 +206,6 @@ let parse ppf ~usage ~specs =
     | Arg.Bad msg -> Printf.eprintf "%s" msg ; exit 2
     | Arg.Help msg -> Printf.printf "%s" msg ; exit 0
   end
-
-#else
-
-(* OCaml 4.04 *)
-let parse ppf ~usage ~specs =
-  Compenv.readenv ppf Compenv.Before_args ;
-  Arg.parse (specs @ Options.list) file_argument usage
-
-#endif
 
 let get_ocamlinit_path () =
   let check_existence path =
