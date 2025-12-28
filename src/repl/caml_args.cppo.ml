@@ -128,8 +128,13 @@ module Options = Main_args.Make_bytetop_options (struct
     let _init s = Clflags.init_file := Some s
     let _noinit = set Clflags.noinit
     let _labels = clear Clflags.classic
+#if OCAML_VERSION >= (5,04,0)
+    let _alias_deps = clear Clflags.no_alias_deps
+    let _no_alias_deps = set Clflags.no_alias_deps
+#else
     let _alias_deps = clear Clflags.transparent_modules
     let _no_alias_deps = set Clflags.transparent_modules
+#endif
     let _app_funct = set Clflags.applicative_functors
     let _no_app_funct = clear Clflags.applicative_functors
     let _noassert = set Clflags.noassert
@@ -189,6 +194,14 @@ module Options = Main_args.Make_bytetop_options (struct
 
     let _dlocations = set Clflags.locations
     let _dno_locations = clear Clflags.locations
+
+#if OCAML_VERSION >= (5,04,0)
+    let _i_variance = set Clflags.print_variance
+    let _dno_canonical_ids = clear Clflags.canonical_ids
+    let _dcanonical_ids = set Clflags.canonical_ids
+    let _dparsetree_loc_ghost_invariants = set Clflags.parsetree_ghost_loc_invariant
+    let _dmatchcomp = set Clflags.dump_matchcomp
+#endif
 
 let _dshape = set Clflags.dump_shape
 let _eval (_ : string) = ()

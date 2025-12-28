@@ -25,7 +25,12 @@ let longident l = match Longident.unflatten l with
   | Some li -> li
   | None -> failwith "Failed to parse longident"
 
+#if OCAML_VERSION >= (5,4,0)
+let longident_lwt_main_run = Longident.Ldot (Location.mknoloc (Longident.Lident "Lwt_main"), Location.mknoloc "run")
+#else
 let longident_lwt_main_run = Longident.Ldot (Longident.Lident "Lwt_main", "run")
+#endif
+
 let longident_async_thread_safe_block_on_async_exn =
   longident ["Async"; "Thread_safe"; "block_on_async_exn"]
 
