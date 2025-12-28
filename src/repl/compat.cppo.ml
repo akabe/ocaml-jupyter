@@ -28,19 +28,12 @@ let preprocess_phrase ~filename = function
   | Parsetree.Ptop_def structure ->
     structure
     |> Pparse.apply_rewriters_str ~restore:true ~tool_name:"ocaml"
-#if OCAML_VERSION >= (4,04,0) && OCAML_VERSION < (4,09,0)
-    |> Pparse.ImplementationHooks.apply_hooks { Misc.sourcefile = filename }
-#endif
     |> fun structure' -> Parsetree.Ptop_def structure'
   | phrase -> phrase
 [@@ocaml.warning "-27"]
 
 let pp_print_error_message ppf msg =
-#if OCAML_VERSION >= (4,04,0)
   Format.fprintf ppf "Error: %s" msg
-#else
-  Format.pp_print_string ppf msg
-#endif
 
 let extract_location = function
   | Syntaxerr.Error e -> Some (Syntaxerr.location_of_error e)
@@ -53,36 +46,16 @@ let extract_location = function
   | Typedecl.Error (loc, _)
   | Typemod.Error (loc, _, _)
   | Typetexp.Error (loc, _, _) -> Some loc
-#if OCAML_VERSION >= (4,02,0)
   | Typecore.Error_forward e
   | Typemod.Error_forward e
-#endif
-#if OCAML_VERSION >= (4,02,0) && OCAML_VERSION < (4,08,0)
-  | Typeclass.Error_forward e -> Some e.Location.loc
-#elif OCAML_VERSION >= (4,08,0)
   | Typeclass.Error_forward e -> Some e.Location.main.Location.loc
-#endif
-#if OCAML_VERSION >= (4,03,0)
   | Attr_helper.Error (loc, _)
   | Primitive.Error (loc, _) -> Some loc
-#endif
   | _ -> None
 
 let reset_fatal_warnings () =
-#if OCAML_VERSION >= (4,03,0)
   Warnings.reset_fatal ()
-#else
-  ()
-#endif
 
-#if OCAML_VERSION < (4,14,0)
-let types_get_desc t = t.Types.desc
-#else
 let types_get_desc = Types.get_desc
-#endif
 
-#if OCAML_VERSION < (4,13,0)
-let section_trace = "Tracing"
-#else
 let section_trace = Topdirs.section_trace
-#endif
