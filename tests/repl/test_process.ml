@@ -83,6 +83,18 @@ let test__capture_stderr ctxt =
   ] in
   assert_equal ~ctxt ~printer:[%show: reply list] expected actual
 
+let test__capture_no_newline ctxt =
+  let actual =
+    eval "print_string \"Hello World\"; flush stdout"
+    |> map_content
+    |> List.sort compare in (* the order of elements is NOT important *)
+  let expected = [
+    Iopub (stream ~name:IOPUB_STDOUT "Hello World");
+    Iopub (iopub_success ~count:0 "- : unit = ()\n");
+    Shell (execute_reply ~count:0 SHELL_OK);
+  ] in
+  assert_equal ~ctxt ~printer:[%show: reply list] expected actual
+
 (** Check [!Sys.interactive] is [true]. *)
 let test__sys_interactive ctxt =
   let actual = eval "!Sys.interactive" |> map_content in
@@ -97,6 +109,7 @@ let suite =
     "simple_phrase" >:: test__simple_phrase;
     "capture_stdout" >:: test__capture_stdout;
     "capture_stderr" >:: test__capture_stderr;
+    "capture_no_newline" >:: test__capture_no_newline;
     "sys_interactive" >:: test__sys_interactive;
   ]
 
