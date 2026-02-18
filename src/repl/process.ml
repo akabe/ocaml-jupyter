@@ -119,18 +119,23 @@ let recv_ctrl_thread ~push ~mvar ic =
         Lwt_mvar.put mvar ep.Shell.exec_status
       | _ -> Lwt.return_unit)
 
+let read_exn ic =
+  match%lwt Lwt_io.read ~count:1024 ic with
+  | "" -> Lwt.fail End_of_file
+  | s -> Lwt.return s
+
 let recv_stdout_thread ~push ~ctx ~name ic =
   forever (fun () ->
-      Lwt_io.read_line ic >|= fun line ->
+      read_exn ic >|= fun stdout_chunk ->
       match !ctx with
       | Some ctx ->
-        let iopub = Iopub.stream ~name (line ^ "\n") in
+        let iopub = Iopub.stream ~name stdout_chunk in
         let msg = Message.create_next_iopub ctx iopub in
         push (Some (Message.IOPUB_REP msg))
       | None ->
         match name with
-        | Iopub.IOPUB_STDOUT -> app (fun pp -> pp "STDOUT>> %s" line)
-        | Iopub.IOPUB_STDERR -> app (fun pp -> pp "STDERR>> %s" line))
+        | Iopub.IOPUB_STDOUT -> app (fun pp -> pp "STDOUT>> %s" stdout_chunk)
+        | Iopub.IOPUB_STDERR -> app (fun pp -> pp "STDERR>> %s" stdout_chunk))
 
 let create ?init_file ?error_ctx_size () =
   let c_jupyterin, p_jupyterin = Unix.pipe () in
