@@ -52,3 +52,5 @@ post-messages: [
   "    %{share}%/jupyter"
   {success}
 ]
+
+x-maintenance-intent: ["(latest)"]
