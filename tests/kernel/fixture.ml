@@ -112,6 +112,7 @@ struct
           version = "5.2";
         };
       content = SHELL_KERNEL_INFO_REP {
+          kernel_status = SHELL_OK;
           kernel_prot_ver = "5.2";
           kernel_impl = "ocaml-jupyter";
           kernel_impl_ver = "5.0.0";
