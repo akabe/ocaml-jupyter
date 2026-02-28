@@ -193,6 +193,7 @@ let help_links =
 
 type kernel_info_reply =
   {
+    kernel_status : status Json.enum [@key "status"];
     kernel_prot_ver : string [@key "protocol_version"]; (** protocol version *)
     kernel_impl : string [@key "implementation"];
     kernel_impl_ver : string [@key "implementation_version"];
@@ -211,6 +212,7 @@ let kernel_info_reply =
       Version.version
   in
   {
+    kernel_status = SHELL_OK;
     kernel_prot_ver = Version.protocol_version;
     kernel_impl = "ocaml-jupyter";
     kernel_impl_ver = Version.version;
